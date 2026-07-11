@@ -1,10 +1,12 @@
-import { Injectable, ElementRef, OnDestroy } from '@angular/core';
+import { Injectable, ElementRef, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import * as THREE from 'three';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ThreeService implements OnDestroy {
+  private platformId = inject(PLATFORM_ID);
   private renderer?: THREE.WebGLRenderer;
   private scene?: THREE.Scene;
   private camera?: THREE.PerspectiveCamera;
@@ -14,6 +16,8 @@ export class ThreeService implements OnDestroy {
   constructor() {}
 
   init(container: HTMLElement): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.z = 5;
@@ -67,6 +71,8 @@ export class ThreeService implements OnDestroy {
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
     }
-    window.removeEventListener('resize', this.onResize.bind(this));
+    if (isPlatformBrowser(this.platformId)) {
+      window.removeEventListener('resize', this.onResize.bind(this));
+    }
   }
 }
