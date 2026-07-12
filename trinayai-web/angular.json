@@ -33,6 +33,13 @@
               "src/styles.scss"
             ],
             "scripts": [],
+            "allowedCommonJsDependencies": [
+              "@angular/fire",
+              "@grpc/grpc-js",
+              "@grpc/proto-loader",
+              "undici",
+              "firebase"
+            ],
             "server": "src/main.server.ts",
             "prerender": true,
             "ssr": {
@@ -44,7 +51,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1mb",
+                  "maximumWarning": "1.2mb",
                   "maximumError": "2mb"
                 },
                 {

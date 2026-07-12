@@ -1,4 +1,4 @@
-﻿{
+{
   "database": {
     "rules": "database.rules.json"
   },
@@ -15,10 +15,9 @@
       "source": "functions",
       "codebase": "default",
       "predeploy": [
-        "npm --prefix \"\" run lint",
-        "npm --prefix \"\" run build"
-      ],
-      "source": "functions"
+        "npm --prefix \"$RESOURCE_DIR\" run lint",
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ]
     },
     {
       "source": "backend",
@@ -31,8 +30,8 @@
         "firebase-debug.*.log"
       ],
       "predeploy": [
-        "npm --prefix \"\" run lint",
-        "npm --prefix \"\" run build"
+        "npm --prefix \"$RESOURCE_DIR\" run lint",
+        "npm --prefix \"$RESOURCE_DIR\" run build"
       ],
       "source": "backend"
     }
