@@ -5,6 +5,7 @@ import { AboutComponent } from './features/about/about.component';
 import { ServicesComponent } from './features/services/services.component';
 import { ClientsComponent } from './features/clients/clients.component';
 import { ContactComponent } from './features/contact/contact.component';
+import { AdminComponent } from './features/admin/admin.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -13,5 +14,6 @@ export const routes: Routes = [
   { path: 'services', component: ServicesComponent },
   { path: 'clients', component: ClientsComponent },
   { path: 'contact', component: ContactComponent },
+  { path: 'admin', component: AdminComponent },
   { path: '**', redirectTo: '' }
 ];

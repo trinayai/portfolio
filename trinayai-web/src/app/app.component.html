@@ -1,25 +1,28 @@
-<nav class="fixed top-0 w-full z-50 bg-primary/80 backdrop-blur-md border-b border-gray-800 px-6 py-4 flex justify-between items-center">
-  <a routerLink="/" class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-futuristic-blue to-futuristic-purple">
-    TRINAY AI
-  </a>
-  <div class="hidden md:flex gap-8 text-sm font-medium uppercase tracking-widest text-gray-400">
-    <a routerLink="/ai-menu" routerLinkActive="text-accent" class="hover:text-white transition-colors">AI Menu</a>
-    <a routerLink="/about" routerLinkActive="text-accent" class="hover:text-white transition-colors">About</a>
-    <a routerLink="/services" routerLinkActive="text-accent" class="hover:text-white transition-colors">Services</a>
-    <a routerLink="/clients" routerLinkActive="text-accent" class="hover:text-white transition-colors">Clients</a>
-    <a routerLink="/contact" routerLinkActive="text-accent" class="hover:text-white transition-colors">Contact</a>
+<nav class="fixed top-0 w-full z-50 border-b border-gray-800 bg-primary/80 px-6 py-4 backdrop-blur-md">
+  <div class="mx-auto flex max-w-7xl items-center justify-between">
+    <a routerLink="/" class="flex items-center gap-3 text-2xl font-bold text-white">
+      <img *ngIf="settings.logoUrl" [src]="settings.logoUrl" alt="logo" class="h-10 w-10 rounded-full object-cover" />
+      <span class="bg-gradient-to-r from-futuristic-blue to-futuristic-purple bg-clip-text text-transparent">
+        {{ settings.brandName || 'TRINAY AI' }}
+      </span>
+    </a>
+    <div class="hidden gap-8 text-sm font-medium uppercase tracking-widest text-gray-400 md:flex">
+      <a *ngFor="let item of settings.menuItems" [routerLink]="item.route" routerLinkActive="text-accent" class="transition-colors hover:text-white">
+        {{ item.label }}
+      </a>
+    </div>
+    <button class="text-white md:hidden">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+      </svg>
+    </button>
   </div>
-  <button class="md:hidden text-white">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-    </svg>
-  </button>
 </nav>
 
 <main class="pt-20">
   <router-outlet></router-outlet>
 </main>
 
-<footer class="bg-primary border-t border-gray-800 p-8 text-center text-gray-500 text-sm">
-  <p>&copy; 2026 Trinay AI. All rights reserved. MSME Registered | Women-Owned Enterprise</p>
+<footer class="border-t border-gray-800 bg-primary p-8 text-center text-sm text-gray-500">
+  <p>{{ settings.footerText }}</p>
 </footer>

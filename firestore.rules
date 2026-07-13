@@ -2,6 +2,30 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    match /siteSettings/{document} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /homeSections/{document} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /aboutCards/{document} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /services/{document} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /aiMenuItems/{document} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /clients/{document} {
+      allow read: if true;
+      allow write: if true;
+    }
     match /{document=**} {
       allow read, write: if false;
     }
