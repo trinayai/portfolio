@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@genkit-ai/firebase": "^1.39.0",
+    "@genkit-ai/googleai": "^1.28.0",
+    "firebase": "^12.16.0",
+    "genkit": "^1.39.0"
+  }
+}
