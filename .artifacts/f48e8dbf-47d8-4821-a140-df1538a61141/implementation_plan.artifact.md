@@ -1,22 +1,20 @@
-# Implementation Plan - Fix Firebase App Hosting Rollout
+# Implementation Plan - Fix Firebase App Hosting Build Failure (Iteration 4)
 
-Fix the failed deployment of the `trinay-apps` backend in Firebase App Hosting. The failure is likely due to dependency conflicts during the cloud build (which requires `--legacy-peer-deps`) and bundle size budget violations.
+Resolve the persistent build failure in Firebase App Hosting. The previous rollout failed because `npm ci` detected missing `@firebase/*` dependencies in the lock file and potentially used an incompatible Node.js version.
 
 ## Proposed Changes
 
-### Build Configuration
+### Dependency & Environment Fixes
 
-#### [MODIFY] [apphosting.yaml](file:///F:/Trinay-AI/Home/Web_app/apphosting.yaml)
-- Add `installConfig` with `installCommand: npm install --legacy-peer-deps`. This ensures that the cloud build environment handles the PrimeNG and Angular dependency conflicts exactly as they were handled locally.
+#### [MODIFY] [trinayai-web/package.json](file:///F:/Trinay-AI/Home/Web_app/trinayai-web/package.json)
+- Added explicit dependencies for internal Firebase packages: `@firebase/app`, `@firebase/component`, `@firebase/logger`, `@firebase/util`, and `@firebase/app-types`. listing these explicitly ensures they are included in the lock file during local generation.
+- Set `engines.node` to `^20.0.0` to ensure Cloud Build uses a modern, stable version compatible with Angular 17.
 
-#### [MODIFY] [angular.json](file:///F:/Trinay-AI/Home/Web_app/trinayai-web/angular.json)
-- Increase the `initial` bundle size budgets. PrimeNG and Three.js have significantly increased the bundle size, causing the build to fail locally until budgets were adjusted. I will ensure the production configuration has sufficient head-room.
-    - `maximumWarning`: 1.5mb
-    - `maximumError`: 2.5mb
+#### [MODIFY] [trinayai-web/package-lock.json](file:///F:/Trinay-AI/Home/Web_app/trinayai-web/package-lock.json)
+- Regenerated to include the explicit firebase dependencies. This should eliminate the `npm error Missing: @firebase/app... from lock file` error during the cloud build's `npm ci` step.
 
 ## Verification Plan
 
 ### Manual Verification
-- The user needs to trigger a new deployment (e.g., by pushing the changes to the connected repository).
-- Monitor the Firebase Console / Cloud Build logs for the new rollout.
-- The build should now complete successfully without the `ERRESOLVE` error (handled by legacy-peer-deps) and without the budget error.
+- **Commit and Push**: The user must commit both `package.json` and `package-lock.json` in the `trinayai-web` directory.
+- **Rollout Check**: Trigger a new deployment. The build should now complete as the lock file is fully synchronized with all required dependencies.

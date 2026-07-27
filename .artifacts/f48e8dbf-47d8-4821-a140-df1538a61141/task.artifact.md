@@ -1,4 +1,5 @@
-- [x] Analyze App Hosting build failure logs (simulated via local build experience)
-- [x] Update `apphosting.yaml` to include `--legacy-peer-deps`
-- [x] Update `angular.json` to increase bundle budgets for production
-- [ ] Notify user to trigger a new rollout
+- [x] Explicitly list missing `@firebase/*` deps in `trinayai-web/package.json`
+- [x] Set Node engine to `^20.0.0`
+- [x] Regenerate `trinayai-web/package-lock.json`
+- [x] Update Implementation Plan (Iteration 4)
+- [ ] Notify user to commit and push both files
