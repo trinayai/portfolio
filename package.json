@@ -3,6 +3,9 @@
     "@genkit-ai/firebase": "^1.39.0",
     "@genkit-ai/googleai": "^1.28.0",
     "firebase": "^12.16.0",
-    "genkit": "^1.39.0"
+    "genkit": "^1.39.0",
+    "primeflex": "^3.3.1",
+    "primeicons": "^7.0.0",
+    "primeng": "^17.18.15"
   }
 }

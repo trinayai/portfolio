@@ -1,101 +1,119 @@
 import { Component, AfterViewInit, ElementRef, ViewChild, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
 import { ThreeService } from '../../core/services/three.service';
 import { SiteContentService } from '../../core/services/site-content.service';
 import { SectionItem, SiteSettings } from '../../core/models/site-content';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { AnimateOnScrollModule } from 'primeng/animateonscroll';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatButtonModule],
+  imports: [CommonModule, RouterLink, ButtonModule, CardModule, AnimateOnScrollModule],
   template: `
     <section class="relative min-h-screen overflow-hidden bg-[#050c1f] text-white">
-      <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.18),_transparent_18%),radial-gradient(circle_at_80%_20%,_rgba(168,85,247,0.16),_transparent_17%),linear-gradient(135deg,#040b1a_0%,#08112a_45%,#101c39_100%)] pointer-events-none"></div>
-      <div class="absolute inset-0 opacity-70" aria-hidden="true">
-        <div class="absolute -left-20 top-20 h-56 w-56 rounded-full bg-cyan-500/15 blur-3xl animate-blob"></div>
-        <div class="absolute right-10 top-44 h-64 w-64 rounded-full bg-fuchsia-500/15 blur-3xl animate-blob animation-delay-2000"></div>
-        <div class="absolute left-1/2 bottom-8 h-52 w-52 -translate-x-1/2 rounded-full bg-sky-500/10 blur-3xl animate-blob animation-delay-4000"></div>
-      </div>
+      <!-- 3D Background Canvas -->
+      <div #threeCanvas class="absolute inset-0 z-0"></div>
 
-      <div class="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-6 py-16 lg:px-10">
-        <div class="grid gap-10 lg:grid-cols-[1.45fr_0.95fr] lg:items-center">
-          <div class="space-y-8">
-            <span class="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-300 shadow-lg shadow-cyan-500/10 backdrop-blur">
-              <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-cyan-400 to-violet-500 text-sm font-semibold text-white">{{ settings.heroBadge || 'NEW' }}</span>
-              {{ settings.heroTitle || 'Modern AI website UI with motion, depth, and premium polish.' }}
-            </span>
+      <!-- Content Overlay -->
+      <div class="relative z-10">
+        <!-- Hero Section -->
+        <div class="mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-6 py-24 lg:px-10">
+          <div class="grid gap-12 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+            <div class="space-y-10" pAnimateOnScroll enterClass="fadeinleft" leaveClass="fadeoutleft">
+              <div class="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-cyan-300 shadow-xl shadow-cyan-500/10 backdrop-blur-xl">
+                <span class="flex h-6 w-6 animate-pulse items-center justify-center rounded-full bg-cyan-500/20 text-[10px] ring-1 ring-cyan-500/50">
+                  <i class="pi pi-bolt"></i>
+                </span>
+                {{ settings.heroBadge || 'Empowering MSMEs through IndiaAI Mission' }}
+              </div>
 
-            <h1 class="max-w-4xl text-5xl font-extrabold leading-tight tracking-tight text-white sm:text-6xl lg:text-7xl">
-              {{ settings.heroDescription || 'Build a premium AI experience with' }}
-              <span class="bg-gradient-to-r from-cyan-300 via-fuchsia-400 to-violet-400 bg-clip-text text-transparent">{{ settings.brandName || 'Trinay AI' }}</span>
-            </h1>
+              <h1 class="max-w-4xl text-6xl font-black leading-[1.1] tracking-tight text-white sm:text-7xl lg:text-8xl">
+                {{ settings.heroDescription || 'Digital Transformation with' }}
+                <span class="block bg-gradient-to-r from-cyan-400 via-blue-500 to-fuchsia-500 bg-clip-text text-transparent">
+                  {{ settings.brandName || 'Trinay AI' }}
+                </span>
+              </h1>
 
-            <p class="max-w-2xl text-lg leading-8 text-slate-300 sm:text-xl">
-              Deliver immersive, animated, and modern interfaces using the latest Angular, Material, Tailwind, and 3D canvas techniques.
-            </p>
+              <p class="max-w-2xl text-xl leading-relaxed text-slate-400 sm:text-2xl">
+                Leading the way in advanced LLMs and AI compliance automation tailored for India's growing startup ecosystem.
+              </p>
 
-            <div class="flex flex-wrap gap-4">
-              <a [routerLink]="settings.heroPrimaryCtaRoute || '/ai-menu'" mat-flat-button color="primary" class="rounded-full bg-gradient-to-r from-fuchsia-500 via-cyan-500 to-sky-500 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] shadow-[0_20px_80px_-50px_rgba(139,92,246,0.7)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_25px_100px_-55px_rgba(56,189,248,0.55)]">
-                {{ settings.heroPrimaryCtaText || 'Explore AI Menu' }}
-              </a>
-              <a [routerLink]="settings.heroSecondaryCtaRoute || '/services'" mat-stroked-button color="accent" class="rounded-full border-white/15 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white transition duration-300 hover:bg-white/10">
-                {{ settings.heroSecondaryCtaText || 'See Services' }}
-              </a>
+              <div class="flex flex-wrap gap-6 pt-4">
+                <p-button
+                  [label]="settings.heroPrimaryCtaText || 'Explore AI Solutions'"
+                  [routerLink]="settings.heroPrimaryCtaRoute || '/ai-menu'"
+                  styleClass="p-button-raised p-button-rounded bg-gradient-to-r from-cyan-500 to-blue-600 border-none px-8 py-4 font-bold uppercase tracking-widest text-white shadow-2xl transition duration-500 hover:scale-105 hover:shadow-cyan-500/40">
+                </p-button>
+
+                <p-button
+                  [label]="settings.heroSecondaryCtaText || 'Our Services'"
+                  [routerLink]="settings.heroSecondaryCtaRoute || '/services'"
+                  styleClass="p-button-outlined p-button-rounded border-white/20 text-white px-8 py-4 font-bold uppercase tracking-widest hover:bg-white/5 transition duration-500">
+                </p-button>
+              </div>
+            </div>
+
+            <div class="hidden lg:block">
+              <!-- Visual element or additional 3D focus point could go here -->
+              <div class="relative h-[500px] w-full rounded-[40px] border border-white/5 bg-white/5 p-1 backdrop-blur-3xl shadow-2xl">
+                <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent rounded-[40px]"></div>
+                <div class="h-full w-full rounded-[38px] border border-white/10 bg-[#08112a]/50 flex items-center justify-center overflow-hidden">
+                   <i class="pi pi-prime text-[160px] text-cyan-500/20 animate-pulse"></i>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div class="grid gap-5 sm:grid-cols-2">
-            <article *ngFor="let item of homeSections" class="group overflow-hidden rounded-[32px] border border-white/10 bg-white/5 p-6 shadow-[0_20px_80px_-50px_rgba(15,23,42,0.8)] transition duration-500 hover:-translate-y-1 hover:bg-white/10">
-              <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-3xl bg-cyan-500/15 text-cyan-300 ring-1 ring-cyan-400/15">
-                {{ item.icon || 'AI' }}
-              </div>
-              <h3 class="text-xl font-semibold text-white">{{ item.title }}</h3>
-              <p class="mt-3 text-sm leading-6 text-slate-300">{{ item.description }}</p>
-            </article>
+        <!-- Stats / Features Section -->
+        <div class="bg-black/20 py-24 backdrop-blur-md">
+          <div class="mx-auto max-w-7xl px-6">
+            <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              <p-card *ngFor="let item of homeSections" styleClass="h-full border border-white/10 bg-white/5 transition-all duration-500 hover:-translate-y-2 hover:bg-white/10 hover:border-cyan-500/30">
+                <ng-template pTemplate="header">
+                   <div class="pt-8 px-8">
+                     <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400 ring-1 ring-cyan-500/20">
+                       <i [class]="item.icon || 'pi pi-compass'" class="text-2xl"></i>
+                     </div>
+                   </div>
+                </ng-template>
+                <h3 class="text-2xl font-bold text-white mb-3">{{ item.title }}</h3>
+                <p class="text-slate-400 leading-relaxed">{{ item.description }}</p>
+              </p-card>
+            </div>
           </div>
         </div>
       </div>
-
-      <div #threeCanvas class="absolute inset-0 z-0"></div>
     </section>
   `,
   styles: [`
     :host {
       display: block;
-      min-height: 100%;
+      background-color: #050c1f;
     }
 
-    .animate-blob {
-      animation: blob 10s infinite;
-    }
-
-    .animation-delay-2000 {
-      animation-delay: 2s;
-    }
-
-    .animation-delay-4000 {
-      animation-delay: 4s;
-    }
-
-    @keyframes blob {
-      0%, 100% {
-        transform: translate(0px, 0px) scale(1);
-      }
-      33% {
-        transform: translate(30px, -20px) scale(1.05);
-      }
-      66% {
-        transform: translate(-20px, 20px) scale(0.95);
+    ::ng-deep {
+      .p-card {
+        border-radius: 24px;
+        .p-card-body {
+          padding: 2rem;
+        }
+        .p-card-content {
+          padding: 0;
+        }
       }
     }
 
-    @media (max-width: 768px) {
-      section {
-        padding-top: 3rem;
-        padding-bottom: 3rem;
-      }
+    @keyframes fadeinleft {
+      0% { opacity: 0; transform: translateX(-50px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    .fadeinleft {
+      animation: fadeinleft 1s ease-out forwards;
     }
   `]
 })
@@ -103,14 +121,20 @@ export class HomeComponent implements AfterViewInit, OnInit {
   @ViewChild('threeCanvas', { static: true }) threeCanvas!: ElementRef;
   private threeService = inject(ThreeService);
   private contentService = inject(SiteContentService);
-  settings: SiteSettings = { brandName: 'TRINAY AI', logoUrl: '', footerText: '', menuItems: [], heroBadge: 'NEW', heroTitle: 'Modern AI website UI with motion, depth, and premium polish.', heroDescription: 'Build a premium AI experience with', heroPrimaryCtaText: 'Explore AI Menu', heroPrimaryCtaRoute: '/ai-menu', heroSecondaryCtaText: 'See Services', heroSecondaryCtaRoute: '/services' };
+  settings: SiteSettings = { brandName: 'TRINAY AI', logoUrl: '', footerText: '', menuItems: [], heroBadge: 'IndiaAI Mission Aligned', heroTitle: 'Innovation in AI & Software Development', heroDescription: 'Driving Digital Transformation with', heroPrimaryCtaText: 'Explore AI Solutions', heroPrimaryCtaRoute: '/ai-menu', heroSecondaryCtaText: 'See Services', heroSecondaryCtaRoute: '/services' };
   homeSections: SectionItem[] = [];
 
   ngOnInit(): void {
     this.contentService.getSettings().subscribe((settings) => {
       this.settings = { ...this.settings, ...settings };
     });
-    this.contentService.getHomeSections().subscribe((sections) => this.homeSections = sections);
+    this.contentService.getHomeSections().subscribe((sections) => {
+      this.homeSections = sections.length ? sections : [
+        { title: 'LLM Development', description: 'Custom Large Language Models tailored for MSME specific requirements and compliance.', icon: 'pi pi-share-alt' },
+        { title: 'Compliance Automation', description: 'Streamlining regulatory processes with intelligent AI-driven automation systems.', icon: 'pi pi-shield' },
+        { title: 'Digital Transformation', description: 'Empowering traditional businesses with cutting-edge AI and software solutions.', icon: 'pi pi-sync' }
+      ];
+    });
   }
 
   ngAfterViewInit(): void {

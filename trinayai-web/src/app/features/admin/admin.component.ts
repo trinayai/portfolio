@@ -6,192 +6,191 @@ import { Auth } from '@angular/fire/auth';
 import { signInAnonymously, onAuthStateChanged, User } from 'firebase/auth';
 import { SiteContentService } from '../../core/services/site-content.service';
 import { AboutCard, ClientItem, ContentItem, SectionItem, SiteSettings } from '../../core/models/site-content';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { CardModule } from 'primeng/card';
+import { AccordionModule } from 'primeng/accordion';
+import { DividerModule } from 'primeng/divider';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, ButtonModule, InputTextModule, InputTextareaModule, CardModule, AccordionModule, DividerModule],
   template: `
-    <div class="min-h-screen bg-primary px-6 py-16 text-white">
+    <div class="min-h-screen bg-[#050c1f] px-6 py-24 text-white">
       <div class="mx-auto max-w-6xl">
-        <div class="mb-10 flex flex-wrap items-center justify-between gap-4">
+        <div class="mb-12 flex flex-wrap items-center justify-between gap-6">
           <div>
-            <h1 class="text-4xl font-bold text-accent">Admin Dashboard</h1>
-            <p class="mt-2 text-gray-400">Manage site content, client logos, and page sections from one place.</p>
+            <span class="inline-block rounded-full bg-red-500/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-red-400 ring-1 ring-red-500/20 mb-4">
+              Secure Access
+            </span>
+            <h1 class="text-4xl font-black tracking-tight text-white sm:text-5xl">Admin <span class="bg-gradient-to-r from-red-400 to-fuchsia-500 bg-clip-text text-transparent">Control Center</span></h1>
           </div>
-          <a routerLink="/contact" class="rounded-full border border-accent/40 px-4 py-2 text-sm text-accent">Back to contact</a>
+          <p-button label="View Site" icon="pi pi-external-link" [routerLink]="['/']" styleClass="p-button-outlined border-white/10 text-white"></p-button>
         </div>
 
-        <div *ngIf="authUser; else signInBlock" class="space-y-8">
-          <div class="rounded-2xl border border-gray-800 bg-secondary/80 p-6">
-            <h2 class="text-2xl font-semibold">Site Settings</h2>
-            <div class="mt-4 grid gap-4 md:grid-cols-2">
-              <label class="text-sm text-gray-300">
-                Brand name
-                <input [(ngModel)]="settings.brandName" class="mt-1 w-full rounded border border-gray-700 bg-primary px-3 py-2" />
-              </label>
-              <label class="text-sm text-gray-300">
-                Logo URL
-                <input [(ngModel)]="settings.logoUrl" class="mt-1 w-full rounded border border-gray-700 bg-primary px-3 py-2" />
-              </label>
-            </div>
-            <label class="mt-4 block text-sm text-gray-300">
-              Footer text
-              <textarea [(ngModel)]="settings.footerText" rows="3" class="mt-1 w-full rounded border border-gray-700 bg-primary px-3 py-2"></textarea>
-            </label>
-            <button (click)="saveSettings()" class="mt-4 rounded bg-accent px-4 py-2 font-semibold text-primary">Save Settings</button>
-          </div>
+        <div *ngIf="authUser; else signInBlock" class="space-y-12">
 
-          <div class="rounded-2xl border border-gray-800 bg-secondary/80 p-6">
-            <div class="flex items-center justify-between">
-              <h2 class="text-2xl font-semibold">Home Sections</h2>
-              <button (click)="addHomeSection()" class="rounded bg-accent px-3 py-2 text-sm font-semibold text-primary">Add section</button>
-            </div>
-            <div class="mt-4 space-y-3">
-              <div *ngFor="let item of homeSections" class="rounded border border-gray-700 bg-primary p-4">
-                <div class="grid gap-4 md:grid-cols-2">
-                  <label class="text-sm text-gray-300">
-                    Title
-                    <input [(ngModel)]="item.title" class="mt-1 w-full rounded border border-gray-700 bg-secondary px-3 py-2" />
-                  </label>
-                  <label class="text-sm text-gray-300">
-                    Icon
-                    <input [(ngModel)]="item.icon" class="mt-1 w-full rounded border border-gray-700 bg-secondary px-3 py-2" />
-                  </label>
-                </div>
-                <label class="mt-3 block text-sm text-gray-300">
-                  Description
-                  <textarea [(ngModel)]="item.description" rows="3" class="mt-1 w-full rounded border border-gray-700 bg-secondary px-3 py-2"></textarea>
-                </label>
-                <div class="mt-3 flex gap-2">
-                  <button (click)="saveHomeSection(item)" class="rounded bg-accent px-3 py-2 text-sm font-semibold text-primary">Save</button>
-                  <button (click)="deleteHomeSection(item)" class="rounded border border-red-500 px-3 py-2 text-sm text-red-400">Delete</button>
-                </div>
+          <!-- Site Settings -->
+          <p-card styleClass="border border-white/10 bg-white/5">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+               <i class="pi pi-cog text-cyan-400"></i> Global Settings
+            </h2>
+            <div class="grid gap-6 md:grid-cols-2">
+              <div class="flex flex-col gap-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-slate-500">Brand Name</label>
+                <input pInputText [(ngModel)]="settings.brandName" class="w-full bg-[#08112a] border-white/10 text-white" />
+              </div>
+              <div class="flex flex-col gap-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-slate-500">Logo URL</label>
+                <input pInputText [(ngModel)]="settings.logoUrl" class="w-full bg-[#08112a] border-white/10 text-white" />
               </div>
             </div>
-          </div>
-
-          <div class="rounded-2xl border border-gray-800 bg-secondary/80 p-6">
-            <div class="flex items-center justify-between">
-              <h2 class="text-2xl font-semibold">About Cards</h2>
-              <button (click)="addAboutCard()" class="rounded bg-accent px-3 py-2 text-sm font-semibold text-primary">Add card</button>
+            <div class="mt-6 flex flex-col gap-2">
+              <label class="text-xs font-bold uppercase tracking-widest text-slate-500">Footer Text</label>
+              <textarea pInputTextarea [(ngModel)]="settings.footerText" rows="3" class="w-full bg-[#08112a] border-white/10 text-white"></textarea>
             </div>
-            <div class="mt-4 space-y-3">
-              <div *ngFor="let card of aboutCards" class="rounded border border-gray-700 bg-primary p-4">
-                <label class="block text-sm text-gray-300">
-                  Title
-                  <input [(ngModel)]="card.title" class="mt-1 w-full rounded border border-gray-700 bg-secondary px-3 py-2" />
-                </label>
-                <label class="mt-3 block text-sm text-gray-300">
-                  Description
-                  <textarea [(ngModel)]="card.description" rows="3" class="mt-1 w-full rounded border border-gray-700 bg-secondary px-3 py-2"></textarea>
-                </label>
-                <div class="mt-3 flex gap-2">
-                  <button (click)="saveAboutCard(card)" class="rounded bg-accent px-3 py-2 text-sm font-semibold text-primary">Save</button>
-                  <button (click)="deleteAboutCard(card)" class="rounded border border-red-500 px-3 py-2 text-sm text-red-400">Delete</button>
+            <p-button label="Update Settings" icon="pi pi-save" (onClick)="saveSettings()" styleClass="mt-6 p-button-info"></p-button>
+          </p-card>
+
+          <p-accordion [multiple]="true" styleClass="admin-accordion">
+            <!-- Home Sections -->
+            <p-accordionTab>
+              <ng-template pTemplate="header">
+                 <span class="flex items-center gap-3"><i class="pi pi-home"></i> Home Sections</span>
+              </ng-template>
+              <div class="flex justify-end mb-4">
+                 <p-button label="Add Section" icon="pi pi-plus" (onClick)="addHomeSection()" styleClass="p-button-sm p-button-success"></p-button>
+              </div>
+              <div class="space-y-4">
+                <div *ngFor="let item of homeSections" class="p-6 rounded-xl border border-white/5 bg-white/5">
+                  <div class="grid gap-4 md:grid-cols-2">
+                    <input pInputText [(ngModel)]="item.title" placeholder="Title" class="w-full bg-black/20 border-white/10 text-white" />
+                    <input pInputText [(ngModel)]="item.icon" placeholder="Icon Class (pi pi-...)" class="w-full bg-black/20 border-white/10 text-white" />
+                  </div>
+                  <textarea pInputTextarea [(ngModel)]="item.description" rows="2" placeholder="Description" class="mt-4 w-full bg-black/20 border-white/10 text-white"></textarea>
+                  <div class="mt-4 flex gap-2">
+                    <p-button label="Save" icon="pi pi-check" (onClick)="saveHomeSection(item)" styleClass="p-button-sm"></p-button>
+                    <p-button label="Delete" icon="pi pi-trash" (onClick)="deleteHomeSection(item)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </p-accordionTab>
 
-          <div class="rounded-2xl border border-gray-800 bg-secondary/80 p-6">
-            <div class="flex items-center justify-between">
-              <h2 class="text-2xl font-semibold">Services</h2>
-              <button (click)="addService()" class="rounded bg-accent px-3 py-2 text-sm font-semibold text-primary">Add service</button>
-            </div>
-            <div class="mt-4 space-y-3">
-              <div *ngFor="let item of services" class="rounded border border-gray-700 bg-primary p-4">
-                <div class="grid gap-4 md:grid-cols-2">
-                  <label class="text-sm text-gray-300">
-                    Title
-                    <input [(ngModel)]="item.title" class="mt-1 w-full rounded border border-gray-700 bg-secondary px-3 py-2" />
-                  </label>
-                  <label class="text-sm text-gray-300">
-                    Icon
-                    <input [(ngModel)]="item.icon" class="mt-1 w-full rounded border border-gray-700 bg-secondary px-3 py-2" />
-                  </label>
-                </div>
-                <label class="mt-3 block text-sm text-gray-300">
-                  Description
-                  <textarea [(ngModel)]="item.description" rows="3" class="mt-1 w-full rounded border border-gray-700 bg-secondary px-3 py-2"></textarea>
-                </label>
-                <div class="mt-3 flex gap-2">
-                  <button (click)="saveService(item)" class="rounded bg-accent px-3 py-2 text-sm font-semibold text-primary">Save</button>
-                  <button (click)="deleteService(item)" class="rounded border border-red-500 px-3 py-2 text-sm text-red-400">Delete</button>
+            <!-- Services -->
+            <p-accordionTab>
+               <ng-template pTemplate="header">
+                 <span class="flex items-center gap-3"><i class="pi pi-briefcase"></i> Services</span>
+              </ng-template>
+              <div class="flex justify-end mb-4">
+                 <p-button label="Add Service" icon="pi pi-plus" (onClick)="addService()" styleClass="p-button-sm p-button-success"></p-button>
+              </div>
+              <div class="space-y-4">
+                <div *ngFor="let item of services" class="p-6 rounded-xl border border-white/5 bg-white/5">
+                  <div class="grid gap-4 md:grid-cols-2">
+                    <input pInputText [(ngModel)]="item.title" placeholder="Service Title" class="w-full bg-black/20 border-white/10 text-white" />
+                    <input pInputText [(ngModel)]="item.icon" placeholder="Icon (pi pi-...)" class="w-full bg-black/20 border-white/10 text-white" />
+                  </div>
+                  <textarea pInputTextarea [(ngModel)]="item.description" rows="2" placeholder="Description" class="mt-4 w-full bg-black/20 border-white/10 text-white"></textarea>
+                  <div class="mt-4 flex gap-2">
+                    <p-button label="Save" icon="pi pi-check" (onClick)="saveService(item)" styleClass="p-button-sm"></p-button>
+                    <p-button label="Delete" icon="pi pi-trash" (onClick)="deleteService(item)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </p-accordionTab>
 
-          <div class="rounded-2xl border border-gray-800 bg-secondary/80 p-6">
-            <div class="flex items-center justify-between">
-              <h2 class="text-2xl font-semibold">AI Menu Items</h2>
-              <button (click)="addAiMenuItem()" class="rounded bg-accent px-3 py-2 text-sm font-semibold text-primary">Add item</button>
-            </div>
-            <div class="mt-4 space-y-3">
-              <div *ngFor="let item of aiMenuItems" class="rounded border border-gray-700 bg-primary p-4">
-                <div class="grid gap-4 md:grid-cols-2">
-                  <label class="text-sm text-gray-300">
-                    Title
-                    <input [(ngModel)]="item.title" class="mt-1 w-full rounded border border-gray-700 bg-secondary px-3 py-2" />
-                  </label>
-                  <label class="text-sm text-gray-300">
-                    Icon
-                    <input [(ngModel)]="item.icon" class="mt-1 w-full rounded border border-gray-700 bg-secondary px-3 py-2" />
-                  </label>
-                </div>
-                <label class="mt-3 block text-sm text-gray-300">
-                  Description
-                  <textarea [(ngModel)]="item.description" rows="3" class="mt-1 w-full rounded border border-gray-700 bg-secondary px-3 py-2"></textarea>
-                </label>
-                <div class="mt-3 flex gap-2">
-                  <button (click)="saveAiMenuItem(item)" class="rounded bg-accent px-3 py-2 text-sm font-semibold text-primary">Save</button>
-                  <button (click)="deleteAiMenuItem(item)" class="rounded border border-red-500 px-3 py-2 text-sm text-red-400">Delete</button>
+            <!-- AI Menu Items -->
+            <p-accordionTab>
+               <ng-template pTemplate="header">
+                 <span class="flex items-center gap-3"><i class="pi pi-android"></i> AI Menu</span>
+              </ng-template>
+              <div class="flex justify-end mb-4">
+                 <p-button label="Add Item" icon="pi pi-plus" (onClick)="addAiMenuItem()" styleClass="p-button-sm p-button-success"></p-button>
+              </div>
+              <div class="space-y-4">
+                <div *ngFor="let item of aiMenuItems" class="p-6 rounded-xl border border-white/5 bg-white/5">
+                  <div class="grid gap-4 md:grid-cols-2">
+                    <input pInputText [(ngModel)]="item.title" placeholder="Tool Title" class="w-full bg-black/20 border-white/10 text-white" />
+                    <input pInputText [(ngModel)]="item.icon" placeholder="Icon (pi pi-...)" class="w-full bg-black/20 border-white/10 text-white" />
+                  </div>
+                  <textarea pInputTextarea [(ngModel)]="item.description" rows="2" placeholder="Description" class="mt-4 w-full bg-black/20 border-white/10 text-white"></textarea>
+                  <div class="mt-4 flex gap-2">
+                    <p-button label="Save" icon="pi pi-check" (onClick)="saveAiMenuItem(item)" styleClass="p-button-sm"></p-button>
+                    <p-button label="Delete" icon="pi pi-trash" (onClick)="deleteAiMenuItem(item)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </p-accordionTab>
 
-          <div class="rounded-2xl border border-gray-800 bg-secondary/80 p-6">
-            <div class="flex items-center justify-between">
-              <h2 class="text-2xl font-semibold">Clients</h2>
-              <button (click)="addClient()" class="rounded bg-accent px-3 py-2 text-sm font-semibold text-primary">Add client</button>
-            </div>
-            <div class="mt-4 space-y-3">
-              <div *ngFor="let client of clients" class="rounded border border-gray-700 bg-primary p-4">
-                <div class="grid gap-4 md:grid-cols-2">
-                  <label class="text-sm text-gray-300">
-                    Name
-                    <input [(ngModel)]="client.name" class="mt-1 w-full rounded border border-gray-700 bg-secondary px-3 py-2" />
-                  </label>
-                  <label class="text-sm text-gray-300">
-                    Image URL
-                    <input [(ngModel)]="client.imageUrl" class="mt-1 w-full rounded border border-gray-700 bg-secondary px-3 py-2" />
-                  </label>
-                </div>
-                <label class="mt-3 block text-sm text-gray-300">
-                  Website
-                  <input [(ngModel)]="client.website" class="mt-1 w-full rounded border border-gray-700 bg-secondary px-3 py-2" />
-                </label>
-                <div class="mt-3 flex gap-2">
-                  <button (click)="saveClient(client)" class="rounded bg-accent px-3 py-2 text-sm font-semibold text-primary">Save</button>
-                  <button (click)="deleteClient(client)" class="rounded border border-red-500 px-3 py-2 text-sm text-red-400">Delete</button>
+            <!-- Clients -->
+            <p-accordionTab>
+               <ng-template pTemplate="header">
+                 <span class="flex items-center gap-3"><i class="pi pi-users"></i> Clients & Partners</span>
+              </ng-template>
+              <div class="flex justify-end mb-4">
+                 <p-button label="Add Client" icon="pi pi-plus" (onClick)="addClient()" styleClass="p-button-sm p-button-success"></p-button>
+              </div>
+              <div class="space-y-4">
+                <div *ngFor="let client of clients" class="p-6 rounded-xl border border-white/5 bg-white/5">
+                  <div class="grid gap-4 md:grid-cols-2">
+                    <input pInputText [(ngModel)]="client.name" placeholder="Client Name" class="w-full bg-black/20 border-white/10 text-white" />
+                    <input pInputText [(ngModel)]="client.imageUrl" placeholder="Logo URL" class="w-full bg-black/20 border-white/10 text-white" />
+                  </div>
+                  <input pInputText [(ngModel)]="client.website" placeholder="Website URL" class="mt-4 w-full bg-black/20 border-white/10 text-white" />
+                  <div class="mt-4 flex gap-2">
+                    <p-button label="Save" icon="pi pi-check" (onClick)="saveClient(client)" styleClass="p-button-sm"></p-button>
+                    <p-button label="Delete" icon="pi pi-trash" (onClick)="deleteClient(client)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </p-accordionTab>
+          </p-accordion>
         </div>
 
         <ng-template #signInBlock>
-          <div class="rounded-2xl border border-gray-800 bg-secondary/80 p-8 text-center">
-            <h2 class="text-2xl font-semibold">Sign in to continue</h2>
-            <p class="mt-3 text-gray-400">The admin view uses a Firebase anonymous sign-in for quick access.</p>
-            <button (click)="signIn()" class="mt-6 rounded bg-accent px-4 py-2 font-semibold text-primary">Enter admin view</button>
-          </div>
+          <p-card styleClass="border border-white/10 bg-white/5 text-center py-12">
+            <h2 class="text-3xl font-bold mb-4">Authorized Access Only</h2>
+            <p class="text-slate-400 mb-8 max-w-md mx-auto">Please authenticate to manage the Trinayai Technologies content ecosystem.</p>
+            <p-button label="Authenticate with Firebase" icon="pi pi-lock" (onClick)="signIn()" styleClass="p-button-raised bg-gradient-to-r from-red-500 to-fuchsia-600 border-none px-8 py-3"></p-button>
+          </p-card>
         </ng-template>
       </div>
     </div>
-  `
+  `,
+  styles: [`
+    ::ng-deep {
+      .p-accordion {
+        .p-accordion-header .p-accordion-header-link {
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.05);
+          color: white;
+          padding: 1.5rem;
+          border-radius: 16px;
+          margin-bottom: 0.5rem;
+          transition: all 0.3s;
+          &:hover { background: rgba(255,255,255,0.1); }
+        }
+        .p-accordion-content {
+          background: transparent;
+          border: none;
+          color: white;
+          padding: 1.5rem 0;
+        }
+        .p-accordion-tab-active .p-accordion-header .p-accordion-header-link {
+          border-color: rgba(239, 68, 68, 0.3);
+          background: rgba(239, 68, 68, 0.05);
+        }
+      }
+      .p-inputtext, .p-inputtextarea {
+        border-radius: 10px;
+        padding: 0.75rem;
+        &:focus { box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2); }
+      }
+      .p-card { border-radius: 24px; }
+    }
+  `]
 })
 export class AdminComponent implements OnInit {
   private auth = inject(Auth);
@@ -231,7 +230,7 @@ export class AdminComponent implements OnInit {
   }
 
   async addHomeSection() {
-    await this.contentService.addHomeSection({ title: 'New Section', description: 'Add a short description.', icon: '✨' });
+    await this.contentService.addHomeSection({ title: 'New Section', description: 'Add a short description.', icon: 'pi pi-star' });
   }
 
   async saveHomeSection(item: SectionItem) {
@@ -263,7 +262,7 @@ export class AdminComponent implements OnInit {
   }
 
   async addService() {
-    await this.contentService.addService({ title: 'New Service', description: 'Add your service details.', icon: '⚙️' });
+    await this.contentService.addService({ title: 'New Service', description: 'Add your service details.', icon: 'pi pi-cog' });
   }
 
   async saveService(item: ContentItem) {
@@ -279,7 +278,7 @@ export class AdminComponent implements OnInit {
   }
 
   async addAiMenuItem() {
-    await this.contentService.addAiMenuItem({ title: 'New AI Item', description: 'Add your content.', icon: '🤖' });
+    await this.contentService.addAiMenuItem({ title: 'New AI Item', description: 'Add your content.', icon: 'pi pi-android' });
   }
 
   async saveAiMenuItem(item: ContentItem) {

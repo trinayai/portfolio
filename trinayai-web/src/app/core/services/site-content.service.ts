@@ -1,4 +1,4 @@
-import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID, Optional } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable, from, of } from 'rxjs';
 import {
@@ -10,22 +10,33 @@ import {
   addDoc,
   setDoc,
   updateDoc,
-  deleteDoc
+  deleteDoc,
+  getFirestore
 } from '@angular/fire/firestore';
 import { AboutCard, ClientItem, ContentItem, SectionItem, SiteSettings } from '../models/site-content';
 
 @Injectable({ providedIn: 'root' })
 export class SiteContentService {
-  private firestore = inject(Firestore);
+  private firestore: Firestore | null = null;
   private platformId = inject(PLATFORM_ID);
 
+  constructor() {
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        this.firestore = inject(Firestore);
+      } catch (e) {
+        console.warn('Firestore not available yet:', e);
+      }
+    }
+  }
+
   getSettings(): Observable<SiteSettings> {
-    if (!isPlatformBrowser(this.platformId)) return of({} as SiteSettings);
+    if (!this.firestore) return of({} as SiteSettings);
     return docData(doc(this.firestore, 'siteSettings', 'main'), { idField: 'id' }) as Observable<SiteSettings>;
   }
 
   async saveSettings(settings: SiteSettings) {
-    if (!isPlatformBrowser(this.platformId)) return;
+    if (!this.firestore) return;
     const settingsDoc = doc(this.firestore, 'siteSettings', 'main');
     return setDoc(settingsDoc, { ...settings, id: 'main' }, { merge: true });
   }
@@ -35,17 +46,17 @@ export class SiteContentService {
   }
 
   addHomeSection(payload: Omit<SectionItem, 'id'>) {
-    if (!isPlatformBrowser(this.platformId)) return from(Promise.resolve());
+    if (!this.firestore) return from(Promise.resolve());
     return from(addDoc(collection(this.firestore, 'homeSections'), payload));
   }
 
   updateHomeSection(id: string, payload: Partial<SectionItem>) {
-    if (!isPlatformBrowser(this.platformId)) return from(Promise.resolve());
+    if (!this.firestore) return from(Promise.resolve());
     return from(updateDoc(doc(this.firestore, 'homeSections', id), payload));
   }
 
   deleteHomeSection(id: string) {
-    if (!isPlatformBrowser(this.platformId)) return from(Promise.resolve());
+    if (!this.firestore) return from(Promise.resolve());
     return from(deleteDoc(doc(this.firestore, 'homeSections', id)));
   }
 
@@ -54,17 +65,17 @@ export class SiteContentService {
   }
 
   addAboutCard(payload: Omit<AboutCard, 'id'>) {
-    if (!isPlatformBrowser(this.platformId)) return from(Promise.resolve());
+    if (!this.firestore) return from(Promise.resolve());
     return from(addDoc(collection(this.firestore, 'aboutCards'), payload));
   }
 
   updateAboutCard(id: string, payload: Partial<AboutCard>) {
-    if (!isPlatformBrowser(this.platformId)) return from(Promise.resolve());
+    if (!this.firestore) return from(Promise.resolve());
     return from(updateDoc(doc(this.firestore, 'aboutCards', id), payload));
   }
 
   deleteAboutCard(id: string) {
-    if (!isPlatformBrowser(this.platformId)) return from(Promise.resolve());
+    if (!this.firestore) return from(Promise.resolve());
     return from(deleteDoc(doc(this.firestore, 'aboutCards', id)));
   }
 
@@ -73,17 +84,17 @@ export class SiteContentService {
   }
 
   addService(payload: Omit<ContentItem, 'id'>) {
-    if (!isPlatformBrowser(this.platformId)) return from(Promise.resolve());
+    if (!this.firestore) return from(Promise.resolve());
     return from(addDoc(collection(this.firestore, 'services'), payload));
   }
 
   updateService(id: string, payload: Partial<ContentItem>) {
-    if (!isPlatformBrowser(this.platformId)) return from(Promise.resolve());
+    if (!this.firestore) return from(Promise.resolve());
     return from(updateDoc(doc(this.firestore, 'services', id), payload));
   }
 
   deleteService(id: string) {
-    if (!isPlatformBrowser(this.platformId)) return from(Promise.resolve());
+    if (!this.firestore) return from(Promise.resolve());
     return from(deleteDoc(doc(this.firestore, 'services', id)));
   }
 
@@ -92,17 +103,17 @@ export class SiteContentService {
   }
 
   addAiMenuItem(payload: Omit<ContentItem, 'id'>) {
-    if (!isPlatformBrowser(this.platformId)) return from(Promise.resolve());
+    if (!this.firestore) return from(Promise.resolve());
     return from(addDoc(collection(this.firestore, 'aiMenuItems'), payload));
   }
 
   updateAiMenuItem(id: string, payload: Partial<ContentItem>) {
-    if (!isPlatformBrowser(this.platformId)) return from(Promise.resolve());
+    if (!this.firestore) return from(Promise.resolve());
     return from(updateDoc(doc(this.firestore, 'aiMenuItems', id), payload));
   }
 
   deleteAiMenuItem(id: string) {
-    if (!isPlatformBrowser(this.platformId)) return from(Promise.resolve());
+    if (!this.firestore) return from(Promise.resolve());
     return from(deleteDoc(doc(this.firestore, 'aiMenuItems', id)));
   }
 
@@ -111,22 +122,27 @@ export class SiteContentService {
   }
 
   addClient(payload: Omit<ClientItem, 'id'>) {
-    if (!isPlatformBrowser(this.platformId)) return from(Promise.resolve());
+    if (!this.firestore) return from(Promise.resolve());
     return from(addDoc(collection(this.firestore, 'clients'), payload));
   }
 
   updateClient(id: string, payload: Partial<ClientItem>) {
-    if (!isPlatformBrowser(this.platformId)) return from(Promise.resolve());
+    if (!this.firestore) return from(Promise.resolve());
     return from(updateDoc(doc(this.firestore, 'clients', id), payload));
   }
 
   deleteClient(id: string) {
-    if (!isPlatformBrowser(this.platformId)) return from(Promise.resolve());
+    if (!this.firestore) return from(Promise.resolve());
     return from(deleteDoc(doc(this.firestore, 'clients', id)));
   }
 
   private listenToCollection<T>(collectionName: string): Observable<T[]> {
-    if (!isPlatformBrowser(this.platformId)) return of([]);
-    return collectionData(collection(this.firestore, collectionName), { idField: 'id' }) as Observable<T[]>;
+    if (!this.firestore) return of([]);
+    try {
+      return collectionData(collection(this.firestore, collectionName), { idField: 'id' }) as Observable<T[]>;
+    } catch (e) {
+      console.error('Firestore access error:', e);
+      return of([]);
+    }
   }
 }

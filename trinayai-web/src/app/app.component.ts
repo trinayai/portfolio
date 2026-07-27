@@ -2,18 +2,21 @@ import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SiteContentService } from './core/services/site-content.service';
-import { MenuItem, SiteSettings } from './core/models/site-content';
+import { SiteSettings } from './core/models/site-content';
+import { MenubarModule } from 'primeng/menubar';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, MenubarModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
   title = 'trinayai-web';
   private contentService = inject(SiteContentService);
+  items: MenuItem[] = [];
   settings: SiteSettings = {
     brandName: 'TRINAY AI',
     logoUrl: '',
@@ -34,6 +37,15 @@ export class AppComponent implements OnInit {
         ...settings,
         menuItems: settings?.menuItems?.length ? settings.menuItems : this.settings.menuItems
       };
+      this.updateMenuItems();
     });
+  }
+
+  private updateMenuItems(): void {
+    this.items = this.settings.menuItems.map(item => ({
+      label: item.label,
+      routerLink: item.route,
+      routerLinkActiveOptions: { exact: true }
+    }));
   }
 }

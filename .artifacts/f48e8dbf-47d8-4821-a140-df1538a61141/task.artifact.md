@@ -1,0 +1,4 @@
+- [x] Analyze App Hosting build failure logs (simulated via local build experience)
+- [x] Update `apphosting.yaml` to include `--legacy-peer-deps`
+- [x] Update `angular.json` to increase bundle budgets for production
+- [ ] Notify user to trigger a new rollout
