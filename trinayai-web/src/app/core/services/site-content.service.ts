@@ -1,148 +1,108 @@
-import { inject, Injectable, PLATFORM_ID, Optional } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { Observable, from, of } from 'rxjs';
-import {
-  Firestore,
-  collectionData,
-  docData,
-  collection,
-  doc,
-  addDoc,
-  setDoc,
-  updateDoc,
-  deleteDoc,
-  getFirestore
-} from '@angular/fire/firestore';
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { AboutCard, ClientItem, ContentItem, SectionItem, SiteSettings } from '../models/site-content';
 
 @Injectable({ providedIn: 'root' })
 export class SiteContentService {
-  private firestore: Firestore | null = null;
-  private platformId = inject(PLATFORM_ID);
+  constructor() {}
 
-  constructor() {
-    if (isPlatformBrowser(this.platformId)) {
-      try {
-        this.firestore = inject(Firestore);
-      } catch (e) {
-        console.warn('Firestore not available yet:', e);
-      }
-    }
+  async uploadFile(file: File, path: string): Promise<string> {
+    return '';
+  }
+
+  async deleteFile(url: string): Promise<void> {
+    return;
   }
 
   getSettings(): Observable<SiteSettings> {
-    if (!this.firestore) return of({} as SiteSettings);
-    return docData(doc(this.firestore, 'siteSettings', 'main'), { idField: 'id' }) as Observable<SiteSettings>;
+    return of({} as SiteSettings);
   }
 
   async saveSettings(settings: SiteSettings) {
-    if (!this.firestore) return;
-    const settingsDoc = doc(this.firestore, 'siteSettings', 'main');
-    return setDoc(settingsDoc, { ...settings, id: 'main' }, { merge: true });
+    return Promise.resolve();
   }
 
   getHomeSections(): Observable<SectionItem[]> {
-    return this.listenToCollection('homeSections');
+    return this.listenToCollection<SectionItem>('homeSections');
   }
 
-  addHomeSection(payload: Omit<SectionItem, 'id'>) {
-    if (!this.firestore) return from(Promise.resolve());
-    return from(addDoc(collection(this.firestore, 'homeSections'), payload));
+  async addHomeSection(payload: Omit<SectionItem, 'id'>) {
+    return Promise.resolve();
   }
 
-  updateHomeSection(id: string, payload: Partial<SectionItem>) {
-    if (!this.firestore) return from(Promise.resolve());
-    return from(updateDoc(doc(this.firestore, 'homeSections', id), payload));
+  async updateHomeSection(id: string, payload: Partial<SectionItem>) {
+    return Promise.resolve();
   }
 
-  deleteHomeSection(id: string) {
-    if (!this.firestore) return from(Promise.resolve());
-    return from(deleteDoc(doc(this.firestore, 'homeSections', id)));
+  async deleteHomeSection(id: string) {
+    return Promise.resolve();
   }
 
   getAboutCards(): Observable<AboutCard[]> {
-    return this.listenToCollection('aboutCards');
+    return this.listenToCollection<AboutCard>('aboutCards');
   }
 
-  addAboutCard(payload: Omit<AboutCard, 'id'>) {
-    if (!this.firestore) return from(Promise.resolve());
-    return from(addDoc(collection(this.firestore, 'aboutCards'), payload));
+  async addAboutCard(payload: Omit<AboutCard, 'id'>) {
+    return Promise.resolve();
   }
 
-  updateAboutCard(id: string, payload: Partial<AboutCard>) {
-    if (!this.firestore) return from(Promise.resolve());
-    return from(updateDoc(doc(this.firestore, 'aboutCards', id), payload));
+  async updateAboutCard(id: string, payload: Partial<AboutCard>) {
+    return Promise.resolve();
   }
 
-  deleteAboutCard(id: string) {
-    if (!this.firestore) return from(Promise.resolve());
-    return from(deleteDoc(doc(this.firestore, 'aboutCards', id)));
+  async deleteAboutCard(id: string) {
+    return Promise.resolve();
   }
 
   getServices(): Observable<ContentItem[]> {
-    return this.listenToCollection('services');
+    return this.listenToCollection<ContentItem>('services');
   }
 
-  addService(payload: Omit<ContentItem, 'id'>) {
-    if (!this.firestore) return from(Promise.resolve());
-    return from(addDoc(collection(this.firestore, 'services'), payload));
+  async addService(payload: Omit<ContentItem, 'id'>) {
+    return Promise.resolve();
   }
 
-  updateService(id: string, payload: Partial<ContentItem>) {
-    if (!this.firestore) return from(Promise.resolve());
-    return from(updateDoc(doc(this.firestore, 'services', id), payload));
+  async updateService(id: string, payload: Partial<ContentItem>) {
+    return Promise.resolve();
   }
 
-  deleteService(id: string) {
-    if (!this.firestore) return from(Promise.resolve());
-    return from(deleteDoc(doc(this.firestore, 'services', id)));
+  async deleteService(id: string) {
+    return Promise.resolve();
   }
 
   getAiMenuItems(): Observable<ContentItem[]> {
-    return this.listenToCollection('aiMenuItems');
+    return this.listenToCollection<ContentItem>('aiMenuItems');
   }
 
-  addAiMenuItem(payload: Omit<ContentItem, 'id'>) {
-    if (!this.firestore) return from(Promise.resolve());
-    return from(addDoc(collection(this.firestore, 'aiMenuItems'), payload));
+  async addAiMenuItem(payload: Omit<ContentItem, 'id'>) {
+    return Promise.resolve();
   }
 
-  updateAiMenuItem(id: string, payload: Partial<ContentItem>) {
-    if (!this.firestore) return from(Promise.resolve());
-    return from(updateDoc(doc(this.firestore, 'aiMenuItems', id), payload));
+  async updateAiMenuItem(id: string, payload: Partial<ContentItem>) {
+    return Promise.resolve();
   }
 
-  deleteAiMenuItem(id: string) {
-    if (!this.firestore) return from(Promise.resolve());
-    return from(deleteDoc(doc(this.firestore, 'aiMenuItems', id)));
+  async deleteAiMenuItem(id: string) {
+    return Promise.resolve();
   }
 
   getClients(): Observable<ClientItem[]> {
-    return this.listenToCollection('clients');
+    return this.listenToCollection<ClientItem>('clients');
   }
 
-  addClient(payload: Omit<ClientItem, 'id'>) {
-    if (!this.firestore) return from(Promise.resolve());
-    return from(addDoc(collection(this.firestore, 'clients'), payload));
+  async addClient(payload: Omit<ClientItem, 'id'>) {
+    return Promise.resolve();
   }
 
-  updateClient(id: string, payload: Partial<ClientItem>) {
-    if (!this.firestore) return from(Promise.resolve());
-    return from(updateDoc(doc(this.firestore, 'clients', id), payload));
+  async updateClient(id: string, payload: Partial<ClientItem>) {
+    return Promise.resolve();
   }
 
-  deleteClient(id: string) {
-    if (!this.firestore) return from(Promise.resolve());
-    return from(deleteDoc(doc(this.firestore, 'clients', id)));
+  async deleteClient(id: string) {
+    return Promise.resolve();
   }
 
   private listenToCollection<T>(collectionName: string): Observable<T[]> {
-    if (!this.firestore) return of([]);
-    try {
-      return collectionData(collection(this.firestore, collectionName), { idField: 'id' }) as Observable<T[]>;
-    } catch (e) {
-      console.error('Firestore access error:', e);
-      return of([]);
-    }
+    return of([]);
   }
 }

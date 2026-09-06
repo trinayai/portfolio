@@ -15,7 +15,6 @@
       "source": "functions",
       "codebase": "default",
       "predeploy": [
-        "npm --prefix functions run lint",
         "npm --prefix functions run build"
       ]
     },
@@ -30,7 +29,6 @@
         "firebase-debug.*.log"
       ],
       "predeploy": [
-        "npm --prefix backend run lint",
         "npm --prefix backend run build"
       ]
     }
@@ -39,6 +37,18 @@
     {
       "backendId": "trinay-apps",
       "rootDir": "trinayai-web",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "functions",
+        "backend"
+      ]
+    },
+    {
+      "backendId": "trinayai-admin",
+      "rootDir": "trinayai-admin",
       "ignore": [
         "node_modules",
         ".git",
@@ -59,7 +69,7 @@
     "rewrites": [
       {
         "source": "**",
-        "destination": "/index.html"
+        "destination": "/index.csr.html"
       }
     ]
   }

@@ -1,17 +1,25 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SiteContentService } from './core/services/site-content.service';
 import { SiteSettings } from './core/models/site-content';
 import { MenubarModule } from 'primeng/menubar';
+import { ButtonModule } from 'primeng/button';
 import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, MenubarModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    MenubarModule,
+    ButtonModule
+  ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
   title = 'trinayai-web';
@@ -31,7 +39,7 @@ export class AppComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.contentService.getSettings().subscribe((settings) => {
+    this.contentService.getSettings().subscribe((settings: SiteSettings) => {
       this.settings = {
         ...this.settings,
         ...settings,

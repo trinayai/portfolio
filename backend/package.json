@@ -1,5 +1,6 @@
 {
-  "name": "backend",
+  "name": "trinayai-backend",
+  "version": "1.0.0",
   "scripts": {
     "lint": "eslint --ext .js,.ts .",
     "build": "tsc",
@@ -11,21 +12,17 @@
     "logs": "firebase functions:log"
   },
   "engines": {
-    "node": "24"
+    "node": "20"
   },
   "main": "lib/index.js",
   "dependencies": {
-    "firebase-admin": "^13.6.0",
-    "firebase-functions": "^7.0.0"
+    "@firebase/app": "0.10.15",
+    "firebase-admin": "13.6.0",
+    "firebase-functions": "^7.3.2"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "@typescript-eslint/parser": "^5.12.0",
-    "eslint": "^8.9.0",
-    "eslint-config-google": "^0.14.0",
-    "eslint-plugin-import": "^2.25.4",
-    "firebase-functions-test": "^3.4.1",
-    "typescript": "^5.6.3"
+    "@types/node": "20.17.16",
+    "typescript": "5.6.3"
   },
   "private": true
 }

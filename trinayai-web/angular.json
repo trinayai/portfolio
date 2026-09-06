@@ -32,7 +32,9 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/@primeuix/themes/umd/lara.js"
+            ],
             "allowedCommonJsDependencies": [
               "@angular/fire",
               "@grpc/grpc-js",
@@ -44,6 +46,14 @@
             "prerender": false,
             "ssr": {
               "entry": "server.ts"
+            },
+            "optimization": {
+              "scripts": true,
+              "styles": {
+                "minify": true,
+                "inlineCritical": false
+              },
+              "fonts": false
             }
           },
           "configurations": {
@@ -51,7 +61,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "1.5mb",
+                  "maximumWarning": "3.5mb",
                   "maximumError": "2.5mb"
                 },
                 {

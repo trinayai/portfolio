@@ -1,30 +1,49 @@
+import { genkit, z } from "genkit";
+import { enableFirebaseTelemetry } from "@genkit-ai/firebase";
+import { googleAI } from "@genkit-ai/googleai";
+import { onCallGenkit } from "firebase-functions/https";
+import { setGlobalOptions } from "firebase-functions/v2";
+
+// Performance Optimization: Increase concurrency to handle load
+// spikes efficiently.
+setGlobalOptions({
+  maxInstances: 10,
+  concurrency: 80,
+});
+
+// Initialize Genkit at the top level for deployment discovery.
+// We enable telemetry and plugins here.
+enableFirebaseTelemetry();
+const ai = genkit({
+  plugins: [
+    googleAI(),
+  ],
+  model: "googleai/gemini-1.5-flash",
+});
+
 /**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
+ * Tamil + English Chatbot Flow
  */
+export const chatbotFlow = ai.defineFlow({
+  name: "chatbotFlow",
+  inputSchema: z.object({
+    query: z.string(),
+    history: z.array(z.object({
+      role: z.enum(["user", "model"]),
+      content: z.array(z.object({ text: z.string() })),
+    })).optional(),
+  }),
+  outputSchema: z.string(),
+}, async (input) => {
+  const response = await ai.generate({
+    system: "You are Trinay AI assistant. You speak Tamil and English. " +
+            "Help users with their queries about Trinay AI services and " +
+            "global needs.",
+    messages: input.history || [],
+    prompt: input.query,
+  });
+  return response.text;
+});
 
-import { setGlobalOptions } from "firebase-functions";
-
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
-
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
-
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+// Firebase Function to expose the flow
+export const chatbot = onCallGenkit(chatbotFlow);

@@ -1,0 +1,10 @@
+runConfig:
+  cpu: 1
+  memoryMiB: 1024
+
+installConfig:
+  installCommand: npm install --legacy-peer-deps
+
+buildConfig:
+  buildCommand: npm run build
+  outputDirectory: dist/trinayai-admin

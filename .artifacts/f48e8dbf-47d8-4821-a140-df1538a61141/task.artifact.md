@@ -1,5 +1,8 @@
-- [x] Explicitly list missing `@firebase/*` deps in `trinayai-web/package.json`
-- [x] Set Node engine to `^20.0.0`
-- [x] Regenerate `trinayai-web/package-lock.json`
-- [x] Update Implementation Plan (Iteration 4)
-- [ ] Notify user to commit and push both files
+- [ ] Update project configuration for new backend
+    - [ ] Update `firebase.json` with `trinay-main`
+    - [ ] Update `trinayai-web/apphosting.yaml` with safe limits
+- [ ] Provision new App Hosting backend
+    - [ ] Run `firebase apphosting:backends:create`
+- [ ] Deploy and verify
+    - [ ] Run `firebase deploy --only apphosting`
+    - [ ] Verify live URL

@@ -1,0 +1,9 @@
+steps:
+  - name: "node:18"
+    entrypoint: "bash"
+    args:
+      - -lc
+      - |
+        npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+        npm run build
+timeout: "1200s"

@@ -1,19 +1,17 @@
-import { Injectable, inject } from '@angular/core';
-import { Auth, user, signInWithEmailAndPassword, signOut, User } from '@angular/fire/auth';
-import { from, Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private auth = inject(Auth);
-  user$: Observable<User | null> = user(this.auth);
+  user$: Observable<any | null> = of(null);
 
   login(email: string, password: string) {
-    return from(signInWithEmailAndPassword(this.auth, email, password));
+    return of(null);
   }
 
   logout() {
-    return from(signOut(this.auth));
+    return of(null);
   }
 }

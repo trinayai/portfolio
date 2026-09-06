@@ -1,12 +1,12 @@
-- [ ] Implement Admin Authentication
-    - [x] Create `AuthService`
-    - [ ] Create `AuthGuard`
-    - [ ] Create `LoginComponent`
-    - [ ] Update `AppRoutes`
-    - [ ] Update `AdminComponent` integration
-- [ ] Responsive Menu Improvements
-    - [ ] Update `AppComponent` header for right-aligned mobile menu
-- [ ] Colorful UI Transformation
-    - [ ] Update global `styles.scss`
-    - [ ] Update `HomeComponent` visuals
-    - [ ] Update other feature components (About, Services, etc.)
+- [/] Final Build & Deployment
+    - [/] Synchronize lock files for all modules
+        - [ ] `functions/`: `npm install --package-lock-only --legacy-peer-deps`
+        - [ ] `backend/`: `npm install --package-lock-only --legacy-peer-deps`
+        - [ ] `trinayai-web/`: `npm install --package-lock-only --legacy-peer-deps`
+        - [ ] `trinayai-admin/`: `npm install --package-lock-only --legacy-peer-deps`
+    - [ ] Local build verification
+        - [ ] Build `trinayai-web`: `npm run build`
+        - [ ] Build `trinayai-admin`: `npm run build`
+    - [ ] Production Deployment
+        - [ ] Deploy Functions: `firebase deploy --only functions`
+        - [ ] Deploy App Hosting: `firebase deploy --only apphosting`

@@ -23,7 +23,7 @@ import { ToastModule } from 'primeng/toast';
         <div class="absolute -bottom-[10%] -right-[10%] h-[40%] w-[40%] rounded-full bg-fuchsia-500/10 blur-[120px]"></div>
       </div>
 
-      <p-card styleClass="relative z-10 w-full max-w-md border border-white/10 bg-white/5 shadow-2xl backdrop-blur-2xl">
+      <p-card class="relative z-10 w-full max-w-md border border-white/10 bg-white/5 shadow-2xl backdrop-blur-2xl">
         <div class="mb-8 text-center">
            <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/20">
              <i class="pi pi-lock text-2xl text-white"></i>

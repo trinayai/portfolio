@@ -1,24 +1,30 @@
-<header class="fixed top-0 z-50 w-full border-b border-white/10 bg-[#050c1f]/80 backdrop-blur-md">
+<header class="fixed top-0 z-50 w-full border-b border-white/5 bg-slate-950/60 backdrop-blur-xl">
   <div class="mx-auto max-w-7xl px-4">
-    <p-menubar [model]="items" styleClass="border-none bg-transparent py-2">
+    <p-menubar [model]="items" styleClass="border-none bg-transparent py-4 custom-nav">
       <ng-template pTemplate="start">
-        <a routerLink="/" class="mr-8 flex items-center gap-3 no-underline">
-          <img *ngIf="settings.logoUrl" [src]="settings.logoUrl" alt="logo" class="h-9 w-9 rounded-full object-cover shadow-lg shadow-cyan-500/20" />
-          <span class="bg-gradient-to-r from-cyan-400 to-fuchsia-500 bg-clip-text text-xl font-bold tracking-tight text-transparent">
+        <a routerLink="/" class="flex items-center gap-3 no-underline group">
+            <div class="relative">
+            <div class="absolute inset-0 rounded-full bg-cyan-500 blur-md opacity-0 group-hover:opacity-40 transition-opacity"></div>
+            <img *ngIf="settings.logoUrl" [src]="settings.logoUrl" alt="logo" class="relative h-10 w-10 rounded-full object-cover ring-1 ring-white/10" />
+            <div *ngIf="!settings.logoUrl" class="relative h-10 w-10 rounded-full bg-gradient-to-tr from-cyan-500 to-fuchsia-600 flex items-center justify-center text-white font-bold">T</div>
+          </div>
+          <span class="bg-gradient-to-r from-cyan-400 via-blue-400 to-fuchsia-400 bg-clip-text text-2xl font-black tracking-tighter text-transparent">
             {{ settings.brandName || 'TRINAY AI' }}
           </span>
         </a>
       </ng-template>
       <ng-template pTemplate="item" let-item>
-        <a [routerLink]="item.routerLink" class="p-menuitem-link flex items-center px-4 py-2 transition-all hover:bg-white/5">
-          <span [class]="item.icon" class="mr-2"></span>
-          <span class="text-sm font-medium uppercase tracking-wider text-slate-300 hover:text-white">{{ item.label }}</span>
+        <a [routerLink]="item.routerLink" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}"
+           class="p-menuitem-link flex items-center px-5 py-2.5 transition-all rounded-xl hover:bg-white/5 mx-1 group">
+          <span [class]="item.icon" class="mr-2 text-slate-400 group-hover:text-cyan-400"></span>
+          <span class="text-sm font-bold uppercase tracking-widest text-slate-400 group-hover:text-white">{{ item.label }}</span>
         </a>
       </ng-template>
       <ng-template pTemplate="end">
-        <button class="hidden items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-2 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-cyan-500/30 md:flex">
-          Get Started
-        </button>
+        <div class="flex items-center gap-4 ml-4">
+          <p-button label="Connect" icon="pi pi-bolt"
+                    styleClass="p-button-raised p-button-rounded bg-gradient-to-r from-cyan-500 to-blue-600 border-none px-6 py-2.5 font-bold uppercase tracking-widest text-white hidden md:flex shadow-lg shadow-cyan-500/20"></p-button>
+        </div>
       </ng-template>
     </p-menubar>
   </div>

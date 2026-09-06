@@ -1,26 +1,30 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { SiteContentService } from '../../core/services/site-content.service';
-import { AboutCard } from '../../core/models/site-content';
+import { AboutCard, SiteSettings } from '../../core/models/site-content';
 import { TimelineModule } from 'primeng/timeline';
 import { CardModule } from 'primeng/card';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-about',
   standalone: true,
   imports: [CommonModule, TimelineModule, CardModule],
   template: `
-    <div class="min-h-screen bg-[#050c1f] px-6 py-24">
-      <div class="mx-auto max-w-5xl">
-        <div class="grid gap-16 lg:grid-cols-2 lg:items-center">
-          <div>
-            <span class="inline-block rounded-full bg-fuchsia-500/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-fuchsia-400 ring-1 ring-fuchsia-500/20 mb-6">
-              Our Mission
+    <div class="min-h-screen bg-slate-950 px-6 py-32 relative overflow-hidden">
+      <!-- Background Elements -->
+      <div class="absolute top-[20%] -left-[10%] h-[500px] w-[500px] bg-fuchsia-600/10 blur-[150px] rounded-full animate-pulse"></div>
+      <div class="absolute bottom-[10%] -right-[10%] h-[500px] w-[500px] bg-violet-600/10 blur-[150px] rounded-full animate-pulse"></div>
+
+      <div class="mx-auto max-w-7xl relative z-10">
+        <div class="grid gap-20 lg:grid-cols-2 lg:items-center">
+          <div class="space-y-10">
+            <span class="inline-block rounded-full bg-gradient-to-r from-fuchsia-500/10 to-violet-500/10 px-6 py-2 text-xs font-black uppercase tracking-[0.2em] text-fuchsia-400 ring-1 ring-fuchsia-500/30 shadow-lg shadow-fuchsia-500/10">
+              Our Vision & Mission
             </span>
-            <h2 class="text-4xl font-black tracking-tight text-white sm:text-6xl mb-8">
-              Pioneering <span class="bg-gradient-to-r from-fuchsia-400 to-violet-500 bg-clip-text text-transparent">Ethical AI</span> for Global Impact.
+            <h2 class="text-6xl font-black tracking-tighter text-white sm:text-7xl leading-[0.95]">
+              Pioneering <span class="bg-gradient-to-r from-fuchsia-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent filter drop-shadow-sm">Ethical AI</span> for Global Impact.
             </h2>
-            <div class="space-y-6 text-lg leading-relaxed text-slate-400">
+            <div class="space-y-8 text-xl leading-relaxed text-slate-300 font-medium opacity-90">
               <p>
                 Trinayai Technologies Private Limited is a women-owned enterprise driving innovation in software development and artificial intelligence.
                 We specialize in building advanced LLMs and AI models tailored for MSMEs, empowering businesses with compliance automation and digital transformation.
@@ -32,29 +36,35 @@ import { CardModule } from 'primeng/card';
             </div>
           </div>
 
-          <div class="relative">
-             <div class="absolute -inset-4 bg-gradient-to-r from-cyan-500 to-fuchsia-500 opacity-20 blur-3xl rounded-full"></div>
+          <div class="relative group">
+             <div class="absolute -inset-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-fuchsia-500 opacity-20 blur-3xl rounded-[40px] group-hover:opacity-40 transition-opacity duration-700"></div>
              <div class="relative grid gap-6 sm:grid-cols-2">
-                <p-card *ngFor="let card of cards" styleClass="border border-white/10 bg-white/5 backdrop-blur-xl">
-                  <h3 class="text-xl font-bold text-white mb-2">{{ card.title }}</h3>
-                  <p class="text-sm text-slate-400 leading-relaxed">{{ card.description }}</p>
-                </p-card>
+                <ng-container *ngFor="let card of cards">
+                  <p-card styleClass="border border-white/5 bg-slate-900/40 backdrop-blur-3xl shadow-2xl transition-all duration-500 hover:bg-slate-800/60 hover:-translate-y-2">
+                    <h3 class="text-2xl font-black text-white mb-3 tracking-tight">{{ card.title }}</h3>
+                    <p class="text-base text-slate-400 leading-relaxed font-medium">{{ card.description }}</p>
+                  </p-card>
+                </ng-container>
              </div>
           </div>
         </div>
 
         <!-- Vision/Values Timeline -->
-        <div class="mt-32">
-          <h3 class="text-3xl font-bold text-white text-center mb-16">Our Journey & Vision</h3>
+        <div class="mt-40">
+          <h3 class="text-4xl font-black text-white text-center mb-24 tracking-tighter">Our Evolution</h3>
           <p-timeline [value]="events" align="alternate" styleClass="customized-timeline">
             <ng-template pTemplate="marker" let-event>
-                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-cyan-500/20 text-cyan-400 ring-2 ring-cyan-500/50 shadow-lg shadow-cyan-500/20">
-                    <i [class]="event.icon"></i>
+                <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 text-cyan-400 ring-1 ring-white/10 shadow-2xl shadow-cyan-500/20">
+                    <i [class]="event.icon" class="text-xl"></i>
                 </span>
             </ng-template>
             <ng-template pTemplate="content" let-event>
-                <p-card [header]="event.status" [subheader]="event.date" styleClass="border border-white/10 bg-white/5 mb-8">
-                    <p class="text-slate-400">{{event.description}}</p>
+                <p-card styleClass="border border-white/5 bg-slate-900/40 backdrop-blur-md mb-12 shadow-2xl hover:bg-slate-800/60 transition-colors">
+                    <div class="flex items-center justify-between mb-4">
+                      <span class="text-2xl font-black text-white tracking-tight">{{event.status}}</span>
+                      <span class="rounded-full bg-cyan-500/10 px-3 py-1 text-xs font-bold text-cyan-400 ring-1 ring-cyan-500/20">{{event.date}}</span>
+                    </div>
+                    <p class="text-slate-400 text-lg leading-relaxed font-medium">{{event.description}}</p>
                 </p-card>
             </ng-template>
           </p-timeline>
@@ -62,38 +72,24 @@ import { CardModule } from 'primeng/card';
       </div>
     </div>
   `,
-  styles: [`
-    ::ng-deep {
-      .customized-timeline {
-        .p-timeline-event-opposite {
-          flex: 0;
-          padding: 0;
-        }
-        @media screen and (min-width: 960px) {
-          .p-timeline-event-opposite {
-            flex: 1;
-            padding: 0 1rem;
-          }
-        }
-      }
-      .p-card {
-        border-radius: 20px;
-        .p-card-title { color: white; font-size: 1.25rem; }
-        .p-card-subtitle { color: #38bdf8; font-size: 0.875rem; margin-top: 0.25rem; }
-        .p-card-body { padding: 1.5rem; }
-      }
-    }
-  `]
+  styles: [
+    `::ng-deep .customized-timeline .p-timeline-event-opposite { flex: 0; padding: 0; }`,
+    `@media screen and (min-width: 960px) { ::ng-deep .customized-timeline .p-timeline-event-opposite { flex: 1; padding: 0 1rem; } }`,
+    `::ng-deep .p-card { border-radius: 20px; }`,
+    `::ng-deep .p-card .p-card-title { color: white; font-size: 1.25rem; }`,
+    `::ng-deep .p-card .p-card-subtitle { color: #38bdf8; font-size: 0.875rem; margin-top: 0.25rem; }`,
+    `::ng-deep .p-card .p-card-body { padding: 1.5rem; }`
+  ]
 })
 export class AboutComponent implements OnInit {
   private contentService = inject(SiteContentService);
   cards: AboutCard[] = [];
-  settings: any = { brandName: 'Trinay AI' };
+  settings: SiteSettings = { brandName: 'Trinay AI', logoUrl: '', footerText: '', menuItems: [] };
   events: any[] = [];
 
   ngOnInit(): void {
-    this.contentService.getSettings().subscribe((settings) => this.settings = settings || this.settings);
-    this.contentService.getAboutCards().subscribe((cards) => {
+    this.contentService.getSettings().subscribe((settings: SiteSettings) => this.settings = settings || this.settings);
+    this.contentService.getAboutCards().subscribe((cards: AboutCard[]) => {
       this.cards = cards.length ? cards : [
         { title: 'Women-Led', description: 'Empowering diversity and innovation in the tech landscape.' },
         { title: 'MSME Focused', description: 'Tailored solutions for small and medium enterprises.' },

@@ -1,31 +1,35 @@
-# Redesign Walkthrough - Trinay AI Landing Page
+# Walkthrough: Dedicated Admin Portal & Decoupling
 
-The futuristic landing page redesign for Trinay AI has been fully integrated with a robust Firebase-backed Content Management System. This walkthrough covers the final structural and architectural fixes.
-
-## Key Technical Fixes
-
-### 1. Reverted Output Path Structure
-As requested, the build output path has been restored to `dist/trinayai-web` in [angular.json](file:///F:/Trinay-AI/Home/Web_app/trinayai-web/angular.json). This ensures that future web apps in the same repository will have their own dedicated subdirectories.
--   **Firebase Update**: The `hosting.public` path in [firebase.json](file:///F:/Trinay-AI/Home/Web_app/firebase.json) was updated to match: `trinayai-web/dist/trinayai-web/browser`.
-
-### 2. Resolved Runtime Registration Errors
-Fixed the `Component auth has not been registered yet` error in [app.config.ts](file:///F:/Trinay-AI/Home/Web_app/trinayai-web/src/app/app.config.ts).
--   **Change**: Implemented a synchronous Firebase initialization pattern that guarantees the App instance is ready before any sub-services (Auth, Firestore, Analytics) are provided to the Angular application.
-
-### 3. Font Decoding Solution
-Resolved the `Failed to convert WOFF 2.0 font to SFNT` error.
--   **Change**: Migrated from local variable font files to **Google Fonts** in [styles.scss](file:///F:/Trinay-AI/Home/Web_app/trinayai-web/src/styles.scss). This bypasses the build-time file corruption that was occurring in the Cloud environment.
-
-### 4. TypeScript Type Safety
-Fixed over 20 instances of implicit `any` types in component subscriptions.
--   **Improvement**: All `.subscribe()` calls now use explicit types from the `site-content` models, ensuring build stability and better developer experience.
+I have successfully decoupled the admin portal from your main website and established it as a standalone, secure application.
 
 ## Deployment Status
 
-> [!IMPORTANT]
-> The local build (`npm run build`) is now 100% successful with the desired folder structure.
+- **Main Website**: [https://trinay-apps--trinay-ai.us-east4.hosted.app](https://trinay-apps--trinay-ai.us-east4.hosted.app)
+- **Admin Portal**: [https://trinayai-admin--trinay-ai.us-east4.hosted.app](https://trinayai-admin--trinay-ai.us-east4.hosted.app)
 
--   **Hosting**: Synchronized security rules for Firestore and Storage.
--   **App Hosting**: Rollout triggered with increased memory (2GB) to handle the complex PrimeNG + Angular 17 SSR build process.
+## Key Changes Made
 
-You can now view the high-end futuristic design and manage its content via the Admin panel.
+### 1. Main App Cleanup (`trinayai-web`)
+- **Removed Admin Logic**: Deleted the `src/app/features/admin/` directory.
+- **Removed Links**: Eliminated the "Admin Portal" button from the Contact page and removed all admin/login routing.
+- **Security**: The main site now has zero administrative code or entry points.
+
+### 2. New Dedicated Admin App (`trinayai-admin`)
+- **Independent Project**: Created a new Angular project specifically for management.
+- **Migrated Tools**: Re-implemented the `LoginComponent` and `AdminComponent` with the full **Bento Grid** and **Colorful Theme**.
+- **Secure Access**: Configured a new Firebase Web App and App Hosting backend dedicated to the portal.
+
+### 3. Firebase Architecture
+- **Multi-Backend Setup**: Your Firebase project now runs two distinct App Hosting backends:
+    - `trinay-apps`: The public-facing site.
+    - `trinayai-admin`: The internal management tool.
+- **Synchronized Deployment**: Both apps have their own `apphosting.yaml` and synchronized lock files for reliable cloud builds.
+
+## Verification
+- [x] **Main App**: Verified it is live and no longer contains any admin references.
+- [x] **Admin App**: Verified successful rollout to the new dedicated URL.
+- [x] **Login Security**: Confirmed that the admin app is gated by the Firebase Auth login.
+
+---
+> [!SUCCESS]
+> Your architecture is now much more secure and professional. The admin tools are hidden from the public and have their own dedicated resources.

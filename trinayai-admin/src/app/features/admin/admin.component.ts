@@ -1,7 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { User } from '@angular/fire/auth';
 import { AuthService } from '../../core/services/auth.service';
 import { SiteContentService } from '../../core/services/site-content.service';
@@ -13,13 +12,13 @@ import { CardModule } from 'primeng/card';
 import { TabViewModule } from 'primeng/tabview';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
-import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
 import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, ButtonModule, InputTextModule, InputTextareaModule, CardModule, TabViewModule, FileUploadModule, ToastModule, MessagesModule],
+  imports: [FormsModule, ButtonModule, InputTextModule, InputTextareaModule, CardModule, TabViewModule, FileUploadModule, ToastModule, MessageModule],
   template: `
     <p-toast></p-toast>
     <div class="min-h-screen bg-[#050c1f] px-4 py-16 text-white md:px-8 lg:px-12">
@@ -36,11 +35,11 @@ import { MessageService } from 'primeng/api';
           </div>
         </div>
 
-        <p-messages></p-messages>
+        <p-message></p-message>
 
-        <div *ngIf="authUser">
-          <p-card styleClass="border border-white/10 bg-white/5 shadow-2xl backdrop-blur-xl admin-main-card">
-            <p-tabView styleClass="custom-tabview">
+        @if (authUser) {
+          <p-card class="border border-white/10 bg-white/5 shadow-2xl backdrop-blur-xl admin-main-card">
+            <p-tabView class="custom-tabview">
 
               <p-tabPanel header="Branding">
                 <div class="grid gap-8 lg:grid-cols-2">
@@ -58,9 +57,11 @@ import { MessageService } from 'primeng/api';
                    <div class="space-y-4">
                       <label class="text-xs font-bold uppercase tracking-widest text-slate-500">Site Logo</label>
                       <div class="p-6 rounded-xl border border-dashed border-white/20 bg-white/5 flex flex-col items-center">
-                         <img *ngIf="settings.logoUrl" [src]="settings.logoUrl" alt="logo" class="h-24 w-24 rounded-full object-cover mb-4 shadow-lg shadow-cyan-500/20" />
-                         <p-fileUpload mode="basic" name="logo" accept="image/*" [auto]="true" (onSelect)="onLogoUpload($event)"
-                                      chooseLabel="Upload New Logo" styleClass="p-button-outlined p-button-sm"></p-fileUpload>
+                         @if (settings.logoUrl) {
+                           <img [src]="settings.logoUrl" alt="logo" class="h-24 w-24 rounded-full object-cover mb-4 shadow-lg shadow-cyan-500/20" />
+                         }
+                        <p-fileUpload mode="basic" name="logo" accept="image/*" [auto]="true" (onSelect)="onLogoUpload($event)"
+                                        chooseLabel="Upload New Logo" styleClass="p-button-outlined p-button-sm"></p-fileUpload>
                       </div>
                    </div>
                 </div>
@@ -93,17 +94,19 @@ import { MessageService } from 'primeng/api';
                        <p-button label="Add Section" icon="pi pi-plus" (onClick)="addHomeSection()" styleClass="p-button-sm p-button-success"></p-button>
                      </div>
                      <div class="grid gap-6 md:grid-cols-2">
-                        <div *ngFor="let item of homeSections" class="p-6 rounded-xl border border-white/5 bg-white/5">
-                          <div class="grid gap-4 mb-4">
-                            <input pInputText [(ngModel)]="item.title" placeholder="Title" class="w-full bg-black/20 border-white/10 text-white" />
-                            <input pInputText [(ngModel)]="item.icon" placeholder="Icon (pi pi-...)" class="w-full bg-black/20 border-white/10 text-white" />
-                            <textarea pInputTextarea [(ngModel)]="item.description" rows="2" placeholder="Description" class="w-full bg-black/20 border-white/10 text-white"></textarea>
+                        @for (item of homeSections; track item) {
+                          <div class="p-6 rounded-xl border border-white/5 bg-white/5">
+                            <div class="grid gap-4 mb-4">
+                              <input pInputText [(ngModel)]="item.title" placeholder="Title" class="w-full bg-black/20 border-white/10 text-white" />
+                              <input pInputText [(ngModel)]="item.icon" placeholder="Icon (pi pi-...)" class="w-full bg-black/20 border-white/10 text-white" />
+                              <textarea pInputTextarea [(ngModel)]="item.description" rows="2" placeholder="Description" class="w-full bg-black/20 border-white/10 text-white"></textarea>
+                            </div>
+                            <div class="flex gap-2">
+                              <p-button icon="pi pi-save" (onClick)="saveHomeSection(item)" styleClass="p-button-sm"></p-button>
+                              <p-button icon="pi pi-trash" (onClick)="deleteHomeSection(item)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
+                            </div>
                           </div>
-                          <div class="flex gap-2">
-                            <p-button icon="pi pi-save" (onClick)="saveHomeSection(item)" styleClass="p-button-sm"></p-button>
-                            <p-button icon="pi pi-trash" (onClick)="deleteHomeSection(item)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
-                          </div>
-                        </div>
+                        }
                      </div>
                    </div>
                 </div>
@@ -117,14 +120,16 @@ import { MessageService } from 'primeng/api';
                         <p-button label="New Tool" icon="pi pi-plus" (onClick)="addAiMenuItem()" styleClass="p-button-sm p-button-success"></p-button>
                       </div>
                       <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scroll">
-                        <div *ngFor="let item of aiMenuItems" class="p-5 rounded-xl border border-white/5 bg-white/5">
-                          <input pInputText [(ngModel)]="item.title" class="w-full bg-black/20 border-white/10 text-white mb-2" />
-                          <textarea pInputTextarea [(ngModel)]="item.description" rows="2" class="w-full bg-black/20 border-white/10 text-white mb-3"></textarea>
-                          <div class="flex gap-2">
-                            <p-button icon="pi pi-save" (onClick)="saveAiMenuItem(item)" styleClass="p-button-sm p-button-info p-button-outlined"></p-button>
-                            <p-button icon="pi pi-trash" (onClick)="deleteAiMenuItem(item)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
+                        @for (item of aiMenuItems; track item) {
+                          <div class="p-5 rounded-xl border border-white/5 bg-white/5">
+                            <input pInputText [(ngModel)]="item.title" class="w-full bg-black/20 border-white/10 text-white mb-2" />
+                            <textarea pInputTextarea [(ngModel)]="item.description" rows="2" class="w-full bg-black/20 border-white/10 text-white mb-3"></textarea>
+                            <div class="flex gap-2">
+                              <p-button icon="pi pi-save" (onClick)="saveAiMenuItem(item)" styleClass="p-button-sm p-button-info p-button-outlined"></p-button>
+                              <p-button icon="pi pi-trash" (onClick)="deleteAiMenuItem(item)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
+                            </div>
                           </div>
-                        </div>
+                        }
                       </div>
                     </div>
                     <div>
@@ -133,39 +138,45 @@ import { MessageService } from 'primeng/api';
                         <p-button label="New Service" icon="pi pi-plus" (onClick)="addService()" styleClass="p-button-sm p-button-success"></p-button>
                       </div>
                       <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scroll">
-                        <div *ngFor="let item of services" class="p-5 rounded-xl border border-white/5 bg-white/5">
-                          <input pInputText [(ngModel)]="item.title" class="w-full bg-black/20 border-white/10 text-white mb-2" />
-                          <textarea pInputTextarea [(ngModel)]="item.description" rows="2" class="w-full bg-black/20 border-white/10 text-white mb-3"></textarea>
-                          <div class="flex gap-2">
-                            <p-button icon="pi pi-save" (onClick)="saveService(item)" styleClass="p-button-sm p-button-info p-button-outlined"></p-button>
-                            <p-button icon="pi pi-trash" (onClick)="deleteService(item)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
+                        @for (item of services; track item) {
+                          <div class="p-5 rounded-xl border border-white/5 bg-white/5">
+                            <input pInputText [(ngModel)]="item.title" class="w-full bg-black/20 border-white/10 text-white mb-2" />
+                            <textarea pInputTextarea [(ngModel)]="item.description" rows="2" class="w-full bg-black/20 border-white/10 text-white mb-3"></textarea>
+                            <div class="flex gap-2">
+                              <p-button icon="pi pi-save" (onClick)="saveService(item)" styleClass="p-button-sm p-button-info p-button-outlined"></p-button>
+                              <p-button icon="pi pi-trash" (onClick)="deleteService(item)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
+                            </div>
                           </div>
-                        </div>
+                        }
                       </div>
                     </div>
-                 </div>
-              </p-tabPanel>
+                  </div>
+                </p-tabPanel>
 
               <p-tabPanel header="Clients">
                 <div class="flex justify-end mb-6">
                    <p-button label="Register New Client" icon="pi pi-plus" (onClick)="addClient()" styleClass="p-button-success"></p-button>
                 </div>
                 <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                   <div *ngFor="let client of clients" class="p-6 rounded-2xl border border-white/5 bg-white/5 flex flex-col">
-                      <div class="h-32 w-full rounded-xl border border-white/5 bg-black/20 mb-4 flex items-center justify-center overflow-hidden p-4 relative group">
-                        <img *ngIf="client.imageUrl" [src]="client.imageUrl" class="max-h-full max-w-full object-contain" />
-                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                           <p-fileUpload mode="basic" accept="image/*" [auto]="true" (onSelect)="onClientLogoUpload($event, client)"
-                                         chooseLabel="Change" styleClass="p-button-sm p-button-rounded"></p-fileUpload>
+                   @for (client of clients; track client) {
+                     <div class="p-6 rounded-2xl border border-white/5 bg-white/5 flex flex-col">
+                        <div class="h-32 w-full rounded-xl border border-white/5 bg-black/20 mb-4 flex items-center justify-center overflow-hidden p-4 relative group">
+                          @if (client.imageUrl) {
+                            <img [src]="client.imageUrl" class="max-h-full max-w-full object-contain" />
+                          }
+                          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                             <p-fileUpload mode="basic" accept="image/*" [auto]="true" (onSelect)="onClientLogoUpload($event, client)"
+                                           chooseLabel="Change" styleClass="p-button-sm p-button-rounded"></p-fileUpload>
+                          </div>
                         </div>
-                      </div>
-                      <input pInputText [(ngModel)]="client.name" placeholder="Client Name" class="w-full bg-black/10 border-white/5 text-white mb-2" />
-                      <input pInputText [(ngModel)]="client.website" placeholder="Website" class="w-full bg-black/10 border-white/5 text-white mb-4" />
-                      <div class="mt-auto flex gap-2">
-                        <p-button label="Update" icon="pi pi-check" (onClick)="saveClient(client)" styleClass="p-button-sm w-full"></p-button>
-                        <p-button icon="pi pi-trash" (onClick)="deleteClient(client)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
-                      </div>
-                   </div>
+                        <input pInputText [(ngModel)]="client.name" placeholder="Client Name" class="w-full bg-black/10 border-white/5 text-white mb-2" />
+                        <input pInputText [(ngModel)]="client.website" placeholder="Website" class="w-full bg-black/10 border-white/5 text-white mb-4" />
+                        <div class="mt-auto flex gap-2">
+                          <p-button label="Update" icon="pi pi-check" (onClick)="saveClient(client)" styleClass="p-button-sm w-full"></p-button>
+                          <p-button icon="pi pi-trash" (onClick)="deleteClient(client)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
+                        </div>
+                     </div>
+                   }
                 </div>
               </p-tabPanel>
 
@@ -175,20 +186,22 @@ import { MessageService } from 'primeng/api';
                    <p-button label="Add Card" icon="pi pi-plus" (onClick)="addAboutCard()" styleClass="p-button-sm p-button-success"></p-button>
                 </div>
                 <div class="grid gap-6 md:grid-cols-2">
-                   <div *ngFor="let card of aboutCards" class="p-6 rounded-xl border border-white/5 bg-white/5">
-                      <input pInputText [(ngModel)]="card.title" class="w-full bg-black/20 border-white/10 text-white mb-4" />
-                      <textarea pInputTextarea [(ngModel)]="card.description" rows="3" class="w-full bg-black/20 border-white/10 text-white mb-4"></textarea>
-                      <div class="flex gap-2">
-                        <p-button label="Save" icon="pi pi-check" (onClick)="saveAboutCard(card)" styleClass="p-button-sm"></p-button>
-                        <p-button icon="pi pi-trash" (onClick)="deleteAboutCard(card)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
-                      </div>
-                   </div>
+                   @for (card of aboutCards; track card) {
+                     <div class="p-6 rounded-xl border border-white/5 bg-white/5">
+                        <input pInputText [(ngModel)]="card.title" class="w-full bg-black/20 border-white/10 text-white mb-4" />
+                        <textarea pInputTextarea [(ngModel)]="card.description" rows="3" class="w-full bg-black/20 border-white/10 text-white mb-4"></textarea>
+                        <div class="flex gap-2">
+                          <p-button label="Save" icon="pi pi-check" (onClick)="saveAboutCard(card)" styleClass="p-button-sm"></p-button>
+                          <p-button icon="pi pi-trash" (onClick)="deleteAboutCard(card)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
+                        </div>
+                     </div>
+                   }
                 </div>
               </p-tabPanel>
 
             </p-tabView>
           </p-card>
-        </div>
+        }
       </div>
     </div>
   `,

@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+/* PrimeNG (theme removed; using primeicons and primeflex only) */
+@import "primeicons/primeicons.css";
+@import "primeflex/primeflex.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #d946ef 100%);
+  --accent-gradient: linear-gradient(45deg, #f43f5e 0%, #fb923c 100%);
+  --bg-deep: #020617;
+  --card-bg: rgba(255, 255, 255, 0.03);
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-deep);
+  color: #f8fafc;
+  overflow-x: hidden;
+}
+
+/* Global Colorful Accents */
+.text-gradient {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-colorful {
+  background: var(--primary-gradient);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+}
+
+.glow-fuchsia {
+  box-shadow: 0 0 20px rgba(217, 70, 239, 0.3);
+}
+
+/* PrimeNG Overrides for more color */
+.p-menubar {
+  .p-menubar-button {
+    color: #fff !important;
+    order: 2; /* Push to right */
+  }
+  .p-menubar-root-list {
+     @media screen and (max-width: 960px) {
+       background: rgba(15, 23, 42, 0.95) !important;
+       backdrop-filter: blur(20px);
+       border: 1px solid rgba(255,255,255,0.1);
+       border-radius: 20px;
+       margin-top: 1rem;
+       padding: 1rem;
+       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+     }
+  }
+}
+
+.p-button.p-button-raised {
+  background: var(--primary-gradient);
+  border: none;
+  &:hover {
+    filter: brightness(1.1);
+    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #1e293b, #334155);
+  border-radius: 10px;
+  border: 2px solid var(--bg-deep);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
