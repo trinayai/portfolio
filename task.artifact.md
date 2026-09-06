@@ -1,0 +1,12 @@
+- [ ] Implement Admin Authentication
+    - [x] Create `AuthService`
+    - [ ] Create `AuthGuard`
+    - [ ] Create `LoginComponent`
+    - [ ] Update `AppRoutes`
+    - [ ] Update `AdminComponent` integration
+- [ ] Responsive Menu Improvements
+    - [ ] Update `AppComponent` header for right-aligned mobile menu
+- [ ] Colorful UI Transformation
+    - [ ] Update global `styles.scss`
+    - [ ] Update `HomeComponent` visuals
+    - [ ] Update other feature components (About, Services, etc.)

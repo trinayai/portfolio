@@ -1,0 +1,5 @@
+runConfig:
+  memoryMiB: 2048
+
+installConfig:
+  installCommand: npm install --legacy-peer-deps
