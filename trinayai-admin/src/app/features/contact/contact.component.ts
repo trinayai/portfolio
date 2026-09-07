@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
@@ -9,7 +8,7 @@ import { CardModule } from 'primeng/card';
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [CommonModule, FormsModule, InputTextModule, InputTextareaModule, ButtonModule, CardModule],
+  imports: [FormsModule, InputTextModule, InputTextareaModule, ButtonModule, CardModule],
   template: `
       <!-- Background Blobs -->
       <div class="absolute top-[10%] left-[-5%] h-[400px] w-[400px] bg-cyan-600/10 blur-[120px] rounded-full"></div>

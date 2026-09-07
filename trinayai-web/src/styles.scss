@@ -2,7 +2,6 @@
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 /* PrimeNG */
-/* PrimeNG */
 @import "primeicons/primeicons.css";
 @import "primeflex/primeflex.css";
 
@@ -26,51 +25,58 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Global Colorful Accents */
-.text-gradient {
-  background: var(--primary-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Fix for OTS parsing error: Force local font and disable Inter-roman loading from theme */
+@font-face {
+  font-family: 'Inter';
+  src: local('Arial');
+  unicode-range: U+0000-00FF;
 }
 
-.bg-colorful {
-  background: var(--primary-gradient);
+/* Global Font Override */
+body, .p-component, .p-button, .p-inputtext, .p-menubar, .p-menuitem-text, .p-tabview-title {
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
 
-.glow-cyan {
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+/* Logo Styling */
+.logo-container {
+  padding: 8px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 16px 0 0; /* Extra margin requested */
 }
 
-.glow-fuchsia {
-  box-shadow: 0 0 20px rgba(217, 70, 239, 0.3);
+.logo-container img {
+  mix-blend-mode: multiply; /* Removes white background from JPEG logo */
+  filter: contrast(1.1) saturate(1.1);
+  display: block;
 }
 
-/* PrimeNG Overrides for more color */
-.p-menubar {
+/* PrimeNG Overrides for White Header */
+.custom-nav {
+  background: transparent !important;
   .p-menubar-button {
-    color: #fff !important;
-    order: 2; /* Push to right */
+    color: #334155 !important;
   }
-  .p-menubar-root-list {
-     @media screen and (max-width: 960px) {
-       background: rgba(15, 23, 42, 0.95) !important;
-       backdrop-filter: blur(20px);
-       border: 1px solid rgba(255,255,255,0.1);
-       border-radius: 20px;
-       margin-top: 1rem;
-       padding: 1rem;
-       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-     }
+  .active-link {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    .p-menuitem-text {
+      color: #2563eb !important;
+    }
+    .p-menuitem-icon {
+      color: #2563eb !important;
+    }
   }
 }
 
 .p-button.p-button-raised {
-  background: var(--primary-gradient);
+  background: #2563eb;
   border: none;
   &:hover {
-    filter: brightness(1.1);
-    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+    background: #1d4ed8;
+    box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
   }
 }
 
@@ -87,8 +93,4 @@ html, body {
   background: linear-gradient(to bottom, #1e293b, #334155);
   border-radius: 10px;
   border: 2px solid var(--bg-deep);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #475569;
 }

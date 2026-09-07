@@ -1,19 +1,33 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './features/home/home.component';
-import { AiMenuComponent } from './features/ai-menu/ai-menu.component';
-import { AboutComponent } from './features/about/about.component';
-import { ServicesComponent } from './features/services/services.component';
-import { ClientsComponent } from './features/clients/clients.component';
-import { ContactComponent } from './features/contact/contact.component';
-import { ThreeUiComponent } from './features/three-ui/three-ui.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
-  { path: 'ai-menu', component: AiMenuComponent },
-  { path: 'about', component: AboutComponent },
-  { path: 'services', component: ServicesComponent },
-  { path: 'clients', component: ClientsComponent },
-  { path: 'contact', component: ContactComponent },
-  { path: 'three-ui', component: ThreeUiComponent },
+  {
+    path: '',
+    loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent)
+  },
+  {
+    path: 'ai-menu',
+    loadComponent: () => import('./features/ai-menu/ai-menu.component').then(m => m.AiMenuComponent)
+  },
+  {
+    path: 'about',
+    loadComponent: () => import('./features/about/about.component').then(m => m.AboutComponent)
+  },
+  {
+    path: 'services',
+    loadComponent: () => import('./features/services/services.component').then(m => m.ServicesComponent)
+  },
+  {
+    path: 'clients',
+    loadComponent: () => import('./features/clients/clients.component').then(m => m.ClientsComponent)
+  },
+  {
+    path: 'contact',
+    loadComponent: () => import('./features/contact/contact.component').then(m => m.ContactComponent)
+  },
+  {
+    path: 'three-ui',
+    loadComponent: () => import('./features/three-ui/three-ui.component').then(m => m.ThreeUiComponent)
+  },
   { path: '**', redirectTo: '' }
 ];

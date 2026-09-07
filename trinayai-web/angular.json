@@ -30,11 +30,11 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/primeng/resources/themes/lara-dark-indigo/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
               "src/styles.scss"
             ],
-            "scripts": [
-              "node_modules/@primeuix/themes/umd/lara.js"
-            ],
+            "scripts": [],
             "allowedCommonJsDependencies": [
               "@angular/fire",
               "@grpc/grpc-js",
@@ -43,7 +43,7 @@
               "firebase"
             ],
             "server": "src/main.server.ts",
-            "prerender": false,
+            "prerender": true,
             "ssr": {
               "entry": "server.ts"
             },

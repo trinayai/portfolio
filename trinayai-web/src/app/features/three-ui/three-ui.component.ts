@@ -1,12 +1,12 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import * as THREE from 'three';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-three-ui',
   standalone: true,
-  imports: [CommonModule, ButtonModule],
+  imports: [ButtonModule],
   template: `
     <div class="three-ui-root">
       <canvas #threeCanvas class="three-canvas"></canvas>
@@ -29,6 +29,7 @@ import { ButtonModule } from 'primeng/button';
 })
 export class ThreeUiComponent implements AfterViewInit, OnDestroy {
   @ViewChild('threeCanvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
+  private platformId = inject(PLATFORM_ID);
 
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
@@ -37,6 +38,7 @@ export class ThreeUiComponent implements AfterViewInit, OnDestroy {
   private cube!: THREE.Mesh;
 
   ngAfterViewInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     const canvas = this.canvasRef.nativeElement;
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     this.renderer.setPixelRatio(window.devicePixelRatio || 1);
@@ -96,9 +98,10 @@ export class ThreeUiComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     cancelAnimationFrame(this.frameId);
     window.removeEventListener('resize', this.onWindowResize);
     window.removeEventListener('pointermove', this.onPointerMove);
-    this.renderer.dispose();
+    if (this.renderer) this.renderer.dispose();
   }
 }

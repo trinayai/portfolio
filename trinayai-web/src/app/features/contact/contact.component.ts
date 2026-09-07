@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
-import { TextareaModule } from 'primeng/textarea';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [FormsModule, InputTextModule, TextareaModule, ButtonModule, CardModule],
+  imports: [FormsModule, InputTextModule, InputTextareaModule, ButtonModule, CardModule],
   template: `
     <div class="min-h-screen bg-slate-950 px-6 py-32 relative overflow-hidden">
       <!-- Background Blobs -->

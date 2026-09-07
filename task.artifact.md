@@ -1,12 +1,11 @@
-- [/] Final Build & Deployment
-    - [/] Synchronize lock files for all modules
-        - [ ] `functions/`: `npm install --package-lock-only --legacy-peer-deps`
-        - [ ] `backend/`: `npm install --package-lock-only --legacy-peer-deps`
-        - [ ] `trinayai-web/`: `npm install --package-lock-only --legacy-peer-deps`
-        - [ ] `trinayai-admin/`: `npm install --package-lock-only --legacy-peer-deps`
-    - [ ] Local build verification
-        - [ ] Build `trinayai-web`: `npm run build`
-        - [ ] Build `trinayai-admin`: `npm run build`
-    - [ ] Production Deployment
-        - [ ] Deploy Functions: `firebase deploy --only functions`
-        - [ ] Deploy App Hosting: `firebase deploy --only apphosting`
+- [ ] UI Refinement
+    - [ ] Update header to white with black text (`trinayai-web`)
+    - [ ] Update header to white with black text (`trinayai-admin`)
+    - [ ] Set logo to `assets/logo/Trinay-AI-Logo.jpeg`
+- [ ] Bug Fixes
+    - [ ] Resolve header duplication issue
+    - [ ] Fix Inter font decoding error
+- [ ] Build & Deployment
+    - [ ] Sync lock files
+    - [ ] Run local builds
+    - [ ] Deploy to Firebase

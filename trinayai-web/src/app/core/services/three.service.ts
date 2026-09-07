@@ -93,6 +93,8 @@ export class ThreeService implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
     }

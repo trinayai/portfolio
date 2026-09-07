@@ -11,14 +11,14 @@
   },
   "private": true,
   "engines": {
-    "node": "20"
+    "node": "24"
   },
   "dependencies": {
     "@angular/animations": "17.3.12",
     "@angular/cdk": "17.3.10",
     "@angular/common": "17.3.12",
     "@angular/compiler": "17.3.12",
-    "@angular/core": "^17.3.12",
+    "@angular/core": "17.3.12",
     "@angular/fire": "17.1.0",
     "@angular/forms": "17.3.12",
     "@angular/material": "17.3.10",
