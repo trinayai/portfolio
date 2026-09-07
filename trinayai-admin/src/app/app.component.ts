@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
   items: MenuItem[] = [];
   settings: SiteSettings = {
     brandName: 'TRINAY AI',
-    logoUrl: 'assets/logo/Trinay-AI-Logo.jpeg',
+    logoUrl: 'assets/logo/Trinay-AI-Logo.png',
     footerText: '© 2026 Trinay AI. All rights reserved. MSME Registered | Women-Owned Enterprise',
     menuItems: [
       { label: 'AI Menu', route: '/ai-menu', order: 1 },
