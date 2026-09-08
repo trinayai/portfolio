@@ -7,7 +7,7 @@ export const environment = {
     projectId: "trinay-ai",
     storageBucket: "trinay-ai.firebasestorage.app",
     messagingSenderId: "345006614194",
-    appId: "1:345006614194:web:05301665e283c7da428bab",
-    measurementId: "G-142MWZ083R"
+    appId: "1:345006614194:web:6988eaf74a6a1763428bab",
+    measurementId: "G-0WF4ZHF9DX"
   }
 };

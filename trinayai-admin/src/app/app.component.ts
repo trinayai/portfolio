@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
   settings: SiteSettings = {
     brandName: 'TRINAY AI',
     logoUrl: 'assets/logo/Trinay-AI-Logo.png',
-    footerText: '© 2026 Trinay AI. All rights reserved. MSME Registered | Women-Owned Enterprise',
+    footerText: '© 2026 Trinayai Technologies Private Limited. All rights reserved. SF No. 224/8F8, Attur main road, Kumbakottai, Namagiripettai, Rasipuram, Namakkal, Tamil Nadu – 637406.',
     menuItems: [
       { label: 'AI Menu', route: '/ai-menu', order: 1 },
       { label: 'About', route: '/about', order: 2 },

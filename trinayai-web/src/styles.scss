@@ -10,26 +10,23 @@
 @tailwind utilities;
 
 :root {
-  --primary-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #d946ef 100%);
-  --accent-gradient: linear-gradient(45deg, #f43f5e 0%, #fb923c 100%);
-  --bg-deep: #020617;
-  --card-bg: rgba(255, 255, 255, 0.03);
+  --primary-blue: #2563eb;
+  --secondary-slate: #0f172a;
+  --accent-cyan: #06b6d4;
+  --bg-light: #ffffff;
+  --bg-subtle: #f8fafc;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --primary-gradient: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
 }
 
 html, body {
   height: 100%;
   margin: 0;
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  background-color: var(--bg-deep);
-  color: #f8fafc;
+  background-color: var(--bg-light);
+  color: var(--text-main);
   overflow-x: hidden;
-}
-
-/* Fix for OTS parsing error: Force local font and disable Inter-roman loading from theme */
-@font-face {
-  font-family: 'Inter';
-  src: local('Arial');
-  unicode-range: U+0000-00FF;
 }
 
 /* Global Font Override */
@@ -39,58 +36,78 @@ body, .p-component, .p-button, .p-inputtext, .p-menubar, .p-menuitem-text, .p-ta
 
 /* Logo Styling */
 .logo-container {
-  padding: 8px;
+  padding: 4px;
   background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 16px 0 0; /* Extra margin requested */
+  margin-right: 12px;
 }
 
 .logo-container img {
-  mix-blend-mode: multiply; /* Removes white background from JPEG logo */
-  filter: contrast(1.1) saturate(1.1);
-  display: block;
+  height: 48px;
+  width: auto;
+  object-contain: contain;
 }
 
 /* PrimeNG Overrides for White Header */
 .custom-nav {
   background: transparent !important;
   .p-menubar-button {
-    color: #334155 !important;
+    color: var(--secondary-slate) !important;
+  }
+  .p-menuitem-link {
+    background: transparent !important;
+    &:hover {
+      background: var(--bg-subtle) !important;
+    }
   }
   .active-link {
-    background: #f8fafc !important;
-    border: 1px solid #e2e8f0 !important;
-    .p-menuitem-text {
-      color: #2563eb !important;
-    }
-    .p-menuitem-icon {
-      color: #2563eb !important;
+    background: var(--bg-subtle) !important;
+    border-bottom: 2px solid var(--primary-blue) !important;
+    border-radius: 0 !important;
+    .p-menuitem-text, .p-menuitem-icon {
+      color: var(--primary-blue) !important;
     }
   }
 }
 
 .p-button.p-button-raised {
-  background: #2563eb;
+  background: var(--primary-blue);
   border: none;
+  padding: 0.75rem 1.5rem !important; /* Perfected padding */
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   &:hover {
     background: #1d4ed8;
-    box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
   }
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-deep);
+  background: var(--bg-subtle);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #1e293b, #334155);
+  background: #cbd5e1;
   border-radius: 10px;
-  border: 2px solid var(--bg-deep);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Fix for OTS parsing error */
+@font-face {
+  font-family: 'Inter';
+  src: local('Arial');
+  unicode-range: U+0000-00FF;
 }

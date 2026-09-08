@@ -10,23 +10,20 @@
 @tailwind utilities;
 
 :root {
-  --bg-deep: #020617;
+  --primary-blue: #2563eb;
+  --secondary-slate: #0f172a;
+  --bg-light: #ffffff;
+  --bg-subtle: #f8fafc;
+  --text-main: #1e293b;
 }
 
 html, body {
   height: 100%;
   margin: 0;
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  background-color: var(--bg-deep);
-  color: #f8fafc;
+  background-color: var(--bg-subtle);
+  color: var(--text-main);
   overflow-x: hidden;
-}
-
-/* Fix for OTS parsing error */
-@font-face {
-  font-family: 'Inter';
-  src: local('Arial');
-  unicode-range: U+0000-00FF;
 }
 
 /* Global Font Override */
@@ -36,56 +33,55 @@ body, .p-component, .p-button, .p-inputtext, .p-menubar, .p-menuitem-text, .p-ta
 
 /* Logo Styling */
 .logo-container {
-  padding: 8px;
-  background: transparent;
+  padding: 4px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin: 0 16px 0 0;
+  margin-right: 12px;
 }
 
 .logo-container img {
-  mix-blend-mode: multiply;
-  filter: contrast(1.1) saturate(1.1);
-  display: block;
+  height: 40px;
+  width: auto;
 }
 
 /* PrimeNG Overrides for White Header */
 .custom-nav {
   background: transparent !important;
   .p-menubar-button {
-    color: #334155 !important;
+    color: var(--secondary-slate) !important;
   }
   .active-link {
-    background: #f8fafc !important;
-    border: 1px solid #e2e8f0 !important;
-    .p-menuitem-text {
-      color: #2563eb !important;
-    }
-    .p-menuitem-icon {
-      color: #2563eb !important;
+    background: #f1f5f9 !important;
+    .p-menuitem-text, .p-menuitem-icon {
+      color: var(--primary-blue) !important;
     }
   }
 }
 
 .p-button.p-button-raised {
-  background: #2563eb;
+  background: var(--primary-blue);
   border: none;
-  &:hover {
-    background: #1d4ed8;
-  }
+  padding: 0.6rem 1.25rem !important;
+  border-radius: 8px !important;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-deep);
+  background: var(--bg-subtle);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #cbd5e1;
   border-radius: 10px;
+}
+
+/* Fix for OTS parsing error */
+@font-face {
+  font-family: 'Inter';
+  src: local('Arial');
+  unicode-range: U+0000-00FF;
 }

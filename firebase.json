@@ -59,18 +59,36 @@
       ]
     }
   ],
-  "hosting": {
-    "public": "trinayai-web/dist/trinayai-web/browser",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.csr.html"
-      }
-    ]
-  }
+  "hosting": [
+    {
+      "site": "trinay-ai",
+      "public": "trinayai-web/dist/trinayai-web/browser",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "site": "trinay-ai-admin",
+      "public": "trinayai-admin/dist/trinayai-admin/browser",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
 }
