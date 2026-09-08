@@ -37,12 +37,12 @@ import { AnimateOnScrollModule } from 'primeng/animateonscroll';
                 {{ settings.heroBadge || 'Empowering MSMEs through IndiaAI Mission' }}
               </div>
 
-              <h1 class="max-w-4xl text-7xl font-black leading-[0.95] tracking-tighter text-white sm:text-8xl lg:text-9xl">
+              <h3 class="max-w-4xl text-7xl font-black leading-[0.95] tracking-tighter text-white sm:text-8xl lg:text-9xl">
                 {{ settings.heroDescription || 'Digital AI' }}
                 <span class="block bg-gradient-to-r from-cyan-400 via-blue-500 to-fuchsia-500 bg-clip-text text-transparent filter drop-shadow-sm">
-                  {{ settings.brandName || 'Trinay AI' }}
+                  {{ settings.brandName || 'TrinayAI' }}
                 </span>
-              </h1>
+              </h3>
 
               <p class="max-w-2xl text-xl leading-relaxed text-slate-300 sm:text-2xl font-medium opacity-90">
                 Leading the way in advanced LLMs and AI compliance automation tailored for India's growing startup ecosystem.
@@ -175,7 +175,7 @@ export class HomeComponent implements AfterViewInit, OnInit {
   @ViewChild('threeCanvas', { static: true }) threeCanvas!: ElementRef;
   private threeService = inject(ThreeService);
   private contentService = inject(SiteContentService);
-  settings: SiteSettings = { brandName: 'TRINAY AI', logoUrl: '', footerText: '', menuItems: [], heroBadge: 'IndiaAI Mission Aligned', heroTitle: 'Innovation in AI & Software Development', heroDescription: 'Driving Digital Transformation with', heroPrimaryCtaText: 'Explore AI Solutions', heroPrimaryCtaRoute: '/ai-menu', heroSecondaryCtaText: 'See Services', heroSecondaryCtaRoute: '/services' };
+  settings: SiteSettings = { brandName: 'TRINAYAI', logoUrl: '', footerText: '', menuItems: [], heroBadge: 'IndiaAI Mission Aligned', heroTitle: 'Innovation in AI & Software Development', heroDescription: 'Driving Digital Transformation with', heroPrimaryCtaText: 'Explore AI Solutions', heroPrimaryCtaRoute: '/ai-menu', heroSecondaryCtaText: 'See Services', heroSecondaryCtaRoute: '/services' };
   homeSections: SectionItem[] = [];
 
   ngOnInit(): void {
@@ -184,7 +184,7 @@ export class HomeComponent implements AfterViewInit, OnInit {
     });
     this.contentService.getHomeSections().subscribe((sections: SectionItem[]) => {
       this.homeSections = sections.length ? sections : [
-        { title: 'LLM Development', description: 'Custom Large Language Models tailored for MSME specific requirements and compliance.', icon: 'pi pi-share-alt' },
+        { title: 'LLM Development', description: 'Custom Large Language Models tailored for MSME-specific requirements and compliance.', icon: 'pi pi-share-alt' },
         { title: 'Compliance Automation', description: 'Streamlining regulatory processes with intelligent AI-driven automation systems.', icon: 'pi pi-shield' },
         { title: 'Digital Transformation', description: 'Empowering traditional businesses with cutting-edge AI and software solutions.', icon: 'pi pi-sync' }
       ];

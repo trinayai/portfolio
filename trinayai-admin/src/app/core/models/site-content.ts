@@ -10,6 +10,8 @@ export interface SiteSettings {
   brandName: string;
   logoUrl: string;
   footerText: string;
+  contactEmail?: string;
+  showIndiaAiBadge?: boolean;
   menuItems: MenuItem[];
   heroBadge?: string;
   heroTitle?: string;

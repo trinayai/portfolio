@@ -28,8 +28,10 @@ export class AppComponent implements OnInit {
   settings: SiteSettings = {
     brandName: 'TRINAY AI',
     logoUrl: 'assets/logo/Trinay-AI-Logo.png',
-    footerText: '© 2026 Trinayai Technologies Private Limited. All rights reserved. SF No. 224/8F8, Attur main road, Kumbakottai, Namagiripettai, Rasipuram, Namakkal, Tamil Nadu – 637406.',
+    footerText: '© 2026 Trinayai Technologies Private Limited. All rights reserved. Tamil Nadu, India.',
+    contactEmail: 'admin@trinayai.com',
     menuItems: [
+      { label: 'Home', route: '/', order: 0 },
       { label: 'AI Menu', route: '/ai-menu', order: 1 },
       { label: 'About', route: '/about', order: 2 },
       { label: 'Services', route: '/services', order: 3 },
@@ -39,14 +41,22 @@ export class AppComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    this.updateMenuItems();
     this.contentService.getSettings().subscribe((settings: SiteSettings) => {
       this.settings = {
         ...this.settings,
         ...settings,
+        footerText: this.compactFooterText(settings.footerText),
         menuItems: settings?.menuItems?.length ? settings.menuItems : this.settings.menuItems
       };
       this.updateMenuItems();
     });
+  }
+
+  private compactFooterText(footerText?: string): string {
+    const fallback = '© 2026 Trinayai Technologies Private Limited. All rights reserved. Tamil Nadu, India.';
+    if (!footerText) return fallback;
+    return footerText.replace(/SF No\..*?(Tamil Nadu\s*[–-]\s*\d{6}|Tamil Nadu,?\s*India)\.?/i, 'Tamil Nadu, India.');
   }
 
   private updateMenuItems(): void {

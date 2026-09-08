@@ -1,4 +1,4 @@
-<header class="fixed top-0 z-50 w-full border-b border-slate-200 bg-white shadow-sm" ngSkipHydration>
+<header class="site-header fixed top-0 z-50 w-full border-b border-slate-200 bg-white shadow-sm">
   <div class="mx-auto max-w-7xl px-4 flex items-center h-20">
     <!-- Brand Identity - Outside Menubar to prevent hydration duplication -->
     <a routerLink="/" class="flex items-center no-underline group mr-8 flex-shrink-0">
@@ -8,7 +8,7 @@
     </a>
 
     <!-- Navigation Menu -->
-    <div class="flex-grow flex justify-center">
+    <div class="flex-grow flex justify-end">
       <p-menubar [model]="items" styleClass="border-none bg-transparent py-0 custom-nav w-full">
         <ng-template pTemplate="item" let-item>
           <a [routerLink]="item.routerLink" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}"
@@ -40,7 +40,7 @@
       <a href="#" class="hover:text-slate-900 transition-colors"><i class="pi pi-github"></i></a>
     </div>
     <p class="text-sm tracking-wide text-slate-600 max-w-3xl mx-auto leading-relaxed">
-      {{ settings.footerText }}
+      {{ settings.footerText || '© 2026 Trinayai Technologies Private Limited. All rights reserved. Tamil Nadu, India.' }} Trinay AI is a women-led technology company building IndiaAI-aligned solutions for MSMEs and global teams.
     </p>
     <div class="mt-4 flex justify-center gap-8 text-xs font-medium uppercase tracking-tighter text-slate-500">
       <a href="#" class="hover:text-slate-900">Privacy Policy</a>

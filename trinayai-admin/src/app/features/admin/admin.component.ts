@@ -52,6 +52,15 @@ import { MessageService } from 'primeng/api';
                         <label class="text-xs font-bold uppercase tracking-widest text-slate-500">Footer Text</label>
                         <textarea pInputTextarea [(ngModel)]="settings.footerText" rows="4" class="w-full bg-black/20 border-white/10 text-white"></textarea>
                       </div>
+                      <div class="flex flex-col gap-2">
+                        <label class="text-xs font-bold uppercase tracking-widest text-slate-500">Contact Recipient Email</label>
+                        <input pInputText type="email" [(ngModel)]="settings.contactEmail" placeholder="admin&#64;trinayai.com" class="w-full bg-black/20 border-white/10 text-white" />
+                        <small class="text-slate-500">Project brief emails open addressed to this inbox.</small>
+                      </div>
+                      <label class="flex items-center gap-3 text-sm font-semibold text-slate-300">
+                        <input type="checkbox" [(ngModel)]="settings.showIndiaAiBadge" />
+                        Show IndiaAI Mission badge on the home hero
+                      </label>
                       <p-button label="Save Branding" icon="pi pi-save" (onClick)="saveSettings()" styleClass="p-button-info w-full md:w-auto"></p-button>
                    </div>
                    <div class="space-y-4">
@@ -266,7 +275,7 @@ export class AdminComponent implements OnInit {
 
   authUser: User | null = null;
 
-  settings: SiteSettings = { brandName: 'TRINAY AI', logoUrl: '', footerText: '© 2026 Trinay AI. All rights reserved.', menuItems: [] };
+  settings: SiteSettings = { brandName: 'TRINAY AI', logoUrl: '', footerText: '© 2026 Trinay AI. All rights reserved.', contactEmail: 'admin@trinayai.com', showIndiaAiBadge: true, menuItems: [] };
   homeSections: SectionItem[] = [];
   aboutCards: AboutCard[] = [];
   services: ContentItem[] = [];

@@ -9,25 +9,25 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, CardModule],
   template: `
-    <div class="min-h-screen bg-white px-6 py-32 relative overflow-hidden">
+    <div class="min-h-[calc(100vh-5rem)] bg-white px-5 py-14 relative overflow-x-clip sm:px-8 sm:py-16 lg:px-10">
       <!-- Background Accents -->
       <div class="absolute top-0 right-0 h-96 w-96 bg-blue-50 blur-[120px] rounded-full"></div>
       <div class="absolute bottom-0 left-0 h-96 w-96 bg-cyan-50 blur-[120px] rounded-full"></div>
 
       <div class="mx-auto max-w-7xl relative z-10">
-        <div class="mb-24 text-center">
+        <div class="mb-12 text-center">
           <span class="inline-block rounded-full bg-blue-100 px-6 py-2 text-xs font-black uppercase tracking-[0.2em] text-blue-600 mb-8">
             Expertise & Capabilities
           </span>
-          <h2 class="text-5xl font-black tracking-tighter text-slate-900 sm:text-7xl">
+          <h2 class="text-4xl font-black tracking-tighter text-slate-900 sm:text-6xl">
             Our <span class="text-blue-600">AI Ecosystem</span>
           </h2>
-          <p class="mx-auto mt-8 max-w-3xl text-xl text-slate-500 font-medium leading-relaxed">
+          <p class="mx-auto mt-5 max-w-3xl text-base text-slate-500 font-medium leading-relaxed sm:text-xl">
             Comprehensive AI solutions designed to scale your business and automate complex workflows with precision and ethical integrity.
           </p>
         </div>
 
-        <div class="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           <ng-container *ngFor="let item of services; let i = index">
             <p-card styleClass="h-full border border-slate-100 bg-white transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl overflow-hidden group shadow-sm">
               <ng-template pTemplate="header">
