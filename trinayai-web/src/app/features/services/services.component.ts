@@ -20,10 +20,10 @@ import { CommonModule } from '@angular/common';
             Expertise & Capabilities
           </span>
           <h2 class="text-4xl font-black tracking-tighter text-slate-900 sm:text-6xl">
-            Our <span class="text-blue-600">AI Ecosystem</span>
+            Our <span class="text-blue-600">Technology Services</span>
           </h2>
           <p class="mx-auto mt-5 max-w-3xl text-base text-slate-500 font-medium leading-relaxed sm:text-xl">
-            Comprehensive AI solutions designed to scale your business and automate complex workflows with precision and ethical integrity.
+            Practical software and technology services that help organizations launch products, improve operations and grow with confidence.
           </p>
         </div>
 
@@ -73,10 +73,12 @@ export class ServicesComponent implements OnInit {
   ngOnInit(): void {
     this.contentService.getServices().subscribe((services: ContentItem[]) => {
       this.services = services.length ? services : [
-        { title: 'AI Model Tuning', description: 'Fine-tuning foundational models for domain-specific accuracy and efficiency.', icon: 'pi pi-sliders-h' },
-        { title: 'NLP Solutions', description: 'Advanced natural language processing for sentiment analysis, translation, and more.', icon: 'pi pi-comment' },
-        { title: 'Data Analytics', description: 'Transforming raw data into actionable insights using predictive AI modeling.', icon: 'pi pi-chart-bar' },
-        { title: 'Cloud Infrastructure', description: 'Scalable cloud architectures optimized for heavy AI workloads and fast inference.', icon: 'pi pi-cloud' }
+        { title: 'Custom Software Development', description: 'Plan, design and build reliable web, mobile and business applications tailored to your goals, users and workflows.', icon: 'pi pi-code' },
+        { title: 'Digital Product Engineering', description: 'Turn ideas into launch-ready products with user experience design, rapid prototyping, quality engineering and ongoing improvement.', icon: 'pi pi-mobile' },
+        { title: 'AI, Automation & Data', description: 'Apply practical AI, intelligent automation, integrations and analytics to reduce manual work and make better decisions.', icon: 'pi pi-sparkles' },
+        { title: 'Cloud & Platform Engineering', description: 'Build secure, scalable cloud platforms with modern architecture, APIs, DevOps, observability and performance in mind.', icon: 'pi pi-cloud' },
+        { title: 'Modernization & Support', description: 'Improve legacy systems, strengthen security, connect business tools and provide dependable support as your organization evolves.', icon: 'pi pi-refresh' },
+        { title: 'Technology Consulting', description: 'Get clear technical direction for product strategy, architecture, delivery planning and technology decisions at every stage.', icon: 'pi pi-compass' }
       ];
     });
   }

@@ -89,10 +89,12 @@ export class ServicesComponent implements OnInit {
   ngOnInit(): void {
     this.contentService.getServices().subscribe((services: ContentItem[]) => {
       this.services = services.length ? services : [
-        { title: 'AI Model Tuning', description: 'Fine-tuning foundational models for domain-specific accuracy and efficiency.', icon: 'pi pi-sliders-h' },
-        { title: 'NLP Solutions', description: 'Advanced natural language processing for sentiment analysis, translation, and more.', icon: 'pi pi-comment' },
-        { title: 'Data Analytics', description: 'Transforming raw data into actionable insights using predictive AI modeling.', icon: 'pi pi-chart-bar' },
-        { title: 'Cloud Infrastructure', description: 'Scalable cloud architectures optimized for heavy AI workloads and fast inference.', icon: 'pi pi-cloud' }
+        { title: 'Custom Software Development', description: 'Reliable web, mobile and business applications tailored to your goals, users and workflows.', icon: 'pi pi-code' },
+        { title: 'Digital Product Engineering', description: 'User experience, prototyping, quality engineering and delivery support for products built to grow.', icon: 'pi pi-mobile' },
+        { title: 'AI, Automation & Data', description: 'Practical AI, integrations, automation and analytics that reduce manual work and improve decisions.', icon: 'pi pi-sparkles' },
+        { title: 'Cloud & Platform Engineering', description: 'Secure, scalable cloud platforms with modern architecture, APIs, DevOps and observability.', icon: 'pi pi-cloud' },
+        { title: 'Modernization & Support', description: 'Legacy modernization, system integration, security improvements and dependable ongoing support.', icon: 'pi pi-refresh' },
+        { title: 'Technology Consulting', description: 'Clear guidance for product strategy, architecture, delivery planning and technology decisions.', icon: 'pi pi-compass' }
       ];
     });
   }

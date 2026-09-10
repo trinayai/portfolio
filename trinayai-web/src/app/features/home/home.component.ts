@@ -37,7 +37,7 @@ import { ThreeUiComponent } from '../three-ui/three-ui.component';
               </h1>
 
               <p class="max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg font-medium">
-                Leading the way in advanced LLMs and AI compliance automation tailored for India's growing startup ecosystem.
+                We design and build dependable software products, AI solutions and digital platforms for organizations ready to grow globally.
               </p>
 
               <div class="flex flex-wrap gap-1 pt-2 sm:gap-2">
@@ -172,7 +172,7 @@ import { ThreeUiComponent } from '../three-ui/three-ui.component';
 })
 export class HomeComponent implements OnInit {
   private contentService = inject(SiteContentService);
-  settings: SiteSettings = { brandName: 'TRINAYAI', logoUrl: '', footerText: '', menuItems: [], showIndiaAiBadge: true, heroBadge: 'IndiaAI Mission Aligned', heroTitle: 'Innovation in AI & Software Development', heroDescription: 'Driving Digital Transformation with', heroPrimaryCtaText: 'Explore AI Solutions', heroPrimaryCtaRoute: '/ai-menu', heroSecondaryCtaText: 'See Services', heroSecondaryCtaRoute: '/services' };
+  settings: SiteSettings = { brandName: 'TRINAYAI', logoUrl: '', footerText: '', menuItems: [], showIndiaAiBadge: false, heroBadge: 'Software, AI & Digital Products', heroTitle: 'Technology that moves your business forward', heroDescription: 'Building better digital products with', heroPrimaryCtaText: 'Explore Solutions', heroPrimaryCtaRoute: '/ai-menu', heroSecondaryCtaText: 'See Services', heroSecondaryCtaRoute: '/services' };
   homeSections: SectionItem[] = [];
 
   ngOnInit(): void {
@@ -181,9 +181,9 @@ export class HomeComponent implements OnInit {
     });
     this.contentService.getHomeSections().subscribe((sections: SectionItem[]) => {
       this.homeSections = sections.length ? sections : [
-        { title: 'LLM Development', description: 'Custom Large Language Models tailored for MSME-specific requirements and compliance.', icon: 'pi pi-share-alt' },
-        { title: 'Compliance Automation', description: 'Streamlining regulatory processes with intelligent AI-driven automation systems.', icon: 'pi pi-shield' },
-        { title: 'Digital Transformation', description: 'Empowering traditional businesses with cutting-edge AI and software solutions.', icon: 'pi pi-sync' }
+        { title: 'Software Products', description: 'From web and mobile apps to internal platforms, we build digital products around real customer and business needs.', icon: 'pi pi-desktop' },
+        { title: 'Intelligent Automation', description: 'Connect systems, simplify repetitive work and use AI where it creates measurable value for your team.', icon: 'pi pi-bolt' },
+        { title: 'Cloud-ready Growth', description: 'Modernize your technology foundation with secure architecture, reliable delivery and room to scale.', icon: 'pi pi-cloud' }
       ];
     });
   }
