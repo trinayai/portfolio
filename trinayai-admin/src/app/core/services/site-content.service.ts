@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { catchError, shareReplay, startWith } from 'rxjs/operators';
 import {
   Firestore,
   collectionData,
@@ -24,8 +25,8 @@ import { AboutCard, ClientItem, ContentItem, SectionItem, SiteSettings } from '.
 export class SiteContentService {
   private firestore = inject(Firestore);
   private storage = inject(Storage);
-
-  constructor() {}
+  private settings$!: Observable<SiteSettings>;
+  private collectionStreams = new Map<string, Observable<unknown[]>>();
 
   async uploadFile(file: File, path: string): Promise<string> {
     const storageRef = ref(this.storage, path);
@@ -39,8 +40,13 @@ export class SiteContentService {
   }
 
   getSettings(): Observable<SiteSettings> {
-    if (!this.firestore) return of({} as SiteSettings);
-    return docData(doc(this.firestore, 'siteSettings', 'main'), { idField: 'id' }) as Observable<SiteSettings>;
+    if (this.settings$) return this.settings$;
+    this.settings$ = (docData(doc(this.firestore, 'siteSettings', 'main'), { idField: 'id' }) as Observable<SiteSettings>).pipe(
+      startWith({} as SiteSettings),
+      catchError(() => of({} as SiteSettings)),
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
+    return this.settings$;
   }
 
   async saveSettings(settings: SiteSettings) {
@@ -129,11 +135,15 @@ export class SiteContentService {
   }
 
   private listenToCollection<T>(collectionName: string): Observable<T[]> {
-    try {
-      return collectionData(collection(this.firestore, collectionName), { idField: 'id' }) as Observable<T[]>;
-    } catch (e) {
-      console.error('Firestore access error:', e);
-      return of([]);
-    }
+    const cachedStream = this.collectionStreams.get(collectionName);
+    if (cachedStream) return cachedStream as Observable<T[]>;
+
+    const sharedStream = collectionData(collection(this.firestore, collectionName), { idField: 'id' }).pipe(
+      startWith([]),
+      catchError(() => of([])),
+      shareReplay({ bufferSize: 1, refCount: true })
+    ) as Observable<T[]>;
+    this.collectionStreams.set(collectionName, sharedStream as Observable<unknown[]>);
+    return sharedStream;
   }
 }

@@ -318,8 +318,8 @@ export class AdminComponent implements OnInit {
     try {
       await this.contentService.saveSettings(this.settings);
       this.showSuccess('Settings updated');
-    } catch (e) {
-      this.showError('Failed to save settings');
+    } catch (error) {
+      this.showError(`Failed to save settings: ${this.getErrorMessage(error)}`);
     }
   }
 
@@ -363,8 +363,8 @@ export class AdminComponent implements OnInit {
       try {
         await this.contentService.updateHomeSection(item.id, item);
         this.showSuccess('Section saved');
-      } catch (e) {
-        this.showError('Save failed');
+      } catch (error) {
+        this.showError(`Save failed: ${this.getErrorMessage(error)}`);
       }
     }
   }
@@ -394,8 +394,8 @@ export class AdminComponent implements OnInit {
       try {
         await this.contentService.updateAboutCard(card.id, card);
         this.showSuccess('Card saved');
-      } catch (e) {
-        this.showError('Save failed');
+      } catch (error) {
+        this.showError(`Save failed: ${this.getErrorMessage(error)}`);
       }
     }
   }
@@ -425,8 +425,8 @@ export class AdminComponent implements OnInit {
       try {
         await this.contentService.updateService(item.id, item);
         this.showSuccess('Service saved');
-      } catch (e) {
-        this.showError('Save failed');
+      } catch (error) {
+        this.showError(`Save failed: ${this.getErrorMessage(error)}`);
       }
     }
   }
@@ -456,8 +456,8 @@ export class AdminComponent implements OnInit {
       try {
         await this.contentService.updateAiMenuItem(item.id, item);
         this.showSuccess('AI Item saved');
-      } catch (e) {
-        this.showError('Save failed');
+      } catch (error) {
+        this.showError(`Save failed: ${this.getErrorMessage(error)}`);
       }
     }
   }
@@ -487,8 +487,8 @@ export class AdminComponent implements OnInit {
       try {
         await this.contentService.updateClient(client.id, client);
         this.showSuccess('Client updated');
-      } catch (e) {
-        this.showError('Update failed');
+      } catch (error) {
+        this.showError(`Update failed: ${this.getErrorMessage(error)}`);
       }
     }
   }
@@ -510,5 +510,12 @@ export class AdminComponent implements OnInit {
 
   private showError(msg: string) {
     this.messageService.add({ severity: 'error', summary: 'Error', detail: msg });
+  }
+
+  private getErrorMessage(error: unknown): string {
+    if (error && typeof error === 'object' && 'message' in error) {
+      return String(error.message);
+    }
+    return 'Check your Firebase connection and permissions';
   }
 }

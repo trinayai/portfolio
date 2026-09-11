@@ -10,6 +10,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/ai-menu/ai-menu.component').then(m => m.AiMenuComponent)
   },
   {
+    path: 'ai',
+    loadComponent: () => import('./features/ai-workspace/ai-workspace.component').then(m => m.AiWorkspaceComponent)
+  },
+  {
     path: 'about',
     loadComponent: () => import('./features/about/about.component').then(m => m.AboutComponent)
   },

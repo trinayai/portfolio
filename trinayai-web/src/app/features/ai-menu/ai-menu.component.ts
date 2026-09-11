@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SiteContentService } from '../../core/services/site-content.service';
 import { ContentItem } from '../../core/models/site-content';
 import { ButtonModule } from 'primeng/button';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-ai-menu',
@@ -47,13 +48,15 @@ import { ButtonModule } from 'primeng/button';
                 </div>
 
                 <ng-container *ngIf="i !== 0">
-                  <p-button label="View solution"
+                  <p-button label="Subscribe & launch"
+                            (onClick)="openWorkspace(item)"
                             styleClass="mt-6 w-full p-button-sm bg-white/70 border border-current text-slate-800 hover:bg-slate-950 hover:border-slate-950 hover:text-white transition-all font-bold uppercase tracking-widest"></p-button>
                 </ng-container>
 
                 <ng-container *ngIf="i === 0">
                   <div class="mt-8">
-                     <p-button label="Start with flagship"
+                     <p-button label="Subscribe & launch"
+                               (onClick)="openWorkspace(item)"
                                styleClass="bg-slate-950 border-none px-8 py-4 font-black uppercase tracking-widest text-white shadow-lg hover:bg-slate-800 transition-colors"></p-button>
                   </div>
                 </ng-container>
@@ -268,17 +271,24 @@ import { ButtonModule } from 'primeng/button';
 })
 export class AiMenuComponent implements OnInit {
   private contentService = inject(SiteContentService);
-  items: ContentItem[] = [];
+  private router = inject(Router);
+  private readonly defaultItems: ContentItem[] = [
+    { title: 'Sentiment Analysis', description: 'Analyze customer feedback and social sentiment with reliable, actionable insights.' },
+    { title: 'Document Summarizer', description: 'Turn long legal and financial documents into concise, useful summaries.' },
+    { title: 'Chat Intelligence', description: 'Support customers and generate leads with focused conversational AI.' },
+    { title: 'Translation Engine', description: 'Translate technical content across more than 100 languages with clarity.' },
+    { title: 'Risk Assessment', description: 'Identify compliance risks early with predictive business analysis.' }
+  ];
+  items: ContentItem[] = this.defaultItems;
+
+  openWorkspace(item: ContentItem): void {
+    this.router.navigate(['/ai'], { queryParams: { model: item.title } });
+  }
 
   ngOnInit(): void {
     this.contentService.getAiMenuItems().subscribe((items: ContentItem[]) => {
-      this.items = items.length ? items : [
-        { title: 'Sentiment Analysis', description: 'Analyze customer feedback and social sentiment with reliable, actionable insights.' },
-        { title: 'Document Summarizer', description: 'Turn long legal and financial documents into concise, useful summaries.' },
-        { title: 'Chat Intelligence', description: 'Support customers and generate leads with focused conversational AI.' },
-        { title: 'Translation Engine', description: 'Translate technical content across more than 100 languages with clarity.' },
-        { title: 'Risk Assessment', description: 'Identify compliance risks early with predictive business analysis.' }
-      ];
+      if (items.length) this.items = items;
     });
   }
+
 }

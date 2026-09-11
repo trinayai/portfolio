@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
       this.settings = {
         ...this.settings,
         ...settings,
-        footerText: this.compactFooterText(settings.footerText),
+        footerText: this.compactFooterText(settings?.footerText),
         menuItems: settings?.menuItems?.length ? settings.menuItems : this.settings.menuItems
       };
       this.updateMenuItems();
