@@ -5,6 +5,7 @@ import { SiteContentService } from '../../core/services/site-content.service';
 import { SectionItem, SiteSettings } from '../../core/models/site-content';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { map } from 'rxjs/operators';
 import { ThreeUiComponent } from '../three-ui/three-ui.component';
 
 @Component({
@@ -12,102 +13,77 @@ import { ThreeUiComponent } from '../three-ui/three-ui.component';
   standalone: true,
   imports: [CommonModule, RouterLink, ButtonModule, CardModule, ThreeUiComponent],
   template: `
-    <section class="relative min-h-[calc(100vh-10rem)] overflow-x-clip bg-slate-50 text-slate-900">
-      <!-- Clean Static Background -->
-      <div class="absolute inset-0 z-0 bg-gradient-to-b from-white via-slate-50 to-blue-50/50"></div>
+    <section class="relative min-h-screen bg-[#020617] text-white overflow-x-hidden">
+      <!-- Animated Background elements -->
+      <div class="absolute top-0 left-0 w-full h-full z-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-600/10 blur-[120px] rounded-full animate-pulse"></div>
+        <div class="absolute top-[20%] -right-[5%] w-[30%] h-[30%] bg-cyan-600/10 blur-[100px] rounded-full animate-pulse" style="animation-delay: 2s"></div>
+      </div>
 
       <!-- Content Overlay -->
       <div class="relative z-10">
         <!-- Hero Section -->
-        <div class="mx-auto flex min-h-[calc(100vh-10rem)] max-w-7xl flex-col justify-center px-5 py-16 sm:px-8 lg:px-10 lg:py-20">
-          <div class="grid gap-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-            <div class="space-y-8 sm:space-y-10">
-              <div *ngIf="settings.showIndiaAiBadge !== false" class="inline-flex max-w-full items-center gap-3 rounded-full border border-blue-100 bg-white px-4 py-2 text-xs font-bold text-blue-700 shadow-sm sm:px-6 sm:py-3 sm:text-sm">
+        <div class="mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-6 py-24 lg:px-10">
+          <div class="grid gap-16 lg:grid-cols-2 lg:items-center">
+            <div class="space-y-12">
+              <div *ngIf="settings.showIndiaAiBadge" class="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-6 py-3 text-sm font-bold text-cyan-300 shadow-2xl backdrop-blur-2xl ring-1 ring-white/10">
                 <span class="flex h-6 w-6 items-center justify-center rounded-full bg-cyan-500 text-[10px] text-white">
-                  <i class="pi pi-sparkles"></i>
+                  <i class="pi pi-sparkles animate-spin-slow"></i>
                 </span>
-                {{ settings.heroBadge }}
+                {{ settings.heroBadge || 'Empowering MSMEs through IndiaAI Mission' }}
               </div>
 
-              <h1 class="max-w-2xl text-3xl font-black leading-[2] text-slate-700 sm:text-3xl lg:text-4xl">
-                {{ settings.heroDescription }}
-                <span class="block bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 bg-clip-text text-transparent">
-                  {{ settings.brandName }}
-                </span>
+              <h1 class="max-w-4xl text-6xl font-black leading-[0.95] tracking-tighter text-white sm:text-8xl xl:text-9xl">
+                Building <span class="bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent filter drop-shadow-lg">better digital</span> products with <span class="text-blue-500">TRINAYAI</span>
               </h1>
 
-              <p class="max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg font-medium">
-                {{ settings.homeDescription }}
+              <p class="max-w-2xl text-xl leading-relaxed text-slate-300 sm:text-2xl font-medium opacity-90">
+                {{ settings.homeDescription || "We design and build practical software, AI and digital products that help ambitious teams work smarter and grow with confidence." }}
               </p>
 
-              <div class="flex flex-wrap gap-1 pt-2 sm:gap-2">
+              <div class="flex flex-wrap gap-6 pt-4">
                 <p-button
-                  [label]="settings.heroPrimaryCtaText"
-                  [routerLink]="settings.heroPrimaryCtaRoute"
-                  styleClass="p-button-outlined p-button-rounded bg-blue-600 border-none px-6 py-4 font-black uppercase tracking-widest text-white shadow-lg transition duration-300 hover:bg-blue-700 sm:px-8">
+                  [label]="settings.heroPrimaryCtaText || 'Explore Solutions'"
+                  [routerLink]="['/ai-menu']"
+                  styleClass="p-button-raised p-button-rounded bg-blue-600 border-none px-10 py-5 font-black uppercase tracking-widest text-white shadow-2xl transition duration-300 hover:bg-blue-700 hover:scale-105">
                 </p-button>
 
                 <p-button
-                  [label]="settings.heroSecondaryCtaText"
-                  [routerLink]="settings.heroSecondaryCtaRoute"
-                  styleClass="p-button-outlined p-button-rounded border-slate-300 text-slate-700 px-6 py-4 font-black uppercase tracking-widest hover:bg-white transition duration-300 sm:px-8">
+                  [label]="settings.heroSecondaryCtaText || 'Connect'"
+                  [routerLink]="['/contact']"
+                  styleClass="p-button-outlined p-button-rounded border-white/20 text-white px-10 py-5 font-black uppercase tracking-widest hover:bg-white/10 transition duration-300 backdrop-blur-md">
                 </p-button>
               </div>
             </div>
 
-            <div class="relative hidden h-[430px] lg:block lg:h-[500px]">
-              <app-three-ui></app-three-ui>
+            <div class="relative flex items-center justify-center lg:justify-end">
+              <div class="relative w-full max-w-[500px] aspect-square group">
+                <div class="absolute -inset-4 bg-gradient-to-br from-blue-500 to-cyan-500 opacity-20 blur-3xl rounded-[40px] group-hover:opacity-40 transition-opacity duration-700"></div>
+                <div class="relative h-full w-full rounded-[40px] border border-white/10 bg-slate-900/40 backdrop-blur-3xl shadow-3xl overflow-hidden p-1">
+                   <app-three-ui class="w-full h-full rounded-[38px]"></app-three-ui>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Bento Grid Features Section -->
-        <div class="relative border-y border-slate-200 py-16 sm:py-20">
-          <div class="mx-auto max-w-7xl px-5 relative z-10 sm:px-8 lg:px-10">
-            <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4 lg:auto-rows-[260px]">
-
-              <!-- Large Feature Card -->
-              <ng-container *ngIf="homeSections[0]">
-                <p-card styleClass="storybook-card h-full border border-slate-200 bg-white transition-all duration-300 hover:border-cyan-400 hover:shadow-xl group shadow-sm">
-                  <div class="flex h-full flex-col justify-center">
-                    <h3 class="text-2xl font-black text-slate-900 mb-3 tracking-tight group-hover:text-blue-600 transition-colors">{{ homeSections[0].title }}</h3>
-                    <p class="storybook-copy text-slate-600 text-sm leading-relaxed font-medium">{{ homeSections[0].description }}</p>
-                  </div>
+        <div *ngIf="homeSections.length > 0" class="relative py-32 border-t border-white/5 bg-[#01040f]">
+          <div class="mx-auto max-w-7xl px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              @for (item of homeSections; track item.id) {
+                <p-card styleClass="h-full border border-white/5 bg-slate-900/20 backdrop-blur-md transition-all duration-500 hover:bg-slate-800/40 hover:border-blue-500/30 group overflow-hidden shadow-xl rounded-[32px]">
+                  <ng-template pTemplate="header">
+                     <div class="pt-10 px-10">
+                       <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-800 text-blue-400 ring-1 ring-white/10 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 shadow-lg">
+                         <i [class]="item.icon || 'pi pi-bolt'" class="text-2xl"></i>
+                       </div>
+                     </div>
+                  </ng-template>
+                  <h3 class="text-2xl font-black text-white mb-4 tracking-tight group-hover:text-blue-300 transition-colors">{{ item.title }}</h3>
+                  <p class="text-slate-400 text-lg leading-relaxed font-medium group-hover:text-slate-200 transition-colors">{{ item.description }}</p>
                 </p-card>
-              </ng-container>
-
-              <!-- Secondary Feature Card -->
-              <ng-container *ngIf="homeSections[1]">
-                <p-card styleClass="storybook-card h-full border border-slate-200 bg-white transition-all duration-300 hover:border-fuchsia-400 hover:shadow-xl group shadow-sm">
-                  <div class="flex h-full flex-col justify-center">
-                    <h3 class="text-2xl font-black text-slate-900 mb-3 group-hover:text-fuchsia-600 transition-colors">{{ homeSections[1].title }}</h3>
-                    <p class="storybook-copy text-slate-600 text-sm leading-relaxed font-medium">{{ homeSections[1].description }}</p>
-                  </div>
-                </p-card>
-              </ng-container>
-
-              <!-- Tertiary Feature Card -->
-              <ng-container *ngIf="homeSections[2]">
-                <p-card styleClass="storybook-card h-full border border-slate-200 bg-white transition-all duration-300 hover:border-blue-400 hover:shadow-xl group shadow-sm">
-                  <div class="flex h-full flex-col justify-center">
-                    <h3 class="text-2xl font-black text-slate-900 mb-3 group-hover:text-blue-600 transition-colors">{{ homeSections[2].title }}</h3>
-                    <p class="storybook-copy text-slate-600 text-sm leading-relaxed font-medium">{{ homeSections[2].description }}</p>
-                  </div>
-                </p-card>
-              </ng-container>
-
-              <ng-container *ngIf="homeSections[3]">
-              <p-card styleClass="storybook-card h-full border border-slate-200 bg-gradient-to-r from-white to-cyan-50 transition-all duration-300 hover:border-cyan-400 hover:shadow-xl group relative shadow-sm">
-                <div class="relative z-10 flex h-full flex-col justify-center">
-                  <h3 class="text-2xl font-black text-slate-900 mb-3">{{ homeSections[3].title }}</h3>
-                  <p class="storybook-copy text-slate-600 text-sm font-medium max-w-md">{{ homeSections[3].description }}</p>
-                  <div class="mt-4">
-                    <p-button [label]="settings.homeScaleCtaText" icon="pi pi-map" styleClass="p-button-text text-cyan-600 p-0 font-bold uppercase tracking-widest hover:text-blue-700"></p-button>
-                  </div>
-                </div>
-              </p-card>
-              </ng-container>
-
+              }
             </div>
           </div>
         </div>
@@ -115,73 +91,29 @@ import { ThreeUiComponent } from '../three-ui/three-ui.component';
     </section>
   `,
   styles: [`
-    :host {
-      display: block;
-      background-color: #f8fafc;
-    }
-
+    :host { display: block; background-color: #020617; }
+    .animate-spin-slow { animation: spin 8s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     ::ng-deep {
-      .p-card {
-        border-radius: 18px 24px 20px 26px / 22px 18px 26px 20px;
-        overflow: hidden;
-        .p-card-body {
-          height: 100%;
-          padding: 1.75rem;
-        }
-        .p-card-content {
-          padding: 0;
-        }
-      }
-
-      .storybook-card {
-        position: relative;
-        isolation: isolate;
-        border-width: 2px;
-        transform: rotate(-0.35deg);
-      }
-
-      .storybook-card:nth-child(2n) {
-        transform: rotate(0.35deg);
-        border-radius: 24px 18px 26px 20px / 18px 24px 20px 26px;
-      }
-
-      .storybook-card::after {
-        position: absolute;
-        inset: 4px;
-        z-index: -1;
-        border: 1px dashed rgba(37, 99, 235, 0.18);
-        border-radius: inherit;
-        content: '';
-        pointer-events: none;
-      }
-
-      .storybook-copy {
-        display: -webkit-box;
-        overflow: hidden;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 3;
-      }
-
-      @media screen and (max-width: 1023px) {
-        .storybook-card,
-        .storybook-card:nth-child(2n) {
-          transform: none;
-        }
-      }
+      .p-card .p-card-body { padding: 2.5rem; }
     }
   `]
 })
 export class HomeComponent implements OnInit {
   private contentService = inject(SiteContentService);
-  settings: SiteSettings = { brandName: '', logoUrl: '', footerText: '', menuItems: [] };
+  settings: SiteSettings = { brandName: 'TRINAY AI', logoUrl: '', footerText: '', menuItems: [] };
   homeSections: SectionItem[] = [];
 
   ngOnInit(): void {
-    this.contentService.getSettings().subscribe((settings: SiteSettings) => {
-      this.settings = { ...this.settings, ...settings };
-    });
-    this.contentService.getHomeSections().subscribe((sections: SectionItem[]) => {
-      this.homeSections = sections;
+    this.contentService.getSettings().subscribe(settings => this.settings = { ...this.settings, ...settings });
+    this.contentService.getHomeSections().pipe(
+      map(sections => sections.filter(s => s.isVisible !== false))
+    ).subscribe(sections => {
+      this.homeSections = sections.length ? sections : [
+        { title: 'AI Model Tuning', description: 'Optimizing foundational models for specialized enterprise workflows.', icon: 'pi pi-sliders-h' },
+        { title: 'Secure Compliance', description: 'Automated regulatory systems built for India\'s MSME sector.', icon: 'pi pi-shield' },
+        { title: 'Digital Scale', description: 'Accelerating transformation through robust software engineering.', icon: 'pi pi-chart-line' }
+      ];
     });
   }
 }

@@ -31,7 +31,8 @@ export class AppComponent implements OnInit {
     footerText: '© 2026 Trinayai Technologies Private Limited. All rights reserved. SF No. 224/8F8, Attur main road, Kumbakottai, Namagiripettai, Rasipuram, Namakkal, Tamil Nadu – 637406.',
     contactEmail: 'info@trinayai.com',
     menuItems: [
-      { label: 'Admin', route: '/admin', order: 1 }
+      { label: 'Admin', route: '/admin', order: 1, isVisible: true },
+      { label: 'View Subscription', route: '/ai-menu', order: 2, isVisible: true }
     ]
   };
 
@@ -48,10 +49,12 @@ export class AppComponent implements OnInit {
   }
 
   private updateMenuItems(): void {
-    this.items = this.settings.menuItems.map(item => ({
-      label: item.label,
-      routerLink: item.route,
-      routerLinkActiveOptions: { exact: true }
-    }));
+    this.items = this.settings.menuItems
+      .filter(item => item.isVisible !== false)
+      .map(item => ({
+        label: item.route === '/ai-menu' ? 'Subscription' : item.label,
+        routerLink: item.route,
+        routerLinkActiveOptions: { exact: true }
+      }));
   }
 }

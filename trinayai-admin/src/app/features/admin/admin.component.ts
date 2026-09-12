@@ -14,11 +14,13 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
 import { MessageModule } from 'primeng/message';
 import { MessageService } from 'primeng/api';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [FormsModule, ButtonModule, InputTextModule, InputTextareaModule, CardModule, TabViewModule, FileUploadModule, ToastModule, MessageModule],
+  imports: [CommonModule, FormsModule, ButtonModule, InputTextModule, InputTextareaModule, CardModule, TabViewModule, FileUploadModule, ToastModule, MessageModule, InputSwitchModule],
   template: `
     <p-toast></p-toast>
     <div class="min-h-screen bg-[#050c1f] px-4 py-16 text-white md:px-8 lg:px-12">
@@ -111,15 +113,19 @@ import { MessageService } from 'primeng/api';
                        <p-button label="Add Section" icon="pi pi-plus" (onClick)="addHomeSection()" styleClass="p-button-sm p-button-success"></p-button>
                      </div>
                      <div class="grid gap-6 md:grid-cols-2">
-                        @for (item of homeSections; track item) {
-                          <div class="p-6 rounded-xl border border-white/5 bg-white/5">
-                            <div class="grid gap-4 mb-4">
+                        @for (item of homeSections; track item.id) {
+                          <div class="p-6 rounded-xl border border-white/5 bg-white/5 space-y-4">
+                            <div class="flex items-center justify-between">
+                              <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Visible</span>
+                              <p-inputSwitch [(ngModel)]="item.isVisible"></p-inputSwitch>
+                            </div>
+                            <div class="grid gap-4">
                               <input pInputText [(ngModel)]="item.title" placeholder="Title" class="w-full bg-black/20 border-white/10 text-white" />
                               <input pInputText [(ngModel)]="item.icon" placeholder="Icon (pi pi-...)" class="w-full bg-black/20 border-white/10 text-white" />
                               <textarea pInputTextarea [(ngModel)]="item.description" rows="2" placeholder="Description" class="w-full bg-black/20 border-white/10 text-white"></textarea>
                             </div>
                             <div class="flex gap-2">
-                              <p-button icon="pi pi-save" (onClick)="saveHomeSection(item)" styleClass="p-button-sm"></p-button>
+                              <p-button icon="pi pi-save" (onClick)="saveHomeSection(item)" styleClass="p-button-sm p-button-info"></p-button>
                               <p-button icon="pi pi-trash" (onClick)="deleteHomeSection(item)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
                             </div>
                           </div>
@@ -129,55 +135,111 @@ import { MessageService } from 'primeng/api';
                 </div>
               </p-tabPanel>
 
-              <p-tabPanel header="Tools & Services">
-                 <div class="grid gap-12 lg:grid-cols-2">
+              <p-tabPanel header="Subscriptions">
+                 <div class="mb-10 flex items-center justify-between border-b border-white/5 pb-4">
                     <div>
-                      <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-xl font-bold text-white">AI Tools</h3>
-                        <p-button label="New Tool" icon="pi pi-plus" (onClick)="addAiMenuItem()" styleClass="p-button-sm p-button-success"></p-button>
-                      </div>
-                      <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scroll">
-                        @for (item of aiMenuItems; track item) {
-                          <div class="p-5 rounded-xl border border-white/5 bg-white/5">
-                            <input pInputText [(ngModel)]="item.title" class="w-full bg-black/20 border-white/10 text-white mb-2" />
-                            <textarea pInputTextarea [(ngModel)]="item.description" rows="2" class="w-full bg-black/20 border-white/10 text-white mb-3"></textarea>
-                            <div class="flex gap-2">
-                              <p-button icon="pi pi-save" (onClick)="saveAiMenuItem(item)" styleClass="p-button-sm p-button-info p-button-outlined"></p-button>
-                              <p-button icon="pi pi-trash" (onClick)="deleteAiMenuItem(item)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
+                      <h3 class="text-xl font-bold text-white">Subscription Plans</h3>
+                      <p class="text-slate-400 text-sm">Manage the AI packages shown on the public subscription page.</p>
+                    </div>
+                    <p-button label="Create Plan" icon="pi pi-plus" (onClick)="addAiMenuItem()" styleClass="p-button-success"></p-button>
+                 </div>
+
+                 <div class="grid gap-8 lg:grid-cols-2">
+                    @for (item of aiMenuItems; track item.id) {
+                      <div class="p-8 rounded-3xl border border-white/10 bg-white/5 space-y-6">
+                        <div class="flex items-center justify-between">
+                          <div class="flex items-center gap-6">
+                            <div class="flex items-center gap-2">
+                              <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Visible</span>
+                              <p-inputSwitch [(ngModel)]="item.isVisible"></p-inputSwitch>
+                            </div>
+                            <div class="flex items-center gap-2">
+                              <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Popular</span>
+                              <p-inputSwitch [(ngModel)]="item.isPopular"></p-inputSwitch>
                             </div>
                           </div>
-                        }
-                      </div>
-                    </div>
-                    <div>
-                      <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-xl font-bold text-white">Services</h3>
-                        <p-button label="New Service" icon="pi pi-plus" (onClick)="addService()" styleClass="p-button-sm p-button-success"></p-button>
-                      </div>
-                      <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scroll">
-                        @for (item of services; track item) {
-                          <div class="p-5 rounded-xl border border-white/5 bg-white/5">
-                            <input pInputText [(ngModel)]="item.title" class="w-full bg-black/20 border-white/10 text-white mb-2" />
-                            <textarea pInputTextarea [(ngModel)]="item.description" rows="2" class="w-full bg-black/20 border-white/10 text-white mb-3"></textarea>
-                            <div class="flex gap-2">
-                              <p-button icon="pi pi-save" (onClick)="saveService(item)" styleClass="p-button-sm p-button-info p-button-outlined"></p-button>
-                              <p-button icon="pi pi-trash" (onClick)="deleteService(item)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
-                            </div>
+                          <h4 class="text-lg font-bold text-blue-400">Plan #{{ aiMenuItems.indexOf(item) + 1 }}</h4>
+                        </div>
+
+                        <div class="grid gap-4 md:grid-cols-2">
+                          <div class="flex flex-col gap-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Title</label>
+                            <input pInputText [(ngModel)]="item.title" class="w-full bg-black/20 border-white/10 text-white" />
                           </div>
-                        }
+                          <div class="flex flex-col gap-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Price (e.g. ₹9,999)</label>
+                            <input pInputText [(ngModel)]="item.price" class="w-full bg-black/20 border-white/10 text-white" />
+                          </div>
+                          <div class="flex flex-col gap-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Billing Cycle (e.g. / mo)</label>
+                            <input pInputText [(ngModel)]="item.billingCycle" class="w-full bg-black/20 border-white/10 text-white" />
+                          </div>
+                          <div class="flex flex-col gap-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Icon Class</label>
+                            <input pInputText [(ngModel)]="item.icon" class="w-full bg-black/20 border-white/10 text-white" />
+                          </div>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                          <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Short Description</label>
+                          <textarea pInputTextarea [(ngModel)]="item.description" rows="2" class="w-full bg-black/20 border-white/10 text-white"></textarea>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                          <label class="text-[10px] font-black uppercase tracking-widest text-slate-500">Features (one per line)</label>
+                          <textarea pInputTextarea
+                                   [ngModel]="item.features?.join('\n')"
+                                   (ngModelChange)="updateItemFeatures(item, $event)"
+                                   rows="5" class="w-full bg-black/20 border-white/10 text-white" placeholder="Feature 1\nFeature 2..."></textarea>
+                        </div>
+
+                        <div class="flex gap-3 pt-4 border-t border-white/5">
+                          <p-button label="Save Plan" icon="pi pi-check" (onClick)="saveAiMenuItem(item)" styleClass="p-button-info flex-grow"></p-button>
+                          <p-button icon="pi pi-trash" (onClick)="deleteAiMenuItem(item)" styleClass="p-button-danger p-button-outlined"></p-button>
+                        </div>
                       </div>
-                    </div>
+                    }
+                 </div>
+              </p-tabPanel>
+
+              <p-tabPanel header="Services">
+                  <div class="mb-10 flex items-center justify-between border-b border-white/5 pb-4">
+                    <h3 class="text-xl font-bold text-white">General Services</h3>
+                    <p-button label="New Service" icon="pi pi-plus" (onClick)="addService()" styleClass="p-button-success p-button-sm"></p-button>
                   </div>
-                </p-tabPanel>
+                  <div class="grid gap-6 md:grid-cols-2">
+                    @for (item of services; track item.id) {
+                      <div class="p-6 rounded-xl border border-white/10 bg-white/5 space-y-4">
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Visible</span>
+                          <p-inputSwitch [(ngModel)]="item.isVisible"></p-inputSwitch>
+                        </div>
+                        <div class="grid gap-4">
+                          <input pInputText [(ngModel)]="item.title" placeholder="Service Title" class="w-full bg-black/20 border-white/10 text-white" />
+                          <input pInputText [(ngModel)]="item.icon" placeholder="Icon" class="w-full bg-black/20 border-white/10 text-white" />
+                          <textarea pInputTextarea [(ngModel)]="item.description" rows="3" placeholder="Description" class="w-full bg-black/20 border-white/10 text-white"></textarea>
+                        </div>
+                        <div class="flex gap-2">
+                          <p-button label="Save" icon="pi pi-save" (onClick)="saveService(item)" styleClass="p-button-sm p-button-info"></p-button>
+                          <p-button icon="pi pi-trash" (onClick)="deleteService(item)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
+                        </div>
+                      </div>
+                    }
+                  </div>
+              </p-tabPanel>
 
               <p-tabPanel header="Clients">
                 <div class="flex justify-end mb-6">
                    <p-button label="Register New Client" icon="pi pi-plus" (onClick)="addClient()" styleClass="p-button-success"></p-button>
                 </div>
                 <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                   @for (client of clients; track client) {
-                     <div class="p-6 rounded-2xl border border-white/5 bg-white/5 flex flex-col">
-                        <div class="h-32 w-full rounded-xl border border-white/5 bg-black/20 mb-4 flex items-center justify-center overflow-hidden p-4 relative group">
+                   @for (client of clients; track client.id) {
+                     <div class="p-6 rounded-2xl border border-white/5 bg-white/5 flex flex-col space-y-4">
+                        <div class="flex items-center justify-between">
+                          <span class="text-[10px] font-black uppercase tracking-widest text-slate-500">Visible</span>
+                          <p-inputSwitch [(ngModel)]="client.isVisible"></p-inputSwitch>
+                        </div>
+                        <div class="h-32 w-full rounded-xl border border-white/5 bg-black/20 flex items-center justify-center overflow-hidden p-4 relative group">
                           @if (client.imageUrl) {
                             <img [src]="client.imageUrl" class="max-h-full max-w-full object-contain" />
                           }
@@ -189,7 +251,7 @@ import { MessageService } from 'primeng/api';
                         <input pInputText [(ngModel)]="client.name" placeholder="Client Name" class="w-full bg-black/10 border-white/5 text-white mb-2" />
                         <input pInputText [(ngModel)]="client.website" placeholder="Website" class="w-full bg-black/10 border-white/5 text-white mb-4" />
                         <div class="mt-auto flex gap-2">
-                          <p-button label="Update" icon="pi pi-check" (onClick)="saveClient(client)" styleClass="p-button-sm w-full"></p-button>
+                          <p-button label="Update" icon="pi pi-check" (onClick)="saveClient(client)" styleClass="p-button-sm w-full p-button-info"></p-button>
                           <p-button icon="pi pi-trash" (onClick)="deleteClient(client)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
                         </div>
                      </div>
@@ -211,12 +273,16 @@ import { MessageService } from 'primeng/api';
                    <p-button label="Add Card" icon="pi pi-plus" (onClick)="addAboutCard()" styleClass="p-button-sm p-button-success"></p-button>
                 </div>
                 <div class="grid gap-6 md:grid-cols-2">
-                   @for (card of aboutCards; track card) {
-                     <div class="p-6 rounded-xl border border-white/5 bg-white/5">
-                        <input pInputText [(ngModel)]="card.title" class="w-full bg-black/20 border-white/10 text-white mb-4" />
-                        <textarea pInputTextarea [(ngModel)]="card.description" rows="3" class="w-full bg-black/20 border-white/10 text-white mb-4"></textarea>
+                   @for (card of aboutCards; track card.id) {
+                     <div class="p-6 rounded-xl border border-white/5 bg-white/5 space-y-4">
+                        <div class="flex items-center justify-between">
+                          <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Visible</span>
+                          <p-inputSwitch [(ngModel)]="card.isVisible"></p-inputSwitch>
+                        </div>
+                        <input pInputText [(ngModel)]="card.title" class="w-full bg-black/20 border-white/10 text-white" />
+                        <textarea pInputTextarea [(ngModel)]="card.description" rows="3" class="w-full bg-black/20 border-white/10 text-white"></textarea>
                         <div class="flex gap-2">
-                          <p-button label="Save" icon="pi pi-check" (onClick)="saveAboutCard(card)" styleClass="p-button-sm"></p-button>
+                          <p-button label="Save" icon="pi pi-check" (onClick)="saveAboutCard(card)" styleClass="p-button-sm p-button-info"></p-button>
                           <p-button icon="pi pi-trash" (onClick)="deleteAboutCard(card)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
                         </div>
                      </div>
@@ -227,17 +293,21 @@ import { MessageService } from 'primeng/api';
                   <p-button label="Add Event" icon="pi pi-plus" (onClick)="addAboutEvent()" styleClass="p-button-sm p-button-success"></p-button>
                 </div>
                 <div class="grid gap-6 md:grid-cols-2">
-                  @for (event of aboutEvents; track event) {
-                    <div class="p-6 rounded-xl border border-white/5 bg-white/5">
+                  @for (event of aboutEvents; track event.id) {
+                    <div class="p-6 rounded-xl border border-white/5 bg-white/5 space-y-4">
+                      <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-widest text-slate-500">Visible</span>
+                        <p-inputSwitch [(ngModel)]="event.isVisible"></p-inputSwitch>
+                      </div>
                       <div class="grid gap-4 mb-4 md:grid-cols-2">
                         <input pInputText [(ngModel)]="event.status" placeholder="Status" class="bg-black/20 border-white/10 text-white" />
                         <input pInputText [(ngModel)]="event.date" placeholder="Date" class="bg-black/20 border-white/10 text-white" />
-                        <input pInputText [(ngModel)]="event.icon" placeholder="Icon" class="bg-black/20 border-white/10 text-white" />
+                        <input pInputText [(ngModel)]="event.icon" placeholder="Icon" class="bg-black/20 border-white/10 text-white md:col-span-2" />
                         <textarea pInputTextarea [(ngModel)]="event.description" rows="2" placeholder="Description" class="bg-black/20 border-white/10 text-white md:col-span-2"></textarea>
                       </div>
                       <div class="flex gap-2">
-                        <p-button label="Save" icon="pi pi-check" (onClick)="saveAboutEvent(event)" styleClass="p-button-sm"></p-button>
-                        <p-button icon="pi pi-trash" (onClick)="deleteAboutEvent(event)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
+                        <p-button label="Save" icon="pi pi-check" (onClick)="saveAboutEvent(event)" styleClass="p-button-sm p-button-info"></p-button>
+                        <p-button icon="pi pi-trash" (onClick)="(deleteAboutEvent(event))" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
                       </div>
                     </div>
                   }
@@ -396,9 +466,13 @@ export class AdminComponent implements OnInit {
     await this.saveSettings();
   }
 
+  updateItemFeatures(item: ContentItem, text: string) {
+    item.features = text.split('\n').map(f => f.trim()).filter(Boolean);
+  }
+
   async addAboutEvent() {
     try {
-      await this.contentService.addAboutEvent({ status: 'New milestone', date: '', description: '', icon: 'pi pi-star' });
+      await this.contentService.addAboutEvent({ status: 'New milestone', date: '', description: '', icon: 'pi pi-star', isVisible: true });
       this.showSuccess('Event added');
     } catch (error) {
       this.showError(`Failed to add event: ${this.getErrorMessage(error)}`);
@@ -453,7 +527,7 @@ export class AdminComponent implements OnInit {
 
   async addHomeSection() {
     try {
-      await this.contentService.addHomeSection({ title: 'New Section', description: 'Add a short description.', icon: 'pi pi-star' });
+      await this.contentService.addHomeSection({ title: 'New Section', description: 'Add a short description.', icon: 'pi pi-star', isVisible: true });
       this.showSuccess('Section added');
     } catch (e) {
       this.showError('Failed to add section');
@@ -484,7 +558,7 @@ export class AdminComponent implements OnInit {
 
   async addAboutCard() {
     try {
-      await this.contentService.addAboutCard({ title: 'New Card', description: 'Add your content.' });
+      await this.contentService.addAboutCard({ title: 'New Card', description: 'Add your content.', isVisible: true });
       this.showSuccess('Card added');
     } catch (e) {
       this.showError('Failed to add card');
@@ -515,7 +589,7 @@ export class AdminComponent implements OnInit {
 
   async addService() {
     try {
-      await this.contentService.addService({ title: 'New Service', description: 'Add your service details.', icon: 'pi pi-cog' });
+      await this.contentService.addService({ title: 'New Service', description: 'Add your service details.', icon: 'pi pi-cog', isVisible: true });
       this.showSuccess('Service added');
     } catch (e) {
       this.showError('Failed to add service');
@@ -546,7 +620,7 @@ export class AdminComponent implements OnInit {
 
   async addAiMenuItem() {
     try {
-      await this.contentService.addAiMenuItem({ title: 'New AI Item', description: 'Add your content.', icon: 'pi pi-android' });
+      await this.contentService.addAiMenuItem({ title: 'New AI Item', description: 'Add your content.', icon: 'pi pi-android', isVisible: true });
       this.showSuccess('AI item added');
     } catch (e) {
       this.showError('Failed to add AI item');
@@ -577,7 +651,7 @@ export class AdminComponent implements OnInit {
 
   async addClient() {
     try {
-      await this.contentService.addClient({ name: 'New Client', imageUrl: '', website: '' });
+      await this.contentService.addClient({ name: 'New Client', imageUrl: '', website: '', isVisible: true });
       this.showSuccess('Client added');
     } catch (e) {
       this.showError('Failed to add client');

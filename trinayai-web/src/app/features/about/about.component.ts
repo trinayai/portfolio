@@ -1,36 +1,33 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { SiteContentService } from '../../core/services/site-content.service';
-import { AboutCard, AboutEvent, SiteSettings } from '../../core/models/site-content';
+import { AboutCard, SiteSettings, AboutEvent } from '../../core/models/site-content';
 import { TimelineModule } from 'primeng/timeline';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-about',
   standalone: true,
   imports: [CommonModule, TimelineModule, CardModule],
   template: `
-    <div class="min-h-[calc(100vh-5rem)] bg-white px-5 py-14 relative overflow-x-clip sm:px-8 sm:py-16 lg:px-10">
+    <div class="min-h-screen bg-white px-6 py-32 relative overflow-hidden">
       <!-- Background Elements -->
       <div class="absolute top-[20%] -left-[10%] h-[500px] w-[500px] bg-blue-50 blur-[150px] rounded-full"></div>
       <div class="absolute bottom-[10%] -right-[10%] h-[500px] w-[500px] bg-cyan-50 blur-[150px] rounded-full"></div>
 
       <div class="mx-auto max-w-7xl relative z-10">
-        <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
-          <div class="space-y-7">
+        <div class="grid gap-20 lg:grid-cols-2 lg:items-center">
+          <div class="space-y-10">
             <span class="inline-block rounded-full bg-blue-100 px-6 py-2 text-xs font-black uppercase tracking-[0.2em] text-blue-600">
-              {{ settings.aboutEyebrow }}
+              {{ settings.aboutEyebrow || 'Our Vision & Mission' }}
             </span>
-            <h2 class="text-4xl font-black tracking-tighter text-slate-900 sm:text-6xl leading-[0.98]">
-              {{ settings.aboutTitle }}
+            <h2 class="text-6xl font-black tracking-tighter text-slate-900 sm:text-7xl leading-[0.95]">
+              {{ settings.aboutTitle || 'Pioneering Ethical AI for Global Impact.' }}
             </h2>
-            <div class="space-y-5 text-base leading-relaxed text-slate-600 font-medium sm:text-xl">
-              <p>
-                {{ settings.aboutIntro }}
-              </p>
-              <p>
-                {{ settings.aboutBody }}
-              </p>
+            <div class="space-y-8 text-xl leading-relaxed text-slate-600 font-medium">
+              <p>{{ settings.aboutIntro || 'Trinayai Technologies Private Limited is a women-owned enterprise driving innovation in software development and artificial intelligence.' }}</p>
+              <p>{{ settings.aboutBody || 'As part of the India Startup ecosystem and aligned with the IndiaAI Mission, Trinayai is committed to delivering cutting-edge technology.' }}</p>
             </div>
           </div>
 
@@ -47,12 +44,12 @@ import { CommonModule } from '@angular/common';
         </div>
 
         <!-- Vision/Values Timeline -->
-        <div class="mt-20 sm:mt-24">
-          <h3 class="text-3xl font-black text-slate-900 text-center mb-12 tracking-tighter sm:text-4xl">{{ settings.aboutTimelineTitle }}</h3>
+        <div *ngIf="events.length > 0" class="mt-40">
+          <h3 class="text-4xl font-black text-slate-900 text-center mb-24 tracking-tighter">{{ settings.aboutTimelineTitle || 'Our Evolution' }}</h3>
           <p-timeline [value]="events" align="alternate" styleClass="customized-timeline">
             <ng-template pTemplate="marker" let-event>
                 <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg">
-                    <i [class]="event.icon" class="text-xl"></i>
+                    <i [class]="event.icon || 'pi pi-circle-fill'" class="text-xl"></i>
                 </span>
             </ng-template>
             <ng-template pTemplate="content" let-event>
@@ -79,12 +76,26 @@ import { CommonModule } from '@angular/common';
 export class AboutComponent implements OnInit {
   private contentService = inject(SiteContentService);
   cards: AboutCard[] = [];
-  settings: SiteSettings = { brandName: '', logoUrl: '', footerText: '', menuItems: [] };
+  settings: SiteSettings = { brandName: 'Trinay AI', logoUrl: '', footerText: '', menuItems: [] };
   events: AboutEvent[] = [];
 
   ngOnInit(): void {
-    this.contentService.getSettings().subscribe((settings: SiteSettings) => this.settings = settings || this.settings);
-    this.contentService.getAboutCards().subscribe((cards: AboutCard[]) => this.cards = cards);
-    this.contentService.getAboutEvents().subscribe((events: AboutEvent[]) => this.events = events);
+    this.contentService.getSettings().subscribe((settings: SiteSettings) => this.settings = { ...this.settings, ...settings });
+    this.contentService.getAboutCards().pipe(
+      map(cards => cards.filter(c => c.isVisible !== false))
+    ).subscribe((cards: AboutCard[]) => {
+      this.cards = cards.length ? cards : [
+        { title: 'Women-Led', description: 'Empowering diversity and innovation in the tech landscape.' },
+        { title: 'MSME Focused', description: 'Tailored solutions for small and medium enterprises.' },
+        { title: 'AI Driven', description: 'Leveraging LLMs for complex automation.' },
+        { title: 'IndiaAI Mission', description: 'Aligned with national goals for AI sovereignty.' }
+      ];
+    });
+
+    this.contentService.getAboutEvents().pipe(
+      map(events => events.filter(e => e.isVisible !== false))
+    ).subscribe((events: AboutEvent[]) => {
+      this.events = events;
+    });
   }
 }

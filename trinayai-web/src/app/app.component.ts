@@ -28,15 +28,15 @@ export class AppComponent implements OnInit {
   settings: SiteSettings = {
     brandName: 'TRINAY AI',
     logoUrl: 'assets/logo/Trinay-AI-Logo.png',
-    footerText: '© 2026 Trinayai Technologies Private Limited. All rights reserved. Tamil Nadu, India.',
-    contactEmail: 'admin@trinayai.com',
+    footerText: '© 2026 Trinayai Technologies Private Limited. All rights reserved. SF No. 224/8F8, Attur main road, Kumbakottai, Namagiripettai, Rasipuram, Namakkal, Tamil Nadu – 637406.',
+    contactEmail: 'info@trinayai.com',
     menuItems: [
-      { label: 'Home', route: '/', order: 0 },
-      { label: 'AI Menu', route: '/ai-menu', order: 1 },
-      { label: 'About', route: '/about', order: 2 },
-      { label: 'Services', route: '/services', order: 3 },
-      { label: 'Clients', route: '/clients', order: 4 },
-      { label: 'Contact', route: '/contact', order: 5 }
+      { label: 'Home', route: '/', order: 0, isVisible: true },
+      { label: 'Subscription', route: '/ai-menu', order: 1, isVisible: true },
+      { label: 'About', route: '/about', order: 2, isVisible: true },
+      { label: 'Services', route: '/services', order: 3, isVisible: true },
+      { label: 'Clients', route: '/clients', order: 4, isVisible: true },
+      { label: 'Contact', route: '/contact', order: 5, isVisible: true }
     ]
   };
 
@@ -60,10 +60,12 @@ export class AppComponent implements OnInit {
   }
 
   private updateMenuItems(): void {
-    this.items = this.settings.menuItems.map(item => ({
-      label: item.label,
-      routerLink: item.route,
-      routerLinkActiveOptions: { exact: true }
-    }));
+    this.items = this.settings.menuItems
+      .filter(item => item.isVisible !== false)
+      .map(item => ({
+        label: item.route === '/ai-menu' ? 'Subscription' : item.label,
+        routerLink: item.route,
+        routerLinkActiveOptions: { exact: true }
+      }));
   }
 }
