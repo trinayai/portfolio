@@ -1,6 +1,7 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Observable, of } from 'rxjs';
-import { catchError, shareReplay, startWith } from 'rxjs/operators';
+import { catchError, map, shareReplay, startWith } from 'rxjs/operators';
 import {
   Firestore,
   collectionData,
@@ -10,7 +11,8 @@ import {
   addDoc,
   setDoc,
   updateDoc,
-  deleteDoc
+  deleteDoc,
+  query
 } from '@angular/fire/firestore';
 import {
   Storage,
@@ -19,14 +21,30 @@ import {
   getDownloadURL,
   deleteObject
 } from '@angular/fire/storage';
-import { AboutCard, ClientItem, ContentItem, SectionItem, SiteSettings } from '../models/site-content';
+import { AboutCard, AboutEvent, ClientItem, ContentItem, SectionItem, SiteSettings } from '../models/site-content';
 
 @Injectable({ providedIn: 'root' })
 export class SiteContentService {
   private firestore = inject(Firestore);
   private storage = inject(Storage);
+  private platformId = inject(PLATFORM_ID);
   private settings$!: Observable<SiteSettings>;
   private collectionStreams = new Map<string, Observable<unknown[]>>();
+
+  private readonly defaultSettings: SiteSettings = {
+    brandName: 'TRINAY AI',
+    logoUrl: 'assets/logo/Trinay-AI-Logo.png',
+    footerText: '© 2026 Trinayai Technologies Private Limited. All rights reserved. SF No. 224/8F8, Attur main road, Kumbakottai, Namagiripettai, Rasipuram, Namakkal, Tamil Nadu – 637406.',
+    contactEmail: 'info@trinayai.com',
+    menuItems: [
+      { label: 'Home', route: '/', order: 0 },
+      { label: 'AI Menu', route: '/ai-menu', order: 1 },
+      { label: 'About', route: '/about', order: 2 },
+      { label: 'Services', route: '/services', order: 3 },
+      { label: 'Clients', route: '/clients', order: 4 },
+      { label: 'Contact', route: '/contact', order: 5 }
+    ]
+  };
 
   async uploadFile(file: File, path: string): Promise<string> {
     const storageRef = ref(this.storage, path);
@@ -41,11 +59,22 @@ export class SiteContentService {
 
   getSettings(): Observable<SiteSettings> {
     if (this.settings$) return this.settings$;
-    this.settings$ = (docData(doc(this.firestore, 'siteSettings', 'main'), { idField: 'id' }) as Observable<SiteSettings>).pipe(
-      startWith({} as SiteSettings),
-      catchError(() => of({} as SiteSettings)),
+
+    const settingsDocument$: Observable<Partial<SiteSettings> | null | undefined> = isPlatformBrowser(this.platformId)
+      ? docData(doc(this.firestore, 'siteSettings', 'main'), { idField: 'id' }) as Observable<Partial<SiteSettings> | undefined>
+      : of(null);
+
+    this.settings$ = settingsDocument$.pipe(
+      map(settings => ({
+        ...this.defaultSettings,
+        ...(settings || {}),
+        menuItems: settings?.menuItems?.length ? settings.menuItems : this.defaultSettings.menuItems
+      }) as SiteSettings),
+      startWith(this.defaultSettings),
+      catchError(() => of(this.defaultSettings)),
       shareReplay({ bufferSize: 1, refCount: true })
     );
+
     return this.settings$;
   }
 
@@ -72,6 +101,22 @@ export class SiteContentService {
 
   getAboutCards(): Observable<AboutCard[]> {
     return this.listenToCollection<AboutCard>('aboutCards');
+  }
+
+  getAboutEvents(): Observable<AboutEvent[]> {
+    return this.listenToCollection<AboutEvent>('aboutEvents');
+  }
+
+  async addAboutEvent(payload: Omit<AboutEvent, 'id'>) {
+    return addDoc(collection(this.firestore, 'aboutEvents'), payload);
+  }
+
+  async updateAboutEvent(id: string, payload: Partial<AboutEvent>) {
+    return updateDoc(doc(this.firestore, 'aboutEvents', id), payload);
+  }
+
+  async deleteAboutEvent(id: string) {
+    return deleteDoc(doc(this.firestore, 'aboutEvents', id));
   }
 
   async addAboutCard(payload: Omit<AboutCard, 'id'>) {
@@ -135,15 +180,13 @@ export class SiteContentService {
   }
 
   private listenToCollection<T>(collectionName: string): Observable<T[]> {
-    const cachedStream = this.collectionStreams.get(collectionName);
-    if (cachedStream) return cachedStream as Observable<T[]>;
-
-    const sharedStream = collectionData(collection(this.firestore, collectionName), { idField: 'id' }).pipe(
+    return collectionData(
+      query(collection(this.firestore, collectionName)),
+      { idField: 'id' }
+    ).pipe(
       startWith([]),
       catchError(() => of([])),
       shareReplay({ bufferSize: 1, refCount: true })
     ) as Observable<T[]>;
-    this.collectionStreams.set(collectionName, sharedStream as Observable<unknown[]>);
-    return sharedStream;
   }
 }

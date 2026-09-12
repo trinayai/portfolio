@@ -7,6 +7,7 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import { routes } from './app.routes';
 import { MessageService, FilterService } from 'primeng/api';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getApp } from 'firebase/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { getFunctions, provideFunctions } from '@angular/fire/functions';
@@ -24,7 +25,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideAnimations(),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore()),
+    provideFirestore(() => getFirestore(getApp(), 'appdata')),
     provideStorage(() => getStorage()),
     provideFunctions(() => getFunctions(undefined, 'asia-south2')),
     MessageService,

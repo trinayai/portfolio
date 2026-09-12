@@ -1,6 +1,6 @@
-<header class="site-header fixed top-0 z-50 w-full border-b border-slate-200 bg-white shadow-sm">
+<header class="site-header fixed top-0 z-50 w-full border-b border-slate-200 bg-white shadow-sm" ngSkipHydration>
   <div class="mx-auto max-w-7xl px-4 flex items-center h-20">
-    <!-- Brand Identity - Outside Menubar to prevent hydration duplication -->
+    <!-- Brand Identity -->
     <a routerLink="/" class="flex items-center no-underline group mr-8 flex-shrink-0">
       <div class="logo-container">
         <img [src]="settings.logoUrl" alt="Trinay AI" class="h-14 w-auto object-contain transition-transform group-hover:scale-105" />
@@ -17,13 +17,13 @@
             <span class="text-xs font-bold uppercase tracking-widest text-slate-600 group-hover:text-slate-900">{{ item.label }}</span>
           </a>
         </ng-template>
-        <ng-template pTemplate="end">
-            <div class="hidden lg:flex items-center gap-4 ml-8">
-                <p-button label="Portal" icon="pi pi-shield"
-                          styleClass="p-button-raised p-button-rounded bg-blue-600 border-none px-6 py-2.5 font-bold uppercase tracking-widest text-white shadow-md hover:bg-blue-700"></p-button>
-            </div>
-        </ng-template>
       </p-menubar>
+    </div>
+
+    <!-- Right Side Actions -->
+    <div class="hidden lg:flex items-center gap-4 ml-8">
+        <p-button label="Portal" icon="pi pi-shield"
+                  styleClass="p-button-raised p-button-rounded bg-blue-600 border-none px-6 py-2.5 font-bold uppercase tracking-widest text-white shadow-md hover:bg-blue-700"></p-button>
     </div>
   </div>
 </header>
@@ -35,12 +35,12 @@
 <footer class="border-t border-slate-200 bg-white py-12">
   <div class="mx-auto max-w-7xl px-6 text-center">
     <div class="mb-8 flex justify-center gap-6 text-slate-400">
-      <a href="#" class="hover:text-blue-600 transition-colors"><i class="pi pi-twitter"></i></a>
-      <a href="#" class="hover:text-blue-800 transition-colors"><i class="pi pi-linkedin"></i></a>
-      <a href="#" class="hover:text-slate-900 transition-colors"><i class="pi pi-github"></i></a>
+      <a href="https://www.linkedin.com/in/trinayai-technologies-aa5aa5434/" class="hover:text-blue-800 transition-colors"><i class="pi pi-linkedin"></i></a>
+      <a href="https://www.facebook.com/profile.php?id=61594227631346" class="hover:text-slate-900 transition-colors"><i class="pi pi-facebook"></i></a>
+      <a href="https://www.instagram.com/trinayai/" class="hover:text-slate-900 transition-colors"><i class="pi pi-instagram"></i></a>
     </div>
     <p class="text-sm tracking-wide text-slate-600 max-w-3xl mx-auto leading-relaxed">
-      {{ settings.footerText || '© 2026 Trinayai Technologies Private Limited. All rights reserved. Tamil Nadu, India.' }} Trinay AI is a women-led technology company building IndiaAI-aligned solutions for MSMEs and global teams.
+      {{ settings.footerText }}
     </p>
     <div class="mt-4 flex justify-center gap-8 text-xs font-medium uppercase tracking-tighter text-slate-500">
       <a href="#" class="hover:text-slate-900">Privacy Policy</a>

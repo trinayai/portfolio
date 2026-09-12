@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { SiteContentService } from '../../core/services/site-content.service';
-import { AboutCard, SiteSettings } from '../../core/models/site-content';
+import { AboutCard, AboutEvent, SiteSettings } from '../../core/models/site-content';
 import { TimelineModule } from 'primeng/timeline';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
@@ -19,19 +19,17 @@ import { CommonModule } from '@angular/common';
         <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
           <div class="space-y-7">
             <span class="inline-block rounded-full bg-blue-100 px-6 py-2 text-xs font-black uppercase tracking-[0.2em] text-blue-600">
-              Our Vision & Mission
+              {{ settings.aboutEyebrow }}
             </span>
             <h2 class="text-4xl font-black tracking-tighter text-slate-900 sm:text-6xl leading-[0.98]">
-              Pioneering <span class="text-blue-600">Ethical AI</span> for Global Impact.
+              {{ settings.aboutTitle }}
             </h2>
             <div class="space-y-5 text-base leading-relaxed text-slate-600 font-medium sm:text-xl">
               <p>
-                Trinayai Technologies Private Limited is a women-owned enterprise driving innovation in software development and artificial intelligence.
-                We specialize in building advanced LLMs and AI models tailored for MSMEs, empowering businesses with compliance automation and digital transformation.
+                {{ settings.aboutIntro }}
               </p>
               <p>
-                As part of the India Startup ecosystem and aligned with the IndiaAI Mission, Trinayai is committed to delivering cutting-edge technology
-                with a focus on accessibility, efficiency, and impact across India’s growing MSME sector.
+                {{ settings.aboutBody }}
               </p>
             </div>
           </div>
@@ -50,7 +48,7 @@ import { CommonModule } from '@angular/common';
 
         <!-- Vision/Values Timeline -->
         <div class="mt-20 sm:mt-24">
-          <h3 class="text-3xl font-black text-slate-900 text-center mb-12 tracking-tighter sm:text-4xl">Our Evolution</h3>
+          <h3 class="text-3xl font-black text-slate-900 text-center mb-12 tracking-tighter sm:text-4xl">{{ settings.aboutTimelineTitle }}</h3>
           <p-timeline [value]="events" align="alternate" styleClass="customized-timeline">
             <ng-template pTemplate="marker" let-event>
                 <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg">
@@ -81,24 +79,12 @@ import { CommonModule } from '@angular/common';
 export class AboutComponent implements OnInit {
   private contentService = inject(SiteContentService);
   cards: AboutCard[] = [];
-  settings: SiteSettings = { brandName: 'Trinay AI', logoUrl: '', footerText: '', menuItems: [] };
-  events: any[] = [];
+  settings: SiteSettings = { brandName: '', logoUrl: '', footerText: '', menuItems: [] };
+  events: AboutEvent[] = [];
 
   ngOnInit(): void {
     this.contentService.getSettings().subscribe((settings: SiteSettings) => this.settings = settings || this.settings);
-    this.contentService.getAboutCards().subscribe((cards: AboutCard[]) => {
-      this.cards = cards.length ? cards : [
-        { title: 'Women-Led', description: 'Empowering diversity and innovation in the tech landscape.' },
-        { title: 'MSME Focused', description: 'Tailored solutions for small and medium enterprises.' },
-        { title: 'AI Driven', description: 'Leveraging LLMs for complex automation.' },
-        { title: 'IndiaAI Mission', description: 'Aligned with national goals for AI sovereignty.' }
-      ];
-    });
-
-    this.events = [
-      { status: 'Foundation', date: '2024', icon: 'pi pi-flag', description: 'Establishment of Trinayai Technologies with a vision for ethical AI.' },
-      { status: 'MSME Launch', date: '2025', icon: 'pi pi-rocket', description: 'Rolling out first set of LLM tools for small businesses.' },
-      { status: 'Scaling Up', date: '2026', icon: 'pi pi-chart-line', description: 'Expanding compliance automation platform across India.' }
-    ];
+    this.contentService.getAboutCards().subscribe((cards: AboutCard[]) => this.cards = cards);
+    this.contentService.getAboutEvents().subscribe((events: AboutEvent[]) => this.events = events);
   }
 }

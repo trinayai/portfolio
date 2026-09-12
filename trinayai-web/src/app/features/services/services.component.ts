@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { SiteContentService } from '../../core/services/site-content.service';
 import { ContentItem } from '../../core/models/site-content';
+import { SiteSettings } from '../../core/models/site-content';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 
@@ -17,13 +18,13 @@ import { CommonModule } from '@angular/common';
       <div class="mx-auto max-w-7xl relative z-10">
         <div class="mb-12 text-center">
           <span class="inline-block rounded-full bg-blue-100 px-6 py-2 text-xs font-black uppercase tracking-[0.2em] text-blue-600 mb-8">
-            Expertise & Capabilities
+            {{ settings.servicesEyebrow }}
           </span>
           <h2 class="text-4xl font-black tracking-tighter text-slate-900 sm:text-6xl">
-            Our <span class="text-blue-600">Technology Services</span>
+            {{ settings.servicesTitle }}
           </h2>
           <p class="mx-auto mt-5 max-w-3xl text-base text-slate-500 font-medium leading-relaxed sm:text-xl">
-            Practical software and technology services that help organizations launch products, improve operations and grow with confidence.
+            {{ settings.servicesDescription }}
           </p>
         </div>
 
@@ -69,17 +70,12 @@ import { CommonModule } from '@angular/common';
 export class ServicesComponent implements OnInit {
   private contentService = inject(SiteContentService);
   services: ContentItem[] = [];
+  settings: SiteSettings = { brandName: '', logoUrl: '', footerText: '', menuItems: [] };
 
   ngOnInit(): void {
+    this.contentService.getSettings().subscribe(settings => this.settings = { ...this.settings, ...settings });
     this.contentService.getServices().subscribe((services: ContentItem[]) => {
-      this.services = services.length ? services : [
-        { title: 'Custom Software Development', description: 'Plan, design and build reliable web, mobile and business applications tailored to your goals, users and workflows.', icon: 'pi pi-code' },
-        { title: 'Digital Product Engineering', description: 'Turn ideas into launch-ready products with user experience design, rapid prototyping, quality engineering and ongoing improvement.', icon: 'pi pi-mobile' },
-        { title: 'AI, Automation & Data', description: 'Apply practical AI, intelligent automation, integrations and analytics to reduce manual work and make better decisions.', icon: 'pi pi-sparkles' },
-        { title: 'Cloud & Platform Engineering', description: 'Build secure, scalable cloud platforms with modern architecture, APIs, DevOps, observability and performance in mind.', icon: 'pi pi-cloud' },
-        { title: 'Modernization & Support', description: 'Improve legacy systems, strengthen security, connect business tools and provide dependable support as your organization evolves.', icon: 'pi pi-refresh' },
-        { title: 'Technology Consulting', description: 'Get clear technical direction for product strategy, architecture, delivery planning and technology decisions at every stage.', icon: 'pi pi-compass' }
-      ];
+      this.services = services;
     });
   }
 }

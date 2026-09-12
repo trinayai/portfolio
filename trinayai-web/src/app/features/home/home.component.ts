@@ -26,30 +26,30 @@ import { ThreeUiComponent } from '../three-ui/three-ui.component';
                 <span class="flex h-6 w-6 items-center justify-center rounded-full bg-cyan-500 text-[10px] text-white">
                   <i class="pi pi-sparkles"></i>
                 </span>
-                {{ settings.heroBadge || 'Empowering MSMEs through IndiaAI Mission' }}
+                {{ settings.heroBadge }}
               </div>
 
               <h1 class="max-w-2xl text-3xl font-black leading-[2] text-slate-700 sm:text-3xl lg:text-4xl">
-                {{ settings.heroDescription || 'Digital AI' }}
+                {{ settings.heroDescription }}
                 <span class="block bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 bg-clip-text text-transparent">
-                  {{ settings.brandName || 'TrinayAI' }}
+                  {{ settings.brandName }}
                 </span>
               </h1>
 
               <p class="max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg font-medium">
-                We design and build dependable software products, AI solutions and digital platforms for organizations ready to grow globally.
+                {{ settings.homeDescription }}
               </p>
 
               <div class="flex flex-wrap gap-1 pt-2 sm:gap-2">
                 <p-button
-                  [label]="settings.heroPrimaryCtaText || 'Explore Solutions'"
-                  [routerLink]="settings.heroPrimaryCtaRoute || '/ai-menu'"
+                  [label]="settings.heroPrimaryCtaText"
+                  [routerLink]="settings.heroPrimaryCtaRoute"
                   styleClass="p-button-outlined p-button-rounded bg-blue-600 border-none px-6 py-4 font-black uppercase tracking-widest text-white shadow-lg transition duration-300 hover:bg-blue-700 sm:px-8">
                 </p-button>
 
                 <p-button
-                  [label]="settings.heroSecondaryCtaText || 'View Services'"
-                  [routerLink]="settings.heroSecondaryCtaRoute || '/services'"
+                  [label]="settings.heroSecondaryCtaText"
+                  [routerLink]="settings.heroSecondaryCtaRoute"
                   styleClass="p-button-outlined p-button-rounded border-slate-300 text-slate-700 px-6 py-4 font-black uppercase tracking-widest hover:bg-white transition duration-300 sm:px-8">
                 </p-button>
               </div>
@@ -96,16 +96,17 @@ import { ThreeUiComponent } from '../three-ui/three-ui.component';
                 </p-card>
               </ng-container>
 
-              <!-- Extra Wide Interactive Card -->
+              <ng-container *ngIf="homeSections[3]">
               <p-card styleClass="storybook-card h-full border border-slate-200 bg-gradient-to-r from-white to-cyan-50 transition-all duration-300 hover:border-cyan-400 hover:shadow-xl group relative shadow-sm">
                 <div class="relative z-10 flex h-full flex-col justify-center">
-                  <h3 class="text-2xl font-black text-slate-900 mb-3">Scale with Certainty</h3>
-                  <p class="storybook-copy text-slate-600 text-sm font-medium max-w-md">Our specialized MSME engine keeps your AI journey secure.</p>
+                  <h3 class="text-2xl font-black text-slate-900 mb-3">{{ homeSections[3].title }}</h3>
+                  <p class="storybook-copy text-slate-600 text-sm font-medium max-w-md">{{ homeSections[3].description }}</p>
                   <div class="mt-4">
-                    <p-button label="View Roadmap" icon="pi pi-map" styleClass="p-button-text text-cyan-600 p-0 font-bold uppercase tracking-widest hover:text-blue-700"></p-button>
+                    <p-button [label]="settings.homeScaleCtaText" icon="pi pi-map" styleClass="p-button-text text-cyan-600 p-0 font-bold uppercase tracking-widest hover:text-blue-700"></p-button>
                   </div>
                 </div>
               </p-card>
+              </ng-container>
 
             </div>
           </div>
@@ -172,7 +173,7 @@ import { ThreeUiComponent } from '../three-ui/three-ui.component';
 })
 export class HomeComponent implements OnInit {
   private contentService = inject(SiteContentService);
-  settings: SiteSettings = { brandName: 'TRINAYAI', logoUrl: '', footerText: '', menuItems: [], showIndiaAiBadge: false, heroBadge: 'Software, AI & Digital Products', heroTitle: 'Technology that moves your business forward', heroDescription: 'Building better digital products with', heroPrimaryCtaText: 'Explore Solutions', heroPrimaryCtaRoute: '/ai-menu', heroSecondaryCtaText: 'See Services', heroSecondaryCtaRoute: '/services' };
+  settings: SiteSettings = { brandName: '', logoUrl: '', footerText: '', menuItems: [] };
   homeSections: SectionItem[] = [];
 
   ngOnInit(): void {
@@ -180,11 +181,7 @@ export class HomeComponent implements OnInit {
       this.settings = { ...this.settings, ...settings };
     });
     this.contentService.getHomeSections().subscribe((sections: SectionItem[]) => {
-      this.homeSections = sections.length ? sections : [
-        { title: 'Software Products', description: 'From web and mobile apps to internal platforms, we build digital products around real customer and business needs.', icon: 'pi pi-desktop' },
-        { title: 'Intelligent Automation', description: 'Connect systems, simplify repetitive work and use AI where it creates measurable value for your team.', icon: 'pi pi-bolt' },
-        { title: 'Cloud-ready Growth', description: 'Modernize your technology foundation with secure architecture, reliable delivery and room to scale.', icon: 'pi pi-cloud' }
-      ];
+      this.homeSections = sections;
     });
   }
 }

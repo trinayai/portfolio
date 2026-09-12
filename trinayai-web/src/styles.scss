@@ -26,19 +26,7 @@ html, body {
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   background-color: var(--bg-light);
   color: var(--text-main);
-  overflow-x: clip;
-}
-
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
-img, svg, video, canvas {
-  max-width: 100%;
-}
-
-main {
-  min-width: 0;
+  overflow-x: hidden;
 }
 
 /* Global Font Override */
@@ -57,41 +45,22 @@ body, .p-component, .p-button, .p-inputtext, .p-menubar, .p-menuitem-text, .p-ta
 }
 
 .logo-container img {
-  height: 60px;
+  height: 48px;
   width: auto;
-  object-contain: contain;
+  object-fit: contain;
 }
 
 /* PrimeNG Overrides for White Header */
 .custom-nav {
-  position: relative;
-  min-width: 0;
   background: transparent !important;
-  border: 0 !important;
-
-  .p-menubar-root-list {
-    background: transparent !important;
-  }
-
-  .p-menuitem-content {
-    background: transparent !important;
-  }
-
   .p-menubar-button {
     color: var(--secondary-slate) !important;
-    width: 2.75rem !important;
-    height: 2.75rem !important;
-    border-radius: 0.75rem !important;
   }
   .p-menuitem-link {
     background: transparent !important;
-    color: var(--text-muted) !important;
     &:hover {
       background: var(--bg-subtle) !important;
     }
-  }
-  .p-menuitem-text {
-    color: inherit !important;
   }
   .active-link {
     background: var(--bg-subtle) !important;
@@ -103,80 +72,10 @@ body, .p-component, .p-button, .p-inputtext, .p-menubar, .p-menuitem-text, .p-ta
   }
 }
 
-@media screen and (max-width: 960px) {
-  .site-header > div {
-    height: 4.5rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .logo-container img {
-    height: 3.25rem;
-  }
-
-  .site-header .custom-nav {
-    width: 100% !important;
-  }
-
-  .site-header .custom-nav .p-menubar-root-list {
-    top: calc(100% + 0.75rem) !important;
-    right: 0 !important;
-    left: auto !important;
-    width: min(calc(100vw - 2rem), 22rem) !important;
-    padding: 0.5rem !important;
-    background: var(--bg-light) !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 0.75rem !important;
-    box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.14) !important;
-  }
-
-  .site-header .custom-nav.p-menubar-mobile-active .p-menuitem,
-  .site-header .custom-nav.p-menubar-mobile-active .p-menuitem-content,
-  .site-header .custom-nav.p-menubar-mobile-active .p-menuitem-link {
-    width: 100% !important;
-  }
-
-  .site-header .custom-nav.p-menubar-mobile-active .p-menuitem-link {
-    min-height: 2.75rem;
-    padding: 0.75rem 1rem !important;
-    border-radius: 0.5rem !important;
-    color: var(--text-main) !important;
-  }
-
-  .site-header .custom-nav.p-menubar-mobile-active .p-menuitem-link:hover,
-  .site-header .custom-nav.p-menubar-mobile-active .p-menuitem-link:focus-visible,
-  .site-header .custom-nav.p-menubar-mobile-active .active-link {
-    background: #eff6ff !important;
-    border-bottom: 0 !important;
-    color: var(--primary-blue) !important;
-    outline: none;
-  }
-
-  .site-header .custom-nav.p-menubar-mobile-active .p-menuitem-link .p-menuitem-text {
-    color: inherit !important;
-    font-size: 0.75rem;
-    line-height: 1.25rem;
-  }
-}
-
-@media screen and (max-width: 640px) {
-  .site-header > div {
-    height: 4rem;
-  }
-
-  .site-header .logo-container {
-    margin-right: 0;
-  }
-
-  main {
-    padding-top: 4rem !important;
-  }
-}
-
 .p-button.p-button-raised {
   background: var(--primary-blue);
   border: none;
-  padding: 0.75rem 1.5rem !important; /* Perfected padding */
+  padding: 0.75rem 1.5rem !important;
   border-radius: 10px !important;
   font-weight: 700 !important;
   letter-spacing: 0.05em !important;
@@ -186,6 +85,12 @@ body, .p-component, .p-button, .p-inputtext, .p-menubar, .p-menuitem-text, .p-ta
     transform: translateY(-1px);
     box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
   }
+}
+
+/* Ensure no grayscale filters are applied globally */
+img {
+  filter: none !important;
+  opacity: 1 !important;
 }
 
 /* Custom scrollbar */
@@ -200,10 +105,6 @@ body, .p-component, .p-button, .p-inputtext, .p-menubar, .p-menuitem-text, .p-ta
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
 }
 
 /* Fix for OTS parsing error */

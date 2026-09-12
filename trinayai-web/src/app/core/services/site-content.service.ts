@@ -2,9 +2,9 @@ import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable, of } from 'rxjs';
 import { catchError, map, shareReplay, startWith } from 'rxjs/operators';
-import { Firestore, addDoc, collection, collectionData, deleteDoc, doc, setDoc, updateDoc, docData } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, deleteDoc, doc, setDoc, updateDoc, docData, query, orderBy } from '@angular/fire/firestore';
 import { Storage, deleteObject, getDownloadURL, ref, uploadBytes } from '@angular/fire/storage';
-import { AboutCard, ClientItem, ContentItem, SectionItem, SiteSettings } from '../models/site-content';
+import { AboutCard, AboutEvent, ClientItem, ContentItem, SectionItem, SiteSettings } from '../models/site-content';
 
 @Injectable({ providedIn: 'root' })
 export class SiteContentService {
@@ -18,7 +18,7 @@ export class SiteContentService {
     brandName: 'TRINAY AI',
     logoUrl: 'assets/logo/Trinay-AI-Logo.png',
     footerText: '© 2026 Trinayai Technologies Private Limited. All rights reserved. Tamil Nadu, India.',
-    contactEmail: 'admin@trinayai.com',
+    contactEmail: 'info@trinayai.com',
     menuItems: [
       { label: 'Home', route: '/', order: 0 },
       { label: 'AI Menu', route: '/ai-menu', order: 1 },
@@ -83,6 +83,22 @@ export class SiteContentService {
     return this.listenToCollection<AboutCard>('aboutCards');
   }
 
+  getAboutEvents(): Observable<AboutEvent[]> {
+    return this.listenToCollection<AboutEvent>('aboutEvents');
+  }
+
+  async addAboutEvent(payload: Omit<AboutEvent, 'id'>) {
+    return addDoc(collection(this.firestore, 'aboutEvents'), payload);
+  }
+
+  async updateAboutEvent(id: string, payload: Partial<AboutEvent>) {
+    return updateDoc(doc(this.firestore, 'aboutEvents', id), payload);
+  }
+
+  async deleteAboutEvent(id: string) {
+    return deleteDoc(doc(this.firestore, 'aboutEvents', id));
+  }
+
   async addAboutCard(payload: Omit<AboutCard, 'id'>) {
     return addDoc(collection(this.firestore, 'aboutCards'), payload);
   }
@@ -144,17 +160,14 @@ export class SiteContentService {
   }
 
   private listenToCollection<T>(collectionName: string): Observable<T[]> {
-    const cachedStream = this.collectionStreams.get(collectionName);
-    if (cachedStream) return cachedStream as Observable<T[]>;
-
-    const collectionStream = isPlatformBrowser(this.platformId)
-      ? collectionData(collection(this.firestore, collectionName), { idField: 'id' }).pipe(
-        startWith([]),
-        catchError(() => of([]))
-      )
-      : of([]);
-    const sharedStream = collectionStream.pipe(shareReplay({ bufferSize: 1, refCount: true })) as Observable<T[]>;
-    this.collectionStreams.set(collectionName, sharedStream as Observable<unknown[]>);
-    return sharedStream;
+    // Remove stream caching and browser check to ensure consistent data across SSR and hydration
+    return collectionData(
+      query(collection(this.firestore, collectionName)),
+      { idField: 'id' }
+    ).pipe(
+      startWith([]),
+      catchError(() => of([])),
+      shareReplay({ bufferSize: 1, refCount: true })
+    ) as Observable<T[]>;
   }
 }

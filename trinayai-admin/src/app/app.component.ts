@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { SiteContentService } from './core/services/site-content.service';
 import { SiteSettings } from './core/models/site-content';
 import { MenubarModule } from 'primeng/menubar';
@@ -9,44 +10,41 @@ import { MenuItem } from 'primeng/api';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, MenubarModule, ButtonModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    MenubarModule,
+    ButtonModule
+  ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'trinayai-web';
+  title = 'trinayai-admin';
   private contentService = inject(SiteContentService);
   items: MenuItem[] = [];
   settings: SiteSettings = {
-    brandName: 'TRINAYAI',
+    brandName: 'TRINAY AI',
     logoUrl: 'assets/logo/Trinay-AI-Logo.png',
-    footerText: '© 2026 Trinayai Technologies Private Limited. All rights reserved. Tamil Nadu, India.',
-    contactEmail: 'admin@trinayai.com',
+    footerText: '© 2026 Trinayai Technologies Private Limited. All rights reserved. SF No. 224/8F8, Attur main road, Kumbakottai, Namagiripettai, Rasipuram, Namakkal, Tamil Nadu – 637406.',
+    contactEmail: 'info@trinayai.com',
     menuItems: [
-      { label: 'AI Menu', route: '/ai-menu', order: 1 },
-      { label: 'About', route: '/about', order: 2 },
-      { label: 'Services', route: '/services', order: 3 },
-      { label: 'Clients', route: '/clients', order: 4 },
-      { label: 'Contact', route: '/contact', order: 5 }
+      { label: 'Admin', route: '/admin', order: 1 }
     ]
   };
 
   ngOnInit(): void {
+    this.updateMenuItems();
     this.contentService.getSettings().subscribe((settings: SiteSettings) => {
       this.settings = {
         ...this.settings,
         ...settings,
-        footerText: this.compactFooterText(settings.footerText),
         menuItems: settings?.menuItems?.length ? settings.menuItems : this.settings.menuItems
       };
       this.updateMenuItems();
     });
-  }
-
-  private compactFooterText(footerText?: string): string {
-    const fallback = '© 2026 Trinayai Technologies Private Limited. All rights reserved. Tamil Nadu, India.';
-    if (!footerText) return fallback;
-    return footerText.replace(/SF No\..*?(Tamil Nadu\s*[–-]\s*\d{6}|Tamil Nadu,?\s*India)\.?/i, 'Tamil Nadu, India.');
   }
 
   private updateMenuItems(): void {

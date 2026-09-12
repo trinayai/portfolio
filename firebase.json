@@ -3,7 +3,7 @@
     "rules": "database.rules.json"
   },
   "firestore": {
-    "database": "default",
+    "database": "appdata",
     "location": "asia-south2",
     "rules": "firestore.rules"
   },

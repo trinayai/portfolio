@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { User } from '@angular/fire/auth';
 import { AuthService } from '../../core/services/auth.service';
 import { SiteContentService } from '../../core/services/site-content.service';
-import { AboutCard, ClientItem, ContentItem, SectionItem, SiteSettings } from '../../core/models/site-content';
+import { AboutCard, AboutEvent, ClientItem, ContentItem, SectionItem, SiteSettings } from '../../core/models/site-content';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
@@ -61,6 +61,10 @@ import { MessageService } from 'primeng/api';
                         <input type="checkbox" [(ngModel)]="settings.showIndiaAiBadge" />
                         Show IndiaAI Mission badge on the home hero
                       </label>
+                      <div class="grid gap-4 md:grid-cols-2">
+                        <input pInputText [(ngModel)]="settings.homeDescription" placeholder="Home supporting description" class="bg-black/20 border-white/10 text-white" />
+                        <input pInputText [(ngModel)]="settings.homeScaleCtaText" placeholder="Home scale CTA" class="bg-black/20 border-white/10 text-white" />
+                      </div>
                       <p-button label="Save Branding" icon="pi pi-save" (onClick)="saveSettings()" styleClass="p-button-info w-full md:w-auto"></p-button>
                    </div>
                    <div class="space-y-4">
@@ -92,6 +96,10 @@ import { MessageService } from 'primeng/api';
                         <div class="flex flex-col gap-2">
                           <label class="text-xs font-bold uppercase tracking-widest text-slate-500">CTA Text</label>
                           <input pInputText [(ngModel)]="settings.heroPrimaryCtaText" class="bg-black/20 border-white/10 text-white" />
+                        </div>
+                        <div class="flex flex-col gap-2 md:col-span-2">
+                          <label class="text-xs font-bold uppercase tracking-widest text-slate-500">Scale Card Description</label>
+                          <textarea pInputTextarea [(ngModel)]="settings.homeScaleDescription" rows="2" class="bg-black/20 border-white/10 text-white"></textarea>
                         </div>
                      </div>
                      <p-button label="Save Hero Settings" icon="pi pi-save" (onClick)="saveSettings()" styleClass="mt-4 p-button-info p-button-sm"></p-button>
@@ -190,6 +198,14 @@ import { MessageService } from 'primeng/api';
               </p-tabPanel>
 
               <p-tabPanel header="About Info">
+                <div class="grid gap-4 mb-8 md:grid-cols-2">
+                  <input pInputText [(ngModel)]="settings.aboutEyebrow" placeholder="About eyebrow" class="bg-black/20 border-white/10 text-white" />
+                  <input pInputText [(ngModel)]="settings.aboutTitle" placeholder="About title" class="bg-black/20 border-white/10 text-white" />
+                  <textarea pInputTextarea [(ngModel)]="settings.aboutIntro" rows="3" placeholder="About introduction" class="bg-black/20 border-white/10 text-white"></textarea>
+                  <textarea pInputTextarea [(ngModel)]="settings.aboutBody" rows="3" placeholder="About second paragraph" class="bg-black/20 border-white/10 text-white"></textarea>
+                  <input pInputText [(ngModel)]="settings.aboutTimelineTitle" placeholder="Timeline title" class="bg-black/20 border-white/10 text-white" />
+                  <p-button label="Save About Copy" icon="pi pi-save" (onClick)="saveSettings()" styleClass="p-button-info"></p-button>
+                </div>
                 <div class="flex items-center justify-between mb-6">
                    <h3 class="text-xl font-bold text-white">About Page Cards</h3>
                    <p-button label="Add Card" icon="pi pi-plus" (onClick)="addAboutCard()" styleClass="p-button-sm p-button-success"></p-button>
@@ -205,6 +221,54 @@ import { MessageService } from 'primeng/api';
                         </div>
                      </div>
                    }
+                </div>
+                <div class="mt-10 flex items-center justify-between mb-6">
+                  <h3 class="text-xl font-bold text-white">Timeline Events</h3>
+                  <p-button label="Add Event" icon="pi pi-plus" (onClick)="addAboutEvent()" styleClass="p-button-sm p-button-success"></p-button>
+                </div>
+                <div class="grid gap-6 md:grid-cols-2">
+                  @for (event of aboutEvents; track event) {
+                    <div class="p-6 rounded-xl border border-white/5 bg-white/5">
+                      <div class="grid gap-4 mb-4 md:grid-cols-2">
+                        <input pInputText [(ngModel)]="event.status" placeholder="Status" class="bg-black/20 border-white/10 text-white" />
+                        <input pInputText [(ngModel)]="event.date" placeholder="Date" class="bg-black/20 border-white/10 text-white" />
+                        <input pInputText [(ngModel)]="event.icon" placeholder="Icon" class="bg-black/20 border-white/10 text-white" />
+                        <textarea pInputTextarea [(ngModel)]="event.description" rows="2" placeholder="Description" class="bg-black/20 border-white/10 text-white md:col-span-2"></textarea>
+                      </div>
+                      <div class="flex gap-2">
+                        <p-button label="Save" icon="pi pi-check" (onClick)="saveAboutEvent(event)" styleClass="p-button-sm"></p-button>
+                        <p-button icon="pi pi-trash" (onClick)="deleteAboutEvent(event)" styleClass="p-button-sm p-button-danger p-button-outlined"></p-button>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </p-tabPanel>
+
+              <p-tabPanel header="Page Copy">
+                <div class="grid gap-6 md:grid-cols-2">
+                  <input pInputText [(ngModel)]="settings.clientsEyebrow" placeholder="Clients eyebrow" class="bg-black/20 border-white/10 text-white" />
+                  <input pInputText [(ngModel)]="settings.clientsTitle" placeholder="Clients title" class="bg-black/20 border-white/10 text-white" />
+                  <textarea pInputTextarea [(ngModel)]="settings.clientsDescription" rows="3" placeholder="Clients description" class="bg-black/20 border-white/10 text-white md:col-span-2"></textarea>
+                  <input pInputText [(ngModel)]="settings.clientsCtaTitle" placeholder="Clients CTA title" class="bg-black/20 border-white/10 text-white" />
+                  <input pInputText [(ngModel)]="settings.clientsCtaText" placeholder="Clients CTA button" class="bg-black/20 border-white/10 text-white" />
+                  <textarea pInputTextarea [(ngModel)]="settings.clientsCtaDescription" rows="2" placeholder="Clients CTA description" class="bg-black/20 border-white/10 text-white md:col-span-2"></textarea>
+                  <input pInputText [(ngModel)]="settings.contactEyebrow" placeholder="Contact eyebrow" class="bg-black/20 border-white/10 text-white" />
+                  <input pInputText [(ngModel)]="settings.contactTitle" placeholder="Contact title" class="bg-black/20 border-white/10 text-white" />
+                  <textarea pInputTextarea [(ngModel)]="settings.contactDescription" rows="2" placeholder="Contact description" class="bg-black/20 border-white/10 text-white md:col-span-2"></textarea>
+                  <input pInputText [(ngModel)]="settings.contactStudioLabel" placeholder="Contact studio label" class="bg-black/20 border-white/10 text-white" />
+                  <input pInputText [(ngModel)]="settings.contactHeading" placeholder="Contact heading" class="bg-black/20 border-white/10 text-white" />
+                  <input pInputText [(ngModel)]="settings.contactAddress" placeholder="Contact address" class="bg-black/20 border-white/10 text-white" />
+                  <input pInputText [(ngModel)]="settings.contactHours" placeholder="Contact response time" class="bg-black/20 border-white/10 text-white" />
+                  <textarea pInputTextarea [(ngModel)]="settings.contactFooter" rows="2" placeholder="Contact footer" class="bg-black/20 border-white/10 text-white md:col-span-2"></textarea>
+                  <textarea pInputTextarea [(ngModel)]="contactInterestOptionsText" rows="3" placeholder="One contact interest per line" class="bg-black/20 border-white/10 text-white md:col-span-2"></textarea>
+                  <input pInputText [(ngModel)]="settings.aiMenuEyebrow" placeholder="AI menu eyebrow" class="bg-black/20 border-white/10 text-white" />
+                  <input pInputText [(ngModel)]="settings.aiMenuTitle" placeholder="AI menu title" class="bg-black/20 border-white/10 text-white" />
+                  <textarea pInputTextarea [(ngModel)]="settings.aiMenuDescription" rows="2" placeholder="AI menu description" class="bg-black/20 border-white/10 text-white md:col-span-2"></textarea>
+                  <input pInputText [(ngModel)]="settings.aiMenuBannerLabel" placeholder="AI menu banner label" class="bg-black/20 border-white/10 text-white" />
+                  <input pInputText [(ngModel)]="settings.servicesEyebrow" placeholder="Services eyebrow" class="bg-black/20 border-white/10 text-white" />
+                  <input pInputText [(ngModel)]="settings.servicesTitle" placeholder="Services title" class="bg-black/20 border-white/10 text-white" />
+                  <textarea pInputTextarea [(ngModel)]="settings.servicesDescription" rows="2" placeholder="Services description" class="bg-black/20 border-white/10 text-white md:col-span-2"></textarea>
+                  <p-button label="Save Page Copy" icon="pi pi-save" (onClick)="savePageCopy()" styleClass="p-button-info"></p-button>
                 </div>
               </p-tabPanel>
 
@@ -275,9 +339,11 @@ export class AdminComponent implements OnInit {
 
   authUser: User | null = null;
 
-  settings: SiteSettings = { brandName: 'TRINAY AI', logoUrl: '', footerText: '© 2026 Trinay AI. All rights reserved.', contactEmail: 'admin@trinayai.com', showIndiaAiBadge: true, menuItems: [] };
+  settings: SiteSettings = { brandName: 'TRINAY AI', logoUrl: 'assets/logo/Trinay-AI-Logo.png', footerText: '© 2026 Trinayai Technologies Private Limited. All rights reserved. SF No. 224/8F8, Attur main road, Kumbakottai, Namagiripettai, Rasipuram, Namakkal, Tamil Nadu – 637406.', contactEmail: 'info@trinayai.com', showIndiaAiBadge: true, menuItems: [] };
   homeSections: SectionItem[] = [];
   aboutCards: AboutCard[] = [];
+  aboutEvents: AboutEvent[] = [];
+  contactInterestOptionsText = '';
   services: ContentItem[] = [];
   aiMenuItems: ContentItem[] = [];
   clients: ClientItem[] = [];
@@ -306,9 +372,11 @@ export class AdminComponent implements OnInit {
   private loadData() {
     this.contentService.getSettings().subscribe((settings: SiteSettings) => {
       this.settings = { ...this.settings, ...settings };
+      this.contactInterestOptionsText = settings.contactInterestOptions?.join('\n') || '';
     });
     this.contentService.getHomeSections().subscribe((sections: SectionItem[]) => this.homeSections = sections);
     this.contentService.getAboutCards().subscribe((cards: AboutCard[]) => this.aboutCards = cards);
+    this.contentService.getAboutEvents().subscribe((events: AboutEvent[]) => this.aboutEvents = events);
     this.contentService.getServices().subscribe((services: ContentItem[]) => this.services = services);
     this.contentService.getAiMenuItems().subscribe((items: ContentItem[]) => this.aiMenuItems = items);
     this.contentService.getClients().subscribe((clients: ClientItem[]) => this.clients = clients);
@@ -320,6 +388,40 @@ export class AdminComponent implements OnInit {
       this.showSuccess('Settings updated');
     } catch (error) {
       this.showError(`Failed to save settings: ${this.getErrorMessage(error)}`);
+    }
+  }
+
+  async savePageCopy() {
+    this.settings.contactInterestOptions = this.contactInterestOptionsText.split('\n').map(option => option.trim()).filter(Boolean);
+    await this.saveSettings();
+  }
+
+  async addAboutEvent() {
+    try {
+      await this.contentService.addAboutEvent({ status: 'New milestone', date: '', description: '', icon: 'pi pi-star' });
+      this.showSuccess('Event added');
+    } catch (error) {
+      this.showError(`Failed to add event: ${this.getErrorMessage(error)}`);
+    }
+  }
+
+  async saveAboutEvent(event: AboutEvent) {
+    if (!event.id) return;
+    try {
+      await this.contentService.updateAboutEvent(event.id, event);
+      this.showSuccess('Event saved');
+    } catch (error) {
+      this.showError(`Save failed: ${this.getErrorMessage(error)}`);
+    }
+  }
+
+  async deleteAboutEvent(event: AboutEvent) {
+    if (!event.id) return;
+    try {
+      await this.contentService.deleteAboutEvent(event.id);
+      this.showSuccess('Event deleted');
+    } catch (error) {
+      this.showError(`Delete failed: ${this.getErrorMessage(error)}`);
     }
   }
 
