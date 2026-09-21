@@ -1,0 +1,40 @@
+<div class="bg-white section-p relative overflow-hidden">
+  <div class="container-max relative z-10">
+    <div class="mb-12 text-center">
+      <span class="inline-block rounded-full bg-blue-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 border border-blue-100 mb-4">
+        {{ settings.clientsEyebrow || 'Trusted by' }}
+      </span>
+      <h2 class="text-slate-900 tracking-tighter sm:text-4xl mb-0">
+        {{ settings.clientsTitle || 'Built alongside ambitious teams.' }}
+      </h2>
+      <p class="mx-auto mt-4 max-w-xl text-base text-slate-500 font-medium leading-snug">
+        {{ settings.clientsDescription || 'From first prototype to dependable platform, we work closely with teams who want technology to create measurable progress.' }}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+      <ng-container *ngFor="let client of clients">
+        <a [href]="client.website || '#'"
+           target="_blank"
+           class="card-white aspect-square flex items-center justify-center p-2 relative group no-underline">
+
+          <img *ngIf="client.imageUrl" [src]="client.imageUrl" [alt]="client.name"
+               class="h-[98%] w-[98%] object-contain transition-transform duration-300 group-hover:scale-105" />
+
+          <span *ngIf="!client.imageUrl" class="text-center text-[10px] font-black uppercase tracking-wider text-slate-400 transition-colors group-hover:text-blue-600">
+            {{ client.name }}
+          </span>
+        </a>
+      </ng-container>
+    </div>
+
+    <div class="mt-20 rounded-[32px] border border-slate-100 bg-slate-50/50 p-8 text-center relative overflow-hidden group sm:p-12">
+      <div class="relative z-10">
+        <h3 class="text-2xl font-black text-slate-900 mb-3 tracking-tighter sm:text-3xl">{{ settings.clientsCtaTitle || 'Have a challenge worth solving?' }}</h3>
+        <p class="text-slate-500 mb-8 max-w-xl mx-auto text-sm font-medium leading-snug">{{ settings.clientsCtaDescription || 'Tell us what you are building and we will help shape the next practical step.' }}</p>
+        <p-button [label]="settings.clientsCtaText || 'Get in touch'" icon="pi pi-arrow-right" iconPos="right" [routerLink]="['/contact']"
+                  styleClass="px-10 py-3"></p-button>
+      </div>
+    </div>
+  </div>
+</div>

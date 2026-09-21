@@ -1,0 +1,109 @@
+<p-toast></p-toast>
+<div class="min-h-screen bg-slate-50 px-6 py-20 flex items-center justify-center">
+  <div class="w-full max-w-4xl">
+    <div class="card-white p-8 sm:p-16">
+
+      <!-- Stepper Header -->
+      <div class="flex items-center justify-center gap-4 mb-16">
+        <div [class.bg-blue-600]="step >= 1" class="h-2 w-12 rounded-full bg-slate-200 transition-colors"></div>
+        <div [class.bg-blue-600]="step >= 2" class="h-2 w-12 rounded-full bg-slate-200 transition-colors"></div>
+        <div [class.bg-blue-600]="step >= 3" class="h-2 w-12 rounded-full bg-slate-200 transition-colors"></div>
+      </div>
+
+      <div class="text-center mb-12">
+        <h1 class="text-3xl font-black tracking-tighter text-slate-900 mb-2">Create Account</h1>
+        <p class="text-slate-500 text-sm font-medium">Join Trinay AI and build the future</p>
+      </div>
+
+      <!-- Step 1: Basic Info -->
+      <div *ngIf="step === 1" class="space-y-8 animate-fadein">
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="flex flex-col gap-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
+            <input type="text" pInputText [(ngModel)]="profile.displayName" name="name" placeholder="John Doe" class="custom-input" />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
+            <input type="email" pInputText [(ngModel)]="email" name="email" placeholder="john@company.com" class="custom-input" />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Password</label>
+            <input type="password" pInputText [(ngModel)]="password" name="pass" placeholder="••••••••" class="custom-input" />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Phone Number</label>
+            <input type="tel" pInputText [(ngModel)]="profile.phoneNumber" name="phone" placeholder="+91 ..." class="custom-input" />
+          </div>
+        </div>
+        <div class="pt-6">
+          <p-button label="Next: Profile Details" icon="pi pi-arrow-right" iconPos="right" (onClick)="nextStep()" styleClass="w-full py-6"></p-button>
+        </div>
+      </div>
+
+      <!-- Step 2: Personal Details -->
+      <div *ngIf="step === 2" class="space-y-8 animate-fadein">
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="flex flex-col gap-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Date of Birth</label>
+            <p-calendar [(ngModel)]="profile.dob" [showIcon]="true" appendTo="body" placeholder="Select DOB" styleClass="w-full"></p-calendar>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Gender</label>
+            <p-dropdown [options]="genders" [(ngModel)]="profile.gender" placeholder="Select Gender" styleClass="w-full"></p-dropdown>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Country</label>
+            <p-dropdown [options]="countries" [(ngModel)]="profile.country" [filter]="true" placeholder="Select Country" styleClass="w-full"></p-dropdown>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Billing Address</label>
+            <textarea pInputTextarea [(ngModel)]="profile.billingAddress" rows="2" placeholder="Full address..." class="custom-input"></textarea>
+          </div>
+        </div>
+        <div class="flex gap-4 pt-6">
+          <p-button label="Back" (onClick)="prevStep()" styleClass="p-button-outlined flex-grow py-6"></p-button>
+          <p-button label="Next: Choose Services" (onClick)="nextStep()" styleClass="flex-grow py-6"></p-button>
+        </div>
+      </div>
+
+      <!-- Step 3: Service Selection -->
+      <div *ngIf="step === 3" class="space-y-10 animate-fadein">
+        <div class="grid gap-6">
+          @for (service of services; track service.id) {
+            <div class="flex flex-col p-6 rounded-3xl border transition-all"
+                 [ngClass]="selectedServices.includes(service) ? 'border-blue-600 bg-blue-50/30' : 'border-slate-100 bg-white'">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-4">
+                   <div class="h-10 w-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                     <i [class]="service.icon || 'pi pi-box'"></i>
+                   </div>
+                   <h3 class="text-lg font-black text-slate-900 mb-0">{{ service.title }}</h3>
+                </div>
+                <input type="checkbox" [checked]="selectedServices.includes(service)" (change)="onServiceToggle(service)" class="h-6 w-6 accent-blue-600" />
+              </div>
+
+              @if (selectedServices.includes(service) && service.plans && service.plans.length > 0) {
+                <div class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  @for (plan of service.plans; track plan.id) {
+                    <div (click)="serviceSubscriptions[service.id!] = plan"
+                         class="p-4 rounded-2xl border-2 cursor-pointer transition-all"
+                         [ngClass]="serviceSubscriptions[service.id!].id === plan.id ? 'border-blue-600 bg-white' : 'border-slate-100 bg-slate-50'">
+                       <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-1">{{ plan.name }}</p>
+                       <p class="text-lg font-black text-slate-900 mb-0">{{ plan.cost }} <span class="text-[10px] text-slate-500 font-bold">{{ plan.billingCycle }}</span></p>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="flex gap-4 pt-6">
+          <p-button label="Back" (onClick)="prevStep()" styleClass="p-button-outlined flex-grow py-6"></p-button>
+          <p-button label="Finalize Registration" [loading]="loading" (onClick)="onRegister()" styleClass="flex-grow py-6"></p-button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

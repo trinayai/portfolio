@@ -1,0 +1,25 @@
+.site-header {
+  height: 5rem;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.active-link {
+  color: #2563eb !important;
+  background: #f8fafc !important;
+  font-weight: 800 !important;
+}
+
+::ng-deep {
+  .p-sidebar {
+    .p-sidebar-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .p-sidebar-content {
+      padding: 0;
+    }
+  }
+}

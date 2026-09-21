@@ -1,0 +1,85 @@
+<div class="min-h-screen bg-white py-16 px-6 relative overflow-hidden">
+  <!-- Clean Background -->
+  <div class="absolute inset-0 bg-slate-50/20 pointer-events-none"></div>
+
+  <div class="mx-auto max-w-4xl relative z-10">
+    <!-- Header -->
+    <div class="text-center mb-16">
+      <span class="inline-block rounded-full bg-blue-50 px-4 py-1 text-[9px] font-black uppercase tracking-[0.25em] text-blue-600 border border-blue-100 mb-6">
+        Contact Center
+      </span>
+      <h1 class="text-3xl font-black tracking-tighter text-slate-900 sm:text-5xl mb-6">
+        {{ settings.contactTitle || "Get in touch with us." }}
+      </h1>
+      <p class="text-base text-slate-500 max-w-2xl mx-auto font-medium">
+        {{ settings.contactDescription || 'Our team is dedicated to helping MSMEs navigate and conquer the digital landscape.' }}
+      </p>
+    </div>
+
+    <div class="flex flex-col gap-12">
+      <!-- Info Blocks - Vertical -->
+      <div class="space-y-6">
+        <div class="bg-white border border-slate-100 p-10 rounded-[32px] text-center shadow-sm">
+          <h4 class="text-blue-600 text-[10px] font-black uppercase tracking-[0.3em] mb-4">Email Us</h4>
+          <p class="text-slate-900 text-xl font-bold tracking-tight mb-0">{{ settings.contactEmail || 'info@trinayai.com' }}</p>
+        </div>
+
+        <div class="bg-white border border-slate-100 p-10 rounded-[32px] text-center shadow-sm">
+          <h4 class="text-blue-600 text-[10px] font-black uppercase tracking-[0.3em] mb-4">Registered Office</h4>
+          <p class="text-slate-900 text-base font-bold leading-relaxed whitespace-pre-line mb-0 max-w-lg mx-auto">
+            {{ settings.contactAddress || 'SF No. 224/8F8, Attur main road, Kumbakottai,\nNamagiripettai, Rasipuram, Namakkal,\nTamil Nadu – 637406' }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Directors - Professional List -->
+      <div *ngIf="directors.length > 0" class="bg-[#0f172a] p-12 rounded-[40px] shadow-2xl text-white">
+        <h4 class="text-blue-400 text-[10px] font-black uppercase tracking-[0.4em] mb-12 text-center">Board of Directors</h4>
+        <div class="flex flex-col gap-10 max-w-md mx-auto">
+          @for (director of directors; track director.id) {
+            <div class="flex items-center gap-6 group">
+              <div class="h-16 w-16 rounded-[20px] bg-white/5 flex items-center justify-center text-blue-400 font-black border border-white/10 group-hover:bg-blue-600 group-hover:text-white transition-all text-lg">
+                 <img *ngIf="director.imageUrl" [src]="director.imageUrl" class="h-full w-full object-cover rounded-[19px]" />
+                 <span *ngIf="!director.imageUrl">{{ director.name.substring(0,2).toUpperCase() }}</span>
+              </div>
+              <div class="flex-grow">
+                <p class="text-white font-black text-lg tracking-tight mb-1">{{ director.name }}</p>
+                <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">{{ director.role }}</p>
+              </div>
+              <div class="h-1.5 w-1.5 rounded-full bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Message Form -->
+      <div class="bg-white border border-slate-100 p-10 sm:p-16 rounded-[48px] shadow-xl">
+        <div class="text-center mb-12">
+          <h3 class="text-slate-900 text-2xl font-black tracking-tighter mb-2">Send a Secure Message</h3>
+          <p class="text-slate-400 text-sm font-medium">We typically respond within one business day.</p>
+        </div>
+
+        <form class="grid gap-8 max-w-2xl mx-auto">
+          <div class="grid md:grid-cols-2 gap-8">
+            <div class="flex flex-col gap-2">
+              <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
+              <input type="text" pInputText placeholder="John Doe" class="custom-input" />
+            </div>
+            <div class="flex flex-col gap-2">
+              <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
+              <input type="email" pInputText placeholder="john@company.com" class="custom-input" />
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Your Message</label>
+            <textarea rows="6" pInputTextarea placeholder="How can we help your business scale?" class="custom-input"></textarea>
+          </div>
+          <div class="pt-4 flex justify-center">
+            <p-button label="Submit Inquiry" icon="pi pi-send" iconPos="right"
+                      styleClass="p-button-raised px-12 py-6 rounded-2xl w-full sm:w-auto shadow-xl"></p-button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

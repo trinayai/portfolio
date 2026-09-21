@@ -1,0 +1,57 @@
+:host {
+  display: block;
+}
+
+.admin-main-card .p-card-body { padding: 0; }
+
+.custom-tabview {
+  ::ng-deep {
+    .p-tabview-nav {
+      background: rgba(255,255,255,0.02) !important;
+      border: none;
+      padding: 1rem 1rem 0 1rem;
+      li .p-tabview-nav-link {
+        background: transparent !important;
+        border: none !important;
+        color: #64748b !important;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 0.75rem;
+        padding: 1rem 1.5rem;
+        transition: all 0.3s;
+        &:not(.p-disabled):focus { box-shadow: none; }
+      }
+      li.p-highlight .p-tabview-nav-link {
+        color: #22d3ee !important;
+        border-bottom: 2px solid #22d3ee !important;
+      }
+    }
+    .p-tabview-panels {
+      background: transparent !important;
+      padding: 2.5rem;
+      color: white;
+    }
+  }
+}
+
+.custom-scroll {
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+}
+
+::ng-deep .p-inputtext, ::ng-deep .p-inputtextarea {
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  transition: all 0.3s;
+  background: rgba(0,0,0,0.2) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  color: white !important;
+  &::placeholder { color: #475569; }
+  &:focus {
+    background: rgba(0,0,0,0.4) !important;
+    box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2) !important;
+    border-color: #0891b2 !important;
+  }
+}

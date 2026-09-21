@@ -1,0 +1,56 @@
+<section class="relative bg-white">
+  <!-- subtle animated background -->
+  <div class="absolute inset-0 z-0 opacity-20 pointer-events-none">
+    <app-three-ui></app-three-ui>
+  </div>
+
+  <div class="relative z-10 container-max min-h-[70vh] flex flex-col justify-center py-12">
+    <div class="max-w-3xl space-y-6">
+      <div *ngIf="settings.showIndiaAiBadge" class="inline-flex items-center gap-3 rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[10px] font-bold text-blue-600 shadow-sm">
+        <span class="flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[6px] text-white">
+          <i class="pi pi-sparkles"></i>
+        </span>
+        {{ settings.heroBadge || 'Empowering MSMEs through IndiaAI Mission' }}
+      </div>
+
+      <h1 class="text-slate-900 tracking-tighter sm:text-5xl lg:text-6xl mb-0">
+        Building <span class="text-gradient">better digital</span> products with <span class="text-blue-600">TRINAYAI</span>
+      </h1>
+
+      <p class="max-w-xl text-base leading-snug text-slate-500 font-medium mb-0">
+        {{ settings.homeDescription || "We design and build practical software, AI and digital products that help ambitious teams work smarter and grow with confidence." }}
+      </p>
+
+      <div class="flex flex-wrap gap-4 pt-2">
+        <p-button
+          [label]="settings.heroPrimaryCtaText || 'Explore Solutions'"
+          [routerLink]="['/ai-menu']"
+          styleClass="px-8 py-3">
+        </p-button>
+
+        <p-button
+          [label]="settings.heroSecondaryCtaText || 'Connect'"
+          [routerLink]="['/contact']"
+          styleClass="p-button-outlined px-8 py-3">
+        </p-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- features section -->
+  <div *ngIf="homeSections.length > 0" class="relative py-16 border-t border-slate-100 bg-slate-50/30">
+    <div class="container-max">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (item of homeSections; track item.id) {
+          <div class="card-white flex flex-col items-start text-left p-6">
+            <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 ring-1 ring-blue-100">
+              <i [class]="item.icon || 'pi pi-bolt'" class="text-lg font-bold"></i>
+            </div>
+            <h3 class="text-lg font-black text-slate-900 mb-2 tracking-tight">{{ item.title }}</h3>
+            <p class="text-slate-500 text-xs leading-relaxed font-medium mb-0">{{ item.description }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>

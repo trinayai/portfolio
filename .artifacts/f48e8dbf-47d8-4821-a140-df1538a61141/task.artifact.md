@@ -1,14 +1,14 @@
-# Subscription Page Transformation Tasks
+# Style Unification & Navigation Optimization Tasks
 
-- [x] **Data Model Enhancements**
-    - [x] Update `ContentItem` in `trinayai-web/src/app/core/models/site-content.ts`
-    - [x] Update `ContentItem` in `trinayai-admin/src/app/core/models/site-content.ts`
-- [x] **Public Website Updates**
-    - [x] Redesign `AiMenuComponent` as Subscription page (`trinayai-web`)
-    - [x] Update `AppComponent` menu label to "Subscription" (`trinayai-web`)
-- [x] **Admin Portal Updates**
-    - [x] Update `AdminComponent` editor for Subscription plans (`trinayai-admin`)
-    - [x] Update `AppComponent` menu label (`trinayai-admin`)
-- [/] **Verification & Deployment**
-    - [ ] Local build check
+- [ ] **Global Styling Sync**
+    - [ ] Synchronize `trinayai-admin/src/styles.scss` with main app (Typography, Colors)
+    - [ ] Update light scrollbar in both apps
+- [ ] **Navigation & Sidebar Fixes**
+    - [ ] Update `trinayai-web/src/app/app.component.html` (70vw sidebar, close icon)
+    - [ ] Update `trinayai-admin/src/app/app.component.html` (70vw sidebar, close icon)
+    - [ ] Update `trinayai-admin/src/app/app.component.scss` (Light PanelMenu theme)
+- [ ] **Admin UI Refinement**
+    - [ ] Update `trinayai-admin/src/app/features/admin/admin.component.html` (Section tints, shadows)
+- [ ] **Verification & Deployment**
+    - [ ] Clean build both apps
     - [ ] Firebase deployment

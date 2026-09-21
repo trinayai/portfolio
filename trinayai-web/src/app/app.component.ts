@@ -3,9 +3,12 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SiteContentService } from './core/services/site-content.service';
 import { SiteSettings } from './core/models/site-content';
-import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
+import { SidebarModule } from 'primeng/sidebar';
 import { MenuItem } from 'primeng/api';
+
+import { AuthService } from './core/services/auth.service';
+import { User } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-root',
@@ -15,8 +18,8 @@ import { MenuItem } from 'primeng/api';
     RouterLink,
     RouterLinkActive,
     RouterOutlet,
-    MenubarModule,
-    ButtonModule
+    ButtonModule,
+    SidebarModule
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -24,7 +27,12 @@ import { MenuItem } from 'primeng/api';
 export class AppComponent implements OnInit {
   title = 'trinayai-web';
   private contentService = inject(SiteContentService);
+  private authService = inject(AuthService);
+
   items: MenuItem[] = [];
+  sidebarVisible = false;
+  authUser: User | null = null;
+
   settings: SiteSettings = {
     brandName: 'TRINAY AI',
     logoUrl: 'assets/logo/Trinay-AI-Logo.png',
@@ -42,6 +50,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateMenuItems();
+    this.authService.user$.subscribe(user => this.authUser = user);
     this.contentService.getSettings().subscribe((settings: SiteSettings) => {
       this.settings = {
         ...this.settings,
@@ -54,18 +63,26 @@ export class AppComponent implements OnInit {
   }
 
   private compactFooterText(footerText?: string): string {
-    const fallback = '© 2026 Trinayai Technologies Private Limited. All rights reserved. Tamil Nadu, India.';
+    const fallback = '© 2026 Trinayai Technologies Private Limited. All rights reserved. SF No. 224/8F8, Attur main road, Kumbakottai, Namagiripettai, Rasipuram, Namakkal, Tamil Nadu – 637406.';
     if (!footerText) return fallback;
-    return footerText.replace(/SF No\..*?(Tamil Nadu\s*[–-]\s*\d{6}|Tamil Nadu,?\s*India)\.?/i, 'Tamil Nadu, India.');
+    // Keep it detailed as requested by user
+    return footerText;
   }
 
   private updateMenuItems(): void {
     this.items = this.settings.menuItems
       .filter(item => item.isVisible !== false)
+      .sort((a, b) => (a.order || 0) - (b.order || 0))
       .map(item => ({
         label: item.route === '/ai-menu' ? 'Subscription' : item.label,
         routerLink: item.route,
         routerLinkActiveOptions: { exact: true }
       }));
+  }
+
+  logout() {
+    this.authService.logout().subscribe(() => {
+      this.sidebarVisible = false;
+    });
   }
 }

@@ -11,186 +11,104 @@
 
 :root {
   --primary-blue: #2563eb;
-  --secondary-slate: #0f172a;
-  --bg-light: #ffffff;
-  --bg-subtle: #f8fafc;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
+  --primary-cyan: #06b6d4;
+  --primary-indigo: #4f46e5;
+  --bg-white: #ffffff;
+  --bg-soft: #f8fafc;
+  --text-dark: #0f172a;
+  --text-slate: #475569;
+  --border-light: #e2e8f0;
 }
 
 html, body {
   height: 100%;
   margin: 0;
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  background-color: var(--bg-subtle);
-  color: var(--text-main);
-  overflow-x: clip;
+  background-color: var(--bg-white);
+  color: var(--text-dark);
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  line-height: 1.5;
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-}
+/* Global Typography - Standard Sizes matching main app */
+h1 { font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+h2 { font-size: 1.875rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.75rem; }
+h3 { font-size: 1.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.5rem; }
+p { margin-bottom: 1rem; color: var(--text-slate); }
 
-img, svg, video, canvas {
-  max-width: 100%;
-}
-
-main {
-  min-width: 0;
-}
-
-/* Global Font Override */
-body, .p-component, .p-button, .p-inputtext, .p-menubar, .p-menuitem-text, .p-tabview-title {
+/* Global Font Override for PrimeNG */
+.p-component, .p-button, .p-inputtext, .p-menubar, .p-menuitem-text, .p-tabview-title {
   font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
 
-/* Logo Styling */
-.logo-container {
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  margin-right: 12px;
-}
-
+/* Header & Logo Styling synchronized */
 .logo-container img {
-  height: 40px;
+  height: 32px;
   width: auto;
 }
 
-/* PrimeNG Overrides for White Header */
-.custom-nav {
-  position: relative;
-  min-width: 0;
-  background: transparent !important;
-  border: 0 !important;
+/* Unified Buttons - Fixed Height & Primary Style */
+.p-button.p-button-raised,
+.p-button {
+  background: var(--primary-blue) !important;
+  color: white !important;
+  border: none !important;
+  height: 2.75rem !important; /* Standard height for admin */
+  padding: 0 1.25rem !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  letter-spacing: 0.025em !important;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
 
-  .p-menubar-root-list {
-    background: transparent !important;
-  }
-
-  .p-menuitem-content {
-    background: transparent !important;
-  }
-
-  .p-menubar-button {
-    color: var(--secondary-slate) !important;
-    width: 2.75rem !important;
-    height: 2.75rem !important;
-    border-radius: 0.75rem !important;
-  }
-  .p-menuitem-link {
-    background: transparent !important;
-    color: var(--text-muted) !important;
-    &:hover {
-      background: var(--bg-subtle) !important;
-    }
-  }
-  .p-menuitem-text {
-    color: inherit !important;
-  }
-  .active-link {
-    background: var(--bg-subtle) !important;
-    border-bottom: 2px solid var(--primary-blue) !important;
-    .p-menuitem-text, .p-menuitem-icon {
-      color: var(--primary-blue) !important;
-    }
+  &:hover {
+    background: #1d4ed8 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important;
   }
 }
 
-@media screen and (max-width: 960px) {
-  .site-header > div {
-    height: 4.5rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .logo-container img {
-    height: 2.75rem;
-  }
-
-  .site-header .custom-nav {
-    width: 100% !important;
-  }
-
-  .site-header .custom-nav .p-menubar-root-list {
-    top: calc(100% + 0.75rem) !important;
-    right: 0 !important;
-    left: auto !important;
-    width: min(calc(100vw - 2rem), 22rem) !important;
-    padding: 0.5rem !important;
-    background: var(--bg-light) !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 0.75rem !important;
-    box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.14) !important;
-  }
-
-  .site-header .custom-nav.p-menubar-mobile-active .p-menuitem,
-  .site-header .custom-nav.p-menubar-mobile-active .p-menuitem-content,
-  .site-header .custom-nav.p-menubar-mobile-active .p-menuitem-link {
-    width: 100% !important;
-  }
-
-  .site-header .custom-nav.p-menubar-mobile-active .p-menuitem-link {
-    min-height: 2.75rem;
-    padding: 0.75rem 1rem !important;
-    border-radius: 0.5rem !important;
-    color: var(--text-main) !important;
-  }
-
-  .site-header .custom-nav.p-menubar-mobile-active .p-menuitem-link:hover,
-  .site-header .custom-nav.p-menubar-mobile-active .p-menuitem-link:focus-visible,
-  .site-header .custom-nav.p-menubar-mobile-active .active-link {
-    background: #eff6ff !important;
-    border-bottom: 0 !important;
-    color: var(--primary-blue) !important;
-    outline: none;
-  }
-
-  .site-header .custom-nav.p-menubar-mobile-active .p-menuitem-link .p-menuitem-text {
-    color: inherit !important;
-    font-size: 0.75rem;
-    line-height: 1.25rem;
+.p-button-outlined {
+  border: 1px solid var(--border-light) !important;
+  color: var(--text-dark) !important;
+  background: white !important;
+  &:hover {
+    background: var(--bg-soft) !important;
+    border-color: var(--primary-blue) !important;
   }
 }
 
-@media screen and (max-width: 640px) {
-  .site-header > div {
-    height: 4rem;
-  }
-
-  .site-header .logo-container {
-    margin-right: 0;
-  }
-
-  main {
-    padding-top: 4rem !important;
-  }
+/* Management Card Style */
+.card-white {
+  background: white;
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
 }
 
-.p-button.p-button-raised {
-  background: var(--primary-blue);
-  border: none;
-  padding: 0.6rem 1.25rem !important;
-  border-radius: 8px !important;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg-subtle);
-}
-
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
-}
+/* Light Scrollbar matching main app */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(37, 99, 235, 0.1); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(37, 99, 235, 0.2); }
 
 /* Fix for OTS parsing error */
 @font-face {
   font-family: 'Inter';
   src: local('Arial');
   unicode-range: U+0000-00FF;
+}
+
+/* Utility Classes */
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

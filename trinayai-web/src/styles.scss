@@ -11,105 +11,108 @@
 
 :root {
   --primary-blue: #2563eb;
-  --secondary-slate: #0f172a;
-  --accent-cyan: #06b6d4;
-  --bg-light: #ffffff;
-  --bg-subtle: #f8fafc;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  --primary-gradient: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+  --primary-cyan: #06b6d4;
+  --primary-indigo: #4f46e5;
+  --bg-white: #ffffff;
+  --bg-soft: #f8fafc;
+  --text-dark: #0f172a;
+  --text-slate: #475569;
+  --border-light: #e2e8f0;
 }
 
 html, body {
   height: 100%;
   margin: 0;
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  background-color: var(--bg-light);
-  color: var(--text-main);
+  background-color: var(--bg-white);
+  color: var(--text-dark);
   overflow-x: hidden;
+  scroll-behavior: smooth;
+  line-height: 1.5; /* Reduced from default */
 }
 
-/* Global Font Override */
-body, .p-component, .p-button, .p-inputtext, .p-menubar, .p-menuitem-text, .p-tabview-title {
+/* Global Typography - Standard Sizes */
+h1 { font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+h2 { font-size: 1.875rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.75rem; }
+h3 { font-size: 1.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.5rem; }
+p { margin-bottom: 1rem; color: var(--text-slate); }
+
+/* Global Font Override for PrimeNG */
+.p-component, .p-button, .p-inputtext, .p-menubar, .p-menuitem-text, .p-tabview-title {
   font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
 
-/* Logo Styling */
-.logo-container {
-  padding: 4px;
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 12px;
+/* Header & Logo */
+.site-header {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(12px);
+  height: 4rem; /* Reduced height */
 }
 
 .logo-container img {
-  height: 48px;
+  height: 32px; /* Smaller logo */
   width: auto;
-  object-fit: contain;
 }
 
-/* PrimeNG Overrides for White Header */
-.custom-nav {
-  background: transparent !important;
-  .p-menubar-button {
-    color: var(--secondary-slate) !important;
-  }
-  .p-menuitem-link {
-    background: transparent !important;
-    &:hover {
-      background: var(--bg-subtle) !important;
-    }
-  }
-  .active-link {
-    background: var(--bg-subtle) !important;
-    border-bottom: 2px solid var(--primary-blue) !important;
-    border-radius: 0 !important;
-    .p-menuitem-text, .p-menuitem-icon {
-      color: var(--primary-blue) !important;
-    }
-  }
-}
-
-.p-button.p-button-raised {
-  background: var(--primary-blue);
-  border: none;
-  padding: 0.75rem 1.5rem !important;
+/* Unified Buttons - Fixed Height & Primary Style */
+.p-button.p-button-raised,
+.p-button.p-button-outlined,
+.p-button {
+  background: var(--primary-blue) !important;
+  color: white !important;
+  border: none !important;
+  height: 3rem !important; /* Unified Height */
+  padding: 0 1.5rem !important;
   border-radius: 10px !important;
   font-weight: 700 !important;
-  letter-spacing: 0.05em !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem !important;
+  letter-spacing: 0.025em !important;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+
   &:hover {
-    background: #1d4ed8;
+    background: #1d4ed8 !important;
     transform: translateY(-1px);
-    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important;
   }
 }
 
-/* Ensure no grayscale filters are applied globally */
-img {
-  filter: none !important;
-  opacity: 1 !important;
+/* PrimeNG Sidebar (Mobile Menu) */
+::ng-deep .p-sidebar {
+  .p-sidebar-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-light);
+  }
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+/* Utility Classes */
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-subtle);
+.card-white {
+  background: white;
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+  &:hover {
+    border-color: var(--primary-blue);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
-}
+/* Section Spacing Presets */
+.section-p { padding-top: 3rem; padding-bottom: 3rem; }
+.container-max { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
 
-/* Fix for OTS parsing error */
-@font-face {
-  font-family: 'Inter';
-  src: local('Arial');
-  unicode-range: U+0000-00FF;
-}
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(37, 99, 235, 0.1); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(37, 99, 235, 0.2); }

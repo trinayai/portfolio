@@ -1,0 +1,21 @@
+:host {
+  display: block;
+}
+
+.custom-input {
+  width: 100%;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  color: #0f172a;
+  padding: 1.25rem;
+  border-radius: 18px;
+  transition: all 0.3s;
+  font-weight: 500;
+
+  &:focus {
+    border-color: #3b82f6;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    outline: none;
+  }
+}

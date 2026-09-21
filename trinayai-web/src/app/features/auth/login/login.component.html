@@ -1,0 +1,40 @@
+<p-toast></p-toast>
+<div class="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-slate-50 px-6 py-12">
+  <div class="w-full max-w-md">
+    <div class="card-white p-8 sm:p-12">
+      <div class="text-center mb-10">
+        <h1 class="text-3xl font-black tracking-tighter text-slate-900 mb-2">Welcome Back</h1>
+        <p class="text-slate-500 text-sm font-medium">Access your AI dashboard and subscriptions</p>
+      </div>
+
+      <form (submit)="onLogin()" class="space-y-6">
+        <div class="flex flex-col gap-2">
+          <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
+          <input type="email" pInputText [(ngModel)]="email" name="email" placeholder="name@company.com"
+                 class="w-full bg-slate-50 border-slate-100 text-slate-900 p-4 rounded-2xl focus:bg-white transition-all font-semibold" />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <div class="flex justify-between items-center">
+            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Password</label>
+            <a routerLink="/forgot-password" class="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-800 no-underline">Forgot?</a>
+          </div>
+          <input type="password" pInputText [(ngModel)]="password" name="password" placeholder="••••••••"
+                 class="w-full bg-slate-50 border-slate-100 text-slate-900 p-4 rounded-2xl focus:bg-white transition-all font-semibold" />
+        </div>
+
+        <div class="pt-4">
+          <p-button label="Sign In" [loading]="loading" type="submit"
+                    styleClass="w-full p-button-raised py-6 rounded-2xl"></p-button>
+        </div>
+      </form>
+
+      <div class="mt-10 text-center border-t border-slate-50 pt-8">
+        <p class="text-sm text-slate-500 font-medium">
+          Don't have an account?
+          <a routerLink="/register" class="text-blue-600 font-bold hover:text-blue-800 no-underline ml-1">Create account</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+<div class="bg-white section-p relative overflow-hidden">
+  <!-- subtle decoration -->
+  <div class="absolute top-[20%] -left-[10%] h-[300px] w-[300px] bg-blue-50 blur-[100px] rounded-full opacity-40"></div>
+
+  <div class="container-max relative z-10">
+    <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
+      <div class="space-y-6">
+        <span class="inline-block rounded-full bg-blue-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 border border-blue-100">
+          {{ settings.aboutEyebrow || 'Our Vision & Mission' }}
+        </span>
+        <h2 class="text-slate-900 tracking-tighter sm:text-4xl mb-0">
+          {{ settings.aboutTitle || 'Pioneering Ethical AI for Global Impact.' }}
+        </h2>
+        <div class="space-y-4 text-base leading-snug text-slate-600 font-medium">
+          <p class="mb-0">{{ settings.aboutIntro || 'Trinayai Technologies Private Limited is a women-owned enterprise driving innovation in software development and artificial intelligence.' }}</p>
+          <p class="mb-0">{{ settings.aboutBody || 'As part of the India Startup ecosystem and aligned with the IndiaAI Mission, Trinayai is committed to delivering cutting-edge technology.' }}</p>
+        </div>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <ng-container *ngFor="let card of cards">
+          <div class="card-white p-6">
+            <h3 class="text-base font-black text-slate-900 mb-2 tracking-tight">{{ card.title }}</h3>
+            <p class="text-xs text-slate-500 leading-snug font-medium mb-0">{{ card.description }}</p>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div *ngIf="events.length > 0" class="mt-20">
+      <div class="text-center mb-12">
+        <h3 class="text-2xl font-black text-slate-900 tracking-tighter mb-0">{{ settings.aboutTimelineTitle || 'Our Evolution' }}</h3>
+      </div>
+
+      <p-timeline [value]="events" align="alternate" styleClass="customized-timeline">
+        <ng-template pTemplate="marker" let-event>
+            <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-600 text-white shadow-lg">
+                <i [class]="event.icon || 'pi pi-circle-fill'" class="text-xs"></i>
+            </span>
+        </ng-template>
+        <ng-template pTemplate="content" let-event>
+            <div class="card-white p-6 mb-8">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-base font-black text-slate-900 tracking-tight">{{event.status}}</span>
+                  <span class="rounded-full bg-blue-50 px-2 py-0.5 text-[9px] font-bold text-blue-600 border border-blue-100">{{event.date}}</span>
+                </div>
+                <p class="text-slate-500 text-xs leading-snug font-medium mb-0">{{event.description}}</p>
+            </div>
+        </ng-template>
+      </p-timeline>
+    </div>
+  </div>
+</div>

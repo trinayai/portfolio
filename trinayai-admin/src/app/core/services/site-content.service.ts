@@ -21,7 +21,7 @@ import {
   getDownloadURL,
   deleteObject
 } from '@angular/fire/storage';
-import { AboutCard, AboutEvent, ClientItem, ContentItem, SectionItem, SiteSettings } from '../models/site-content';
+import { AboutCard, AboutEvent, ClientItem, ContentItem, SectionItem, SiteSettings, Director } from '../models/site-content';
 
 @Injectable({ providedIn: 'root' })
 export class SiteContentService {
@@ -37,12 +37,12 @@ export class SiteContentService {
     footerText: '© 2026 Trinayai Technologies Private Limited. All rights reserved. SF No. 224/8F8, Attur main road, Kumbakottai, Namagiripettai, Rasipuram, Namakkal, Tamil Nadu – 637406.',
     contactEmail: 'info@trinayai.com',
     menuItems: [
-      { label: 'Home', route: '/', order: 0 },
-      { label: 'AI Menu', route: '/ai-menu', order: 1 },
-      { label: 'About', route: '/about', order: 2 },
-      { label: 'Services', route: '/services', order: 3 },
-      { label: 'Clients', route: '/clients', order: 4 },
-      { label: 'Contact', route: '/contact', order: 5 }
+      { label: 'Home', route: '/', order: 0, isVisible: true },
+      { label: 'AI Menu', route: '/ai-menu', order: 1, isVisible: true },
+      { label: 'About', route: '/about', order: 2, isVisible: true },
+      { label: 'Services', route: '/services', order: 3, isVisible: true },
+      { label: 'Clients', route: '/clients', order: 4, isVisible: true },
+      { label: 'Contact', route: '/contact', order: 5, isVisible: true }
     ]
   };
 
@@ -161,6 +161,22 @@ export class SiteContentService {
 
   async deleteAiMenuItem(id: string) {
     return deleteDoc(doc(this.firestore, 'aiMenuItems', id));
+  }
+
+  getDirectors(): Observable<Director[]> {
+    return this.listenToCollection<Director>('directors');
+  }
+
+  async addDirector(payload: Omit<Director, 'id'>) {
+    return addDoc(collection(this.firestore, 'directors'), payload);
+  }
+
+  async updateDirector(id: string, payload: Partial<Director>) {
+    return updateDoc(doc(this.firestore, 'directors', id), payload);
+  }
+
+  async deleteDirector(id: string) {
+    return deleteDoc(doc(this.firestore, 'directors', id));
   }
 
   getClients(): Observable<ClientItem[]> {

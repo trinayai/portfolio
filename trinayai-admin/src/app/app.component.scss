@@ -1,0 +1,133 @@
+.site-header {
+  height: 4.5rem;
+  z-index: 50;
+  background: white;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+::ng-deep {
+  /* Desktop Menubar Styling */
+  .custom-menubar {
+    .p-menubar-root-list {
+      gap: 0.25rem;
+    }
+
+    .p-menuitem-link {
+      padding: 0.5rem 1rem !important;
+      border-radius: 10px;
+      background: transparent !important;
+      transition: all 0.2s ease;
+
+      .p-menuitem-text {
+        color: #64748b !important; /* Slate grey */
+        font-size: 0.65rem !important;
+        font-weight: 800 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.075em;
+      }
+
+      .p-submenu-icon {
+        color: #94a3b8 !important;
+        font-size: 0.6rem !important;
+        margin-left: 0.25rem;
+      }
+
+      &:hover {
+        background: #f1f5f9 !important; /* Soft Grey Hover */
+        .p-menuitem-text { color: #2563eb !important; }
+      }
+    }
+
+    /* Professional Selection Highlight (Very Light Blue) */
+    .p-menuitem.p-highlight > .p-menuitem-link,
+    .p-menuitem-link-active {
+      background: #eff6ff !important; /* Light Blue/White Highlight */
+      .p-menuitem-text {
+        color: #2563eb !important;
+        font-weight: 900 !important;
+      }
+    }
+
+    /* Submenu List Styling */
+    .p-submenu-list {
+      border-radius: 16px !important;
+      border: 1px solid #f1f5f9 !important;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+      padding: 0.5rem !important;
+      background: white !important;
+      width: 13rem !important;
+      margin-top: 0.5rem !important;
+
+      .p-menuitem-link {
+        padding: 0.75rem 1rem !important;
+        .p-menuitem-text {
+          font-size: 0.75rem !important;
+          text-transform: none !important;
+          letter-spacing: 0 !important;
+          font-weight: 600 !important;
+        }
+      }
+    }
+  }
+
+  /* Mobile PanelMenu Styling - LIGHT THEME FIX */
+  .p-panelmenu {
+    .p-panelmenu-header {
+      margin-bottom: 0.5rem;
+    }
+    .p-panelmenu-header-link {
+      background: white !important;
+      border: 1px solid #f1f5f9 !important;
+      border-radius: 12px !important;
+      padding: 1rem 1.25rem !important;
+      font-size: 0.7rem !important;
+      font-weight: 800 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.1em !important;
+      color: #1e293b !important;
+      transition: all 0.2s ease;
+
+      &:hover { background: #f8fafc !important; }
+      .p-panelmenu-icon { color: #94a3b8 !important; margin-right: 0.5rem; }
+    }
+    .p-panelmenu-content {
+      background: transparent !important;
+      border: none !important;
+      padding-left: 1rem !important;
+    }
+    .p-menuitem-link {
+      padding: 0.75rem 1.25rem !important;
+      border-radius: 10px !important;
+      .p-menuitem-text {
+        font-size: 0.8rem !important;
+        font-weight: 600 !important;
+        color: #64748b !important;
+      }
+      &:hover {
+        background: #eff6ff !important;
+        .p-menuitem-text { color: #2563eb !important; }
+      }
+    }
+  }
+
+  .p-sidebar {
+    .p-sidebar-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #f1f5f9;
+
+      .p-sidebar-close {
+        color: #64748b !important;
+        &:hover { background: #f8fafc !important; }
+      }
+    }
+    .p-sidebar-content {
+      padding: 0;
+    }
+  }
+}
+
+.custom-scroll {
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+}

@@ -1,0 +1,199 @@
+<p-toast></p-toast>
+<div class="min-h-screen bg-white py-12 px-6 relative overflow-hidden">
+  <!-- Subtle decoration to match main app -->
+  <div class="absolute top-0 right-0 h-96 w-96 bg-blue-50 blur-[120px] rounded-full opacity-40"></div>
+
+  <div class="mx-auto max-w-7xl relative z-10">
+    <div class="mb-10 flex flex-wrap items-center justify-between gap-6">
+      <div>
+        <span class="inline-block rounded-full bg-blue-50 px-4 py-1 text-[9px] font-black uppercase tracking-widest text-blue-600 border border-blue-100 mb-4">
+          Admin Control Center
+        </span>
+        <h1 class="text-3xl font-black tracking-tighter text-slate-900 sm:text-4xl mb-0">System <span class="text-blue-600">Architecture</span></h1>
+      </div>
+    </div>
+
+    <p-message></p-message>
+
+    @if (authUser) {
+      <p-card class="border border-slate-100 bg-white shadow-xl rounded-[32px] overflow-hidden admin-main-card">
+        <p-tabView class="custom-tabview">
+
+          <p-tabPanel header="Branding">
+            <div class="grid gap-12 lg:grid-cols-2">
+               <!-- Branding section with light blue tint -->
+               <div class="bg-blue-50/20 p-8 rounded-[32px] border border-blue-100 shadow-sm space-y-6">
+                  <div class="flex flex-col gap-2">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Brand Name</label>
+                    <input pInputText [(ngModel)]="settings.brandName" class="w-full bg-white border-slate-200 p-4 rounded-2xl focus:border-blue-500 transition-all font-semibold" />
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Footer Text</label>
+                    <textarea pInputTextarea [(ngModel)]="settings.footerText" rows="4" class="w-full bg-white border-slate-200 p-4 rounded-2xl focus:border-blue-500 transition-all font-medium"></textarea>
+                  </div>
+                  <p-button label="Save Branding" icon="pi pi-save" (onClick)="saveSettings()" styleClass="w-full sm:w-auto"></p-button>
+               </div>
+
+               <div class="bg-slate-50/30 p-8 rounded-[32px] border border-slate-100 shadow-sm space-y-4">
+                  <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Site Logo</label>
+                  <div class="p-8 rounded-3xl border-2 border-dashed border-slate-200 bg-white flex flex-col items-center">
+                     @if (settings.logoUrl) {
+                       <img [src]="settings.logoUrl" alt="logo" class="h-16 w-auto mb-8" />
+                     }
+                    <p-fileUpload mode="basic" name="logo" accept="image/*" [auto]="true" (onSelect)="onLogoUpload($event)"
+                                    chooseLabel="Upload New Logo" styleClass="p-button-outlined"></p-fileUpload>
+                  </div>
+               </div>
+            </div>
+          </p-tabPanel>
+
+          <p-tabPanel header="Subscriptions">
+             <div class="mb-10 flex items-center justify-between">
+                <div>
+                  <h3 class="text-xl font-bold text-slate-900 mb-1">AI Solution Packages</h3>
+                  <p class="text-slate-400 text-xs font-medium">Configure services and dynamic pricing tiers.</p>
+                </div>
+                <p-button label="Add Service" icon="pi pi-plus" (onClick)="addAiMenuItem()" styleClass="p-button-success p-button-rounded"></p-button>
+             </div>
+
+             <div class="space-y-12">
+                @for (item of aiMenuItems; track item.id) {
+                  <!-- Each service section with light indigo tint -->
+                  <div class="p-10 rounded-[48px] border border-indigo-100 bg-indigo-50/10 shadow-md space-y-10 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 h-1.5 w-full bg-blue-600 opacity-10 group-hover:opacity-100 transition-opacity"></div>
+
+                    <div class="flex items-center justify-between">
+                       <div class="flex items-center gap-6">
+                          <div class="flex items-center gap-2">
+                             <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">Visible</span>
+                             <p-inputSwitch [(ngModel)]="item.isVisible"></p-inputSwitch>
+                          </div>
+                          <input pInputText [(ngModel)]="item.title" placeholder="Service Name" class="text-2xl font-black bg-transparent border-none p-0 focus:ring-0 w-80 text-slate-900" />
+                       </div>
+                       <p-button icon="pi pi-trash" (onClick)="deleteAiMenuItem(item)" styleClass="p-button-danger p-button-text p-button-rounded"></p-button>
+                    </div>
+
+                    <div class="space-y-6">
+                       <div class="flex items-center justify-between border-b border-indigo-100 pb-3">
+                          <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600">Dynamic Pricing Plans</h4>
+                          <p-button label="Add Tier" icon="pi pi-plus" (onClick)="addPlanToItem(item)" styleClass="p-button-sm p-button-info p-button-text"></p-button>
+                       </div>
+
+                       <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                          @for (plan of item.plans; track plan.id) {
+                            <div class="bg-white border border-slate-100 p-8 rounded-[32px] space-y-6 shadow-sm relative">
+                               <button (click)="removePlanFromItem(item, plan)" class="absolute top-6 right-6 text-slate-300 hover:text-red-500 border-none bg-transparent cursor-pointer transition-colors">
+                                  <i class="pi pi-times-circle text-lg"></i>
+                               </button>
+
+                               <div class="flex flex-col gap-2">
+                                  <label class="text-[8px] font-black uppercase text-slate-400 ml-1">Plan Name</label>
+                                  <input pInputText [(ngModel)]="plan.name" placeholder="Pro / Basic" class="w-full bg-slate-50 border-none p-4 rounded-2xl text-xs font-bold" />
+                               </div>
+                               <div class="grid grid-cols-2 gap-4">
+                                  <div class="flex flex-col gap-2">
+                                     <label class="text-[8px] font-black uppercase text-slate-400 ml-1">Cost</label>
+                                     <input pInputText [(ngModel)]="plan.cost" placeholder="₹999" class="w-full bg-slate-50 border-none p-4 rounded-2xl text-sm font-black text-slate-900" />
+                                  </div>
+                                  <div class="flex flex-col gap-2">
+                                     <label class="text-[8px] font-black uppercase text-slate-400 ml-1">Cycle</label>
+                                     <input pInputText [(ngModel)]="plan.billingCycle" placeholder="/ mo" class="w-full bg-slate-50 border-none p-4 rounded-2xl text-xs font-bold" />
+                                  </div>
+                               </div>
+                               <div class="flex flex-col gap-2">
+                                  <label class="text-[8px] font-black uppercase text-slate-400 ml-1">Features (New line each)</label>
+                                  <textarea pInputTextarea [ngModel]="plan.features?.join('\n')" (ngModelChange)="updatePlanFeatures(plan, $event)"
+                                            rows="5" class="w-full bg-slate-50 border-none p-4 rounded-2xl text-[11px] font-medium leading-relaxed"></textarea>
+                               </div>
+                            </div>
+                          }
+                       </div>
+                    </div>
+
+                    <div class="flex gap-4 pt-8 border-t border-indigo-100">
+                       <p-button label="Sync Service & Plans" icon="pi pi-check-circle" (onClick)="saveAiMenuItem(item)" styleClass="flex-grow p-button-info p-button-rounded py-5 shadow-lg"></p-button>
+                    </div>
+                  </div>
+                }
+             </div>
+          </p-tabPanel>
+
+          <p-tabPanel header="Contact & SMTP">
+             <div class="grid gap-12 lg:grid-cols-2">
+                <div class="space-y-10">
+                  <!-- Public Info section with light cyan tint -->
+                  <div class="bg-cyan-50/10 p-10 rounded-[40px] border border-cyan-50 shadow-sm">
+                    <h3 class="text-xl font-bold text-slate-900 mb-8 border-b border-cyan-100 pb-3">Public Info</h3>
+                    <div class="grid gap-6">
+                      <div class="flex flex-col gap-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Office Address</label>
+                        <textarea pInputTextarea [(ngModel)]="settings.contactAddress" rows="4" class="w-full bg-white border-slate-200 p-4 rounded-2xl focus:border-cyan-500 transition-all"></textarea>
+                      </div>
+                      <div class="flex flex-col gap-2">
+                        <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Public Email</label>
+                        <input pInputText [(ngModel)]="settings.contactEmail" class="w-full bg-white border-slate-200 p-4 rounded-2xl focus:border-cyan-500 transition-all" />
+                      </div>
+                      <p-button label="Update Contact Details" icon="pi pi-save" (onClick)="saveSettings()" styleClass="p-button-sm"></p-button>
+                    </div>
+                  </div>
+
+                  <!-- SMTP section with light indigo tint -->
+                  <div class="bg-indigo-50/10 p-10 rounded-[40px] border border-indigo-50 shadow-sm">
+                    <h3 class="text-xl font-bold text-slate-900 mb-8 border-b border-indigo-100 pb-3">SMTP Configuration</h3>
+                    <div *ngIf="settings.smtpConfig" class="grid gap-5">
+                      <input pInputText [(ngModel)]="settings.smtpConfig.host" placeholder="SMTP Host" class="bg-white border-slate-200 p-4 rounded-2xl" />
+                      <div class="grid grid-cols-2 gap-4">
+                        <input pInputText type="number" [(ngModel)]="settings.smtpConfig.port" placeholder="Port (587)" class="bg-white border-slate-200 p-4 rounded-2xl" />
+                        <div class="flex items-center gap-3 ml-2">
+                          <span class="text-[10px] font-black uppercase text-slate-400">Secure</span>
+                          <p-inputSwitch [(ngModel)]="settings.smtpConfig.secure"></p-inputSwitch>
+                        </div>
+                      </div>
+                      <input pInputText [(ngModel)]="settings.smtpConfig.user" placeholder="SMTP User" class="bg-white border-slate-200 p-4 rounded-2xl" />
+                      <input pInputText type="password" [(ngModel)]="settings.smtpConfig.pass" placeholder="SMTP Password" class="bg-white border-slate-200 p-4 rounded-2xl" />
+                      <p-button label="Lock SMTP Settings" icon="pi pi-lock" (onClick)="saveSettings()" styleClass="p-button-warning p-button-sm shadow-md"></p-button>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <!-- Directors section with light blue tint -->
+                  <div class="flex items-center justify-between border-b border-slate-200 pb-3 mb-8">
+                    <h3 class="text-xl font-bold text-slate-900">Board of Directors</h3>
+                    <p-button label="Add Member" icon="pi pi-plus" (onClick)="addDirector()" styleClass="p-button-success p-button-sm p-button-rounded"></p-button>
+                  </div>
+                  <div class="space-y-6 max-h-[800px] overflow-y-auto pr-4 custom-scroll">
+                    @for (director of directors; track director.id) {
+                      <div class="p-10 rounded-[40px] border border-blue-100 bg-blue-50/10 shadow-sm space-y-8 relative overflow-hidden group">
+                        <div class="flex items-center justify-between">
+                          <div class="flex items-center gap-4">
+                             <div class="flex items-center gap-2">
+                                <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">Visible</span>
+                                <p-inputSwitch [(ngModel)]="director.isVisible"></p-inputSwitch>
+                             </div>
+                          </div>
+                          <p-button icon="pi pi-trash" (onClick)="(deleteDirector(director))" styleClass="p-button-danger p-button-text p-button-rounded"></p-button>
+                        </div>
+                        <div class="grid gap-6">
+                           <div class="flex flex-col gap-2">
+                              <label class="text-[9px] font-black uppercase text-slate-400 ml-1">Full Name</label>
+                              <input pInputText [(ngModel)]="director.name" placeholder="Full Name" class="w-full bg-white border-slate-200 p-4 rounded-2xl font-bold text-slate-900" />
+                           </div>
+                           <div class="flex flex-col gap-2">
+                              <label class="text-[9px] font-black uppercase text-slate-400 ml-1">Role</label>
+                              <input pInputText [(ngModel)]="director.role" placeholder="Role" class="w-full bg-white border-slate-200 p-4 rounded-2xl font-medium" />
+                           </div>
+                        </div>
+                        <p-button label="Update Director" icon="pi pi-check" (onClick)="saveDirector(director)" styleClass="w-full p-button-info p-button-text border border-blue-200 py-4 rounded-2xl"></p-button>
+                      </div>
+                    }
+                  </div>
+                </div>
+             </div>
+          </p-tabPanel>
+
+        </p-tabView>
+      </p-card>
+    }
+  </div>
+</div>

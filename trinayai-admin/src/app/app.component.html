@@ -1,51 +1,60 @@
-<header class="site-header fixed top-0 z-50 w-full border-b border-slate-200 bg-white shadow-sm" ngSkipHydration>
-  <div class="mx-auto max-w-7xl px-4 flex items-center h-20">
+<header class="site-header fixed top-0 z-50 w-full border-b border-slate-200 bg-white shadow-sm">
+  <div class="mx-auto max-w-7xl px-4 flex items-center h-20 relative justify-between">
     <!-- Brand Identity -->
     <a routerLink="/" class="flex items-center no-underline group mr-8 flex-shrink-0">
       <div class="logo-container">
-        <img [src]="settings.logoUrl" alt="Trinay AI" class="h-14 w-auto object-contain transition-transform group-hover:scale-105" />
+        <img [src]="settings.logoUrl" alt="Trinay AI" class="h-10 w-auto object-contain transition-transform group-hover:scale-105" />
       </div>
     </a>
 
-    <!-- Navigation Menu -->
-    <div class="flex-grow flex justify-end">
-      <p-menubar [model]="items" styleClass="border-none bg-transparent py-0 custom-nav w-full">
-        <ng-template pTemplate="item" let-item>
-          <a [routerLink]="item.routerLink" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}"
-             class="p-menuitem-link flex items-center px-4 py-2 transition-all rounded-lg hover:bg-slate-50 group">
-            <span [class]="item.icon" class="mr-2 text-slate-500 group-hover:text-blue-600"></span>
-            <span class="text-xs font-bold uppercase tracking-widest text-slate-600 group-hover:text-slate-900">{{ item.label }}</span>
-          </a>
-        </ng-template>
+    <!-- Desktop Navigation -->
+    <div class="hidden lg:flex flex-grow items-center">
+      <p-menubar [model]="items" styleClass="border-none bg-transparent custom-menubar flex-grow">
+        <!-- We'll style the menubar in CSS to avoid breaking sub-menu logic with a restrictive template -->
       </p-menubar>
+
+      <div class="flex items-center gap-3 ml-6 pl-6 border-l border-slate-100">
+        @if (authUser) {
+          <p-button label="Sign Out" icon="pi pi-power-off" (onClick)="logout()"
+                    styleClass="p-button-text p-button-danger p-button-rounded text-[10px] font-black uppercase tracking-widest"></p-button>
+        } @else {
+          <p-button label="Admin Login" routerLink="/login" styleClass="p-button-raised p-button-rounded"></p-button>
+        }
+      </div>
     </div>
 
-    <!-- Right Side Actions -->
-    <div class="hidden lg:flex items-center gap-4 ml-8">
-        <p-button label="Portal" icon="pi pi-shield"
-                  styleClass="p-button-raised p-button-rounded bg-blue-600 border-none px-6 py-2.5 font-bold uppercase tracking-widest text-white shadow-md hover:bg-blue-700"></p-button>
-    </div>
+    <!-- Mobile Menu Button -->
+    <button class="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-xl transition-colors" (click)="sidebarVisible = true">
+      <i class="pi pi-bars text-xl"></i>
+    </button>
   </div>
 </header>
 
-<main class="min-h-screen pt-20">
-  <router-outlet></router-outlet>
-</main>
-
-<footer class="border-t border-slate-200 bg-white py-12">
-  <div class="mx-auto max-w-7xl px-6 text-center">
-    <div class="mb-8 flex justify-center gap-6 text-slate-400">
-      <a href="https://www.linkedin.com/in/trinayai-technologies-aa5aa5434/" class="hover:text-blue-800 transition-colors"><i class="pi pi-linkedin"></i></a>
-      <a href="https://www.facebook.com/profile.php?id=61594227631346" class="hover:text-slate-900 transition-colors"><i class="pi pi-facebook"></i></a>
-      <a href="https://www.instagram.com/trinayai/" class="hover:text-slate-900 transition-colors"><i class="pi pi-instagram"></i></a>
+<!-- Mobile Sidebar -->
+<p-sidebar [(visible)]="sidebarVisible" position="right" styleClass="w-[70vw] sm:w-80 border-none bg-white">
+  <ng-template pTemplate="header">
+    <div class="flex items-center justify-between w-full pr-2">
+      <span class="font-black text-slate-900 tracking-tighter">ADMIN PORTAL</span>
     </div>
-    <p class="text-sm tracking-wide text-slate-600 max-w-3xl mx-auto leading-relaxed">
-      {{ settings.footerText }}
-    </p>
-    <div class="mt-4 flex justify-center gap-8 text-xs font-medium uppercase tracking-tighter text-slate-500">
-      <a href="#" class="hover:text-slate-900">Privacy Policy</a>
-      <a href="#" class="hover:text-slate-900">Terms of Service</a>
-      <a href="#" class="hover:text-slate-900">Contact Us</a>
+  </ng-template>
+
+  <div class="mt-8 flex flex-col h-full">
+    <div class="flex-grow overflow-y-auto pr-2 custom-scroll">
+      <p-panelMenu [model]="items" styleClass="w-full border-none"></p-panelMenu>
+    </div>
+
+    <div class="mt-auto pt-8 border-t border-slate-50 px-4 pb-8">
+      @if (authUser) {
+        <p-button label="Sign Out" icon="pi pi-power-off" (onClick)="logout(); sidebarVisible = false"
+                  styleClass="w-full p-button-danger p-button-outlined py-4 rounded-2xl"></p-button>
+      } @else {
+        <p-button label="Login" routerLink="/login" (onClick)="sidebarVisible = false"
+                  styleClass="w-full p-button-raised p-button-rounded py-4"></p-button>
+      }
     </div>
   </div>
-</footer>
+</p-sidebar>
+
+<main class="min-h-screen pt-20 bg-slate-50">
+  <router-outlet></router-outlet>
+</main>

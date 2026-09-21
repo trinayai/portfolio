@@ -1,0 +1,37 @@
+<div class="bg-white section-p relative overflow-hidden">
+  <div class="container-max relative z-10">
+    <div class="mb-16 text-center">
+      <span class="inline-block rounded-full bg-blue-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-blue-600 border border-blue-100 mb-4">
+        {{ settings.servicesEyebrow || 'Expertise & Capabilities' }}
+      </span>
+      <h2 class="text-slate-900 tracking-tighter sm:text-4xl mb-0">
+        {{ settings.servicesTitle || 'Our AI Ecosystem' }}
+      </h2>
+      <p class="mx-auto mt-4 max-w-xl text-base text-slate-500 font-medium leading-snug">
+        {{ settings.servicesDescription || 'Comprehensive AI solutions designed to scale your business and automate complex workflows with precision and ethical integrity.' }}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <ng-container *ngFor="let item of services; let i = index">
+        <div class="card-white flex flex-col items-start group relative overflow-hidden p-8">
+          <div class="absolute top-0 left-0 h-1 w-full bg-blue-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+          <div class="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600 ring-1 ring-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+            <i [class]="item.icon || 'pi pi-cog'" class="text-xl"></i>
+          </div>
+
+          <h3 class="text-lg font-black text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">{{ item.title }}</h3>
+          <p class="text-slate-500 text-xs leading-relaxed font-medium mb-6">{{ item.description }}</p>
+
+          <div class="mt-auto pt-4 w-full border-t border-slate-50">
+            <button class="text-[9px] font-black uppercase tracking-[0.2em] text-blue-600 hover:text-blue-800 transition-all flex items-center gap-2 group/btn">
+              <span>Learn More</span>
+              <i class="pi pi-arrow-right text-[7px] transition-transform group-hover/btn:translate-x-1"></i>
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

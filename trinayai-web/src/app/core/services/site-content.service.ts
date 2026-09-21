@@ -2,9 +2,9 @@ import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable, of } from 'rxjs';
 import { catchError, map, shareReplay, startWith } from 'rxjs/operators';
-import { Firestore, addDoc, collection, collectionData, deleteDoc, doc, setDoc, updateDoc, docData, query, orderBy } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, deleteDoc, doc, setDoc, updateDoc, docData, query } from '@angular/fire/firestore';
 import { Storage, deleteObject, getDownloadURL, ref, uploadBytes } from '@angular/fire/storage';
-import { AboutCard, AboutEvent, ClientItem, ContentItem, SectionItem, SiteSettings } from '../models/site-content';
+import { AboutCard, AboutEvent, ClientItem, ContentItem, SectionItem, SiteSettings, Director } from '../models/site-content';
 
 @Injectable({ providedIn: 'root' })
 export class SiteContentService {
@@ -17,15 +17,15 @@ export class SiteContentService {
   private readonly defaultSettings: SiteSettings = {
     brandName: 'TRINAY AI',
     logoUrl: 'assets/logo/Trinay-AI-Logo.png',
-    footerText: '© 2026 Trinayai Technologies Private Limited. All rights reserved. Tamil Nadu, India.',
+    footerText: '© 2026 Trinayai Technologies Private Limited. All rights reserved. SF No. 224/8F8, Attur main road, Kumbakottai, Namagiripettai, Rasipuram, Namakkal, Tamil Nadu – 637406.',
     contactEmail: 'info@trinayai.com',
     menuItems: [
-      { label: 'Home', route: '/', order: 0 },
-      { label: 'AI Menu', route: '/ai-menu', order: 1 },
-      { label: 'About', route: '/about', order: 2 },
-      { label: 'Services', route: '/services', order: 3 },
-      { label: 'Clients', route: '/clients', order: 4 },
-      { label: 'Contact', route: '/contact', order: 5 }
+      { label: 'Home', route: '/', order: 0, isVisible: true },
+      { label: 'Subscription', route: '/ai-menu', order: 1, isVisible: true },
+      { label: 'About', route: '/about', order: 2, isVisible: true },
+      { label: 'Services', route: '/services', order: 3, isVisible: true },
+      { label: 'Clients', route: '/clients', order: 4, isVisible: true },
+      { label: 'Contact', route: '/contact', order: 5, isVisible: true }
     ]
   };
 
@@ -87,18 +87,6 @@ export class SiteContentService {
     return this.listenToCollection<AboutEvent>('aboutEvents');
   }
 
-  async addAboutEvent(payload: Omit<AboutEvent, 'id'>) {
-    return addDoc(collection(this.firestore, 'aboutEvents'), payload);
-  }
-
-  async updateAboutEvent(id: string, payload: Partial<AboutEvent>) {
-    return updateDoc(doc(this.firestore, 'aboutEvents', id), payload);
-  }
-
-  async deleteAboutEvent(id: string) {
-    return deleteDoc(doc(this.firestore, 'aboutEvents', id));
-  }
-
   async addAboutCard(payload: Omit<AboutCard, 'id'>) {
     return addDoc(collection(this.firestore, 'aboutCards'), payload);
   }
@@ -143,6 +131,22 @@ export class SiteContentService {
     return deleteDoc(doc(this.firestore, 'aiMenuItems', id));
   }
 
+  getDirectors(): Observable<Director[]> {
+    return this.listenToCollection<Director>('directors');
+  }
+
+  async addDirector(payload: Omit<Director, 'id'>) {
+    return addDoc(collection(this.firestore, 'directors'), payload);
+  }
+
+  async updateDirector(id: string, payload: Partial<Director>) {
+    return updateDoc(doc(this.firestore, 'directors', id), payload);
+  }
+
+  async deleteDirector(id: string) {
+    return deleteDoc(doc(this.firestore, 'directors', id));
+  }
+
   getClients(): Observable<ClientItem[]> {
     return this.listenToCollection<ClientItem>('clients');
   }
@@ -160,7 +164,6 @@ export class SiteContentService {
   }
 
   private listenToCollection<T>(collectionName: string): Observable<T[]> {
-    // Remove stream caching and browser check to ensure consistent data across SSR and hydration
     return collectionData(
       query(collection(this.firestore, collectionName)),
       { idField: 'id' }
