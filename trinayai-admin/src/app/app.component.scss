@@ -33,7 +33,7 @@
       }
 
       &:hover {
-        background: #f1f5f9 !important; /* Soft Grey Hover */
+        background: #f8fafc !important; /* Soft Grey Hover */
         .p-menuitem-text { color: #2563eb !important; }
       }
     }
@@ -70,58 +70,87 @@
     }
   }
 
-  /* Mobile PanelMenu Styling - LIGHT THEME FIX */
+  /* Mobile PanelMenu Styling - FORCE LIGHT THEME */
   .p-panelmenu {
+    background: white !important;
+
     .p-panelmenu-header {
       margin-bottom: 0.5rem;
-    }
-    .p-panelmenu-header-link {
       background: white !important;
-      border: 1px solid #f1f5f9 !important;
-      border-radius: 12px !important;
-      padding: 1rem 1.25rem !important;
-      font-size: 0.7rem !important;
-      font-weight: 800 !important;
-      text-transform: uppercase !important;
-      letter-spacing: 0.1em !important;
-      color: #1e293b !important;
-      transition: all 0.2s ease;
 
-      &:hover { background: #f8fafc !important; }
-      .p-panelmenu-icon { color: #94a3b8 !important; margin-right: 0.5rem; }
+      .p-panelmenu-header-link {
+        background: #f8fafc !important; /* Light background for header blocks */
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        padding: 1.25rem !important;
+        font-size: 0.75rem !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        color: #1e293b !important;
+        transition: all 0.2s ease;
+
+        &:hover { background: #f1f5f9 !important; }
+        .p-panelmenu-icon { color: #94a3b8 !important; margin-right: 0.5rem; }
+      }
+
+      &.p-highlight .p-panelmenu-header-link {
+        background: #eff6ff !important;
+        border-color: #dbeafe !important;
+        color: #2563eb !important;
+      }
     }
+
     .p-panelmenu-content {
-      background: transparent !important;
+      background: white !important;
       border: none !important;
-      padding-left: 1rem !important;
+      padding: 0.5rem 0 1rem 1.5rem !important;
     }
+
     .p-menuitem-link {
       padding: 0.75rem 1.25rem !important;
       border-radius: 10px !important;
+      background: white !important;
+
       .p-menuitem-text {
-        font-size: 0.8rem !important;
+        font-size: 0.85rem !important;
         font-weight: 600 !important;
-        color: #64748b !important;
+        color: #475569 !important;
       }
+
       &:hover {
-        background: #eff6ff !important;
+        background: #f8fafc !important;
         .p-menuitem-text { color: #2563eb !important; }
       }
+    }
+
+    .p-menuitem.p-highlight > .p-menuitem-link {
+       background: #eff6ff !important;
+       .p-menuitem-text { color: #2563eb !important; font-weight: 700 !important; }
     }
   }
 
   .p-sidebar {
+    background: white !important;
+
     .p-sidebar-header {
       padding: 1.5rem;
       border-bottom: 1px solid #f1f5f9;
+      background: white !important;
 
       .p-sidebar-close {
-        color: #64748b !important;
-        &:hover { background: #f8fafc !important; }
+        color: #000000 !important; /* Black Close Icon */
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        order: 2; /* Ensure it stays at right */
+        &:hover { background: #f1f5f9 !important; }
+        .p-sidebar-close-icon { font-size: 1.2rem; font-weight: 800; }
       }
     }
     .p-sidebar-content {
       padding: 0;
+      background: white !important;
     }
   }
 }

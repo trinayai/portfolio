@@ -12,43 +12,63 @@
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <ng-container *ngFor="let item of items; let i = index">
-        <article class="card-white flex flex-col relative group overflow-hidden p-8"
-                 [ngClass]="{'is-popular': item.isPopular}">
+    <!-- Iterate through services -->
+    <div class="space-y-20">
+      @for (service of items; track service.id) {
+        <div class="space-y-10">
+           <div class="flex items-center gap-4">
+              <div class="h-10 w-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                <i [class]="service.icon || 'pi pi-box'"></i>
+              </div>
+              <h3 class="text-2xl font-black text-slate-900 mb-0 tracking-tight">{{ service.title }}</h3>
+           </div>
 
-          <div *ngIf="item.isPopular" class="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[8px] font-black uppercase tracking-[0.2em] px-4 py-1.5 rounded-full shadow-md">
-            Recommended
-          </div>
+           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" *ngIf="!syncing">
+              @for (plan of service.plans; track plan.id) {
+                <article class="card-white flex flex-col relative group overflow-hidden p-8">
+                  <div class="mb-6">
+                    <h4 class="text-xl font-black tracking-tight text-slate-900 mb-1 group-hover:text-blue-600 transition-colors">{{ plan.name }}</h4>
+                  </div>
 
-          <div class="mb-6">
-            <h3 class="text-xl font-black tracking-tight text-slate-900 mb-1 group-hover:text-blue-600 transition-colors">{{ item.title }}</h3>
-            <p class="text-slate-500 text-xs font-medium leading-relaxed min-h-[2.5rem] mb-0">{{ item.description }}</p>
-          </div>
+                  <div class="mb-8 flex items-baseline gap-1">
+                    <span class="text-4xl font-black tracking-tighter text-slate-900">{{ plan.cost }}</span>
+                    <span class="text-slate-400 text-sm font-bold uppercase tracking-widest">{{ plan.billingCycle }}</span>
+                  </div>
 
-          <div class="mb-8 flex items-baseline gap-1">
-            <span class="text-4xl font-black tracking-tighter text-slate-900">{{ item.price || 'Custom' }}</span>
-            <span class="text-slate-400 text-sm font-bold uppercase tracking-widest">{{ item.billingCycle || '' }}</span>
-          </div>
+                  <div class="flex-grow space-y-3 mb-10 border-t border-slate-50 pt-6">
+                    @for (feature of plan.features; track feature) {
+                      <div class="flex items-start gap-3">
+                        <i class="pi pi-check text-blue-600 mt-0.5 text-[10px] font-bold"></i>
+                        <span class="text-slate-600 text-xs font-bold tracking-tight">{{ feature }}</span>
+                      </div>
+                    }
+                  </div>
 
-          <div class="flex-grow space-y-3 mb-10 border-t border-slate-50 pt-6">
-            <div *ngFor="let feature of item.features" class="flex items-start gap-3">
-              <i class="pi pi-check text-blue-600 mt-0.5 text-[10px] font-bold"></i>
-              <span class="text-slate-600 text-xs font-bold tracking-tight">{{ feature }}</span>
-            </div>
-            <p *ngIf="!item.features?.length" class="text-slate-400 italic text-[10px] mb-0">Standard features included</p>
-          </div>
-
-          <p-button [label]="item.isPopular ? 'Get Started' : 'Subscribe Now'"
-                    (onClick)="openWorkspace(item)"
-                    styleClass="w-full py-3"></p-button>
-        </article>
-      </ng-container>
+                  <p-button label="Subscribe to {{ plan.name }}"
+                            (onClick)="openWorkspace(service)"
+                            styleClass="w-full py-3"></p-button>
+                </article>
+              }
+              @if (!service.plans?.length) {
+                <div class="col-span-full card-white p-12 text-center border-dashed border-2">
+                   <p class="text-slate-400 font-medium mb-0">No specific tiers configured for this service. Please contact support.</p>
+                </div>
+              }
+           </div>
+        </div>
+      }
     </div>
 
-    <div *ngIf="items.length === 0" class="py-20 text-center">
-      <i class="pi pi-spin pi-spinner text-2xl text-blue-400 mb-4"></i>
-      <p class="text-slate-400 font-bold uppercase tracking-widest text-[9px] mb-0">Syncing cloud data...</p>
+    <!-- Sync State -->
+    <div *ngIf="syncing" class="py-20 text-center animate-fadein">
+      <i class="pi pi-spin pi-spinner text-3xl text-blue-600 mb-6"></i>
+      <p class="text-slate-900 font-black uppercase tracking-widest text-[10px] mb-4">Establishing Secure Sync...</p>
     </div>
+
+    @if (!syncing && items.length === 0) {
+      <div class="py-20 text-center card-white border-dashed border-2">
+         <p class="text-slate-400 font-bold uppercase tracking-widest text-xs mb-0">No services currently available for subscription.</p>
+      </div>
+    }
   </div>
 </div>

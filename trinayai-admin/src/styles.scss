@@ -96,8 +96,8 @@ p { margin-bottom: 1rem; color: var(--text-slate); }
 /* Light Scrollbar matching main app */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(37, 99, 235, 0.1); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(37, 99, 235, 0.2); }
+::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.05); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.1); }
 
 /* Fix for OTS parsing error */
 @font-face {

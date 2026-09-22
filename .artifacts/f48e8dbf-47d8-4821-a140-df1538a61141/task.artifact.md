@@ -1,14 +1,22 @@
-# Style Unification & Navigation Optimization Tasks
+# System Validation & UI Architecture Tasks
 
-- [ ] **Global Styling Sync**
-    - [ ] Synchronize `trinayai-admin/src/styles.scss` with main app (Typography, Colors)
-    - [ ] Update light scrollbar in both apps
-- [ ] **Navigation & Sidebar Fixes**
-    - [ ] Update `trinayai-web/src/app/app.component.html` (70vw sidebar, close icon)
-    - [ ] Update `trinayai-admin/src/app/app.component.html` (70vw sidebar, close icon)
-    - [ ] Update `trinayai-admin/src/app/app.component.scss` (Light PanelMenu theme)
-- [ ] **Admin UI Refinement**
-    - [ ] Update `trinayai-admin/src/app/features/admin/admin.component.html` (Section tints, shadows)
-- [ ] **Verification & Deployment**
-    - [ ] Clean build both apps
-    - [ ] Firebase deployment
+- [ ] **Validation & Feedback (Both Apps)**
+    - [ ] Update `AdminComponent` (`trinayai-admin`) with data validation and success toasts.
+    - [ ] Update `ProfileComponent` (`trinayai-web`) with validation and success toasts.
+- [ ] **Admin Portal Page Construction (`trinayai-admin`)**
+    - [ ] Implement `AdminManageComponent`
+    - [ ] Implement `VendorsManageComponent`
+    - [ ] Implement `AssetsManageComponent`
+    - [ ] Implement `ClientsManageComponent`
+    - [ ] Implement `SubscribersManageComponent`
+    - [ ] Implement `InvestmentFinanceComponent`
+    - [ ] Implement `FundsFinanceComponent`
+    - [ ] Implement `ExpensesFinanceComponent`
+    - [ ] Implement `SalariesFinanceComponent`
+    - [ ] Implement `ReportFinanceComponent`
+    - [ ] Implement `TrinayaiDocsComponent`
+    - [ ] Implement `DirectorsDocsComponent`
+    - [ ] Implement `TendersDocsComponent`
+- [ ] **Verification & Final Deployment**
+    - [ ] Build both applications
+    - [ ] Deploy to Firebase Hosting

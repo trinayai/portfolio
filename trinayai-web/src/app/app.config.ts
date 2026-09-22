@@ -27,7 +27,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore(getApp(), 'appdata')),
+    provideFirestore(() => getFirestore(getApp())),
     provideStorage(() => getStorage()),
     provideFunctions(() => getFunctions(undefined, 'asia-south2')),
     MessageService,

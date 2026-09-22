@@ -62,7 +62,8 @@ export class AppComponent implements OnInit {
         { label: 'Vendors', route: '/manage/vendors', order: 3, isVisible: true },
         { label: 'Assets', route: '/manage/assets', order: 4, isVisible: true },
         { label: 'Clients', route: '/manage/clients', order: 5, isVisible: true },
-        { label: 'Subscribers', route: '/manage/subscribers', order: 6, isVisible: true }
+        { label: 'Subscribers', route: '/manage/subscribers', order: 6, isVisible: true },
+        { label: 'Users', route: '/manage/users', order: 7, isVisible: true }
       ]
     },
     {

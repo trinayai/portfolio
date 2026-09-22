@@ -39,6 +39,7 @@ export const routes: Routes = [
   { path: 'manage/assets', component: AssetsManageComponent, canActivate: [authGuard] },
   { path: 'manage/clients', component: ClientsManageComponent, canActivate: [authGuard] },
   { path: 'manage/subscribers', component: SubscribersManageComponent, canActivate: [authGuard] },
+  { path: 'manage/users', loadComponent: () => import('./features/manage/user-manage.component').then(m => m.UserManageComponent), canActivate: [authGuard] },
 
   // Finance
   { path: 'finance/investment', component: InvestmentFinanceComponent, canActivate: [authGuard] },

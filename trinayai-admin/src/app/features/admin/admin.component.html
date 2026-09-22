@@ -16,13 +16,13 @@
     <p-message></p-message>
 
     @if (authUser) {
-      <p-card class="border border-slate-100 bg-white shadow-xl rounded-[32px] overflow-hidden admin-main-card">
+      <p-card class="border border-slate-100 bg-white shadow-2xl rounded-[32px] overflow-hidden admin-main-card">
         <p-tabView class="custom-tabview">
 
           <p-tabPanel header="Branding">
             <div class="grid gap-12 lg:grid-cols-2">
                <!-- Branding section with light blue tint -->
-               <div class="bg-blue-50/20 p-8 rounded-[32px] border border-blue-100 shadow-sm space-y-6">
+               <div class="bg-blue-50/20 p-8 rounded-[32px] border border-blue-100 shadow-xl space-y-6">
                   <div class="flex flex-col gap-2">
                     <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Brand Name</label>
                     <input pInputText [(ngModel)]="settings.brandName" class="w-full bg-white border-slate-200 p-4 rounded-2xl focus:border-blue-500 transition-all font-semibold" />
@@ -34,7 +34,7 @@
                   <p-button label="Save Branding" icon="pi pi-save" (onClick)="saveSettings()" styleClass="w-full sm:w-auto"></p-button>
                </div>
 
-               <div class="bg-slate-50/30 p-8 rounded-[32px] border border-slate-100 shadow-sm space-y-4">
+               <div class="bg-slate-50/50 p-8 rounded-[32px] border border-slate-200 shadow-lg space-y-4">
                   <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Site Logo</label>
                   <div class="p-8 rounded-3xl border-2 border-dashed border-slate-200 bg-white flex flex-col items-center">
                      @if (settings.logoUrl) {
@@ -59,7 +59,7 @@
              <div class="space-y-12">
                 @for (item of aiMenuItems; track item.id) {
                   <!-- Each service section with light indigo tint -->
-                  <div class="p-10 rounded-[48px] border border-indigo-100 bg-indigo-50/10 shadow-md space-y-10 relative overflow-hidden group">
+                  <div class="p-10 rounded-[48px] border border-indigo-100 bg-indigo-50/10 shadow-2xl space-y-10 relative overflow-hidden group">
                     <div class="absolute top-0 left-0 h-1.5 w-full bg-blue-600 opacity-10 group-hover:opacity-100 transition-opacity"></div>
 
                     <div class="flex items-center justify-between">
@@ -81,7 +81,7 @@
 
                        <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                           @for (plan of item.plans; track plan.id) {
-                            <div class="bg-white border border-slate-100 p-8 rounded-[32px] space-y-6 shadow-sm relative">
+                            <div class="bg-white border border-slate-100 p-8 rounded-[32px] space-y-6 shadow-xl relative">
                                <button (click)="removePlanFromItem(item, plan)" class="absolute top-6 right-6 text-slate-300 hover:text-red-500 border-none bg-transparent cursor-pointer transition-colors">
                                   <i class="pi pi-times-circle text-lg"></i>
                                </button>
@@ -102,7 +102,7 @@
                                </div>
                                <div class="flex flex-col gap-2">
                                   <label class="text-[8px] font-black uppercase text-slate-400 ml-1">Features (New line each)</label>
-                                  <textarea pInputTextarea [ngModel]="plan.features?.join('\n')" (ngModelChange)="updatePlanFeatures(plan, $event)"
+                                  <textarea pInputTextarea [ngModel]="plan.features.join('\n')" (ngModelChange)="updatePlanFeatures(plan, $event)"
                                             rows="5" class="w-full bg-slate-50 border-none p-4 rounded-2xl text-[11px] font-medium leading-relaxed"></textarea>
                                </div>
                             </div>
@@ -122,8 +122,8 @@
              <div class="grid gap-12 lg:grid-cols-2">
                 <div class="space-y-10">
                   <!-- Public Info section with light cyan tint -->
-                  <div class="bg-cyan-50/10 p-10 rounded-[40px] border border-cyan-50 shadow-sm">
-                    <h3 class="text-xl font-bold text-slate-900 mb-8 border-b border-cyan-100 pb-3">Public Info</h3>
+                  <div class="bg-cyan-50/10 p-10 rounded-[40px] border border-cyan-100 shadow-xl">
+                    <h3 class="text-xl font-bold text-slate-900 mb-8 border-b border-cyan-200 pb-3">Public Info</h3>
                     <div class="grid gap-6">
                       <div class="flex flex-col gap-2">
                         <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Office Address</label>
@@ -138,8 +138,8 @@
                   </div>
 
                   <!-- SMTP section with light indigo tint -->
-                  <div class="bg-indigo-50/10 p-10 rounded-[40px] border border-indigo-50 shadow-sm">
-                    <h3 class="text-xl font-bold text-slate-900 mb-8 border-b border-indigo-100 pb-3">SMTP Configuration</h3>
+                  <div class="bg-indigo-50/10 p-10 rounded-[40px] border border-indigo-100 shadow-xl">
+                    <h3 class="text-xl font-bold text-slate-900 mb-8 border-b border-indigo-200 pb-3">SMTP Configuration</h3>
                     <div *ngIf="settings.smtpConfig" class="grid gap-5">
                       <input pInputText [(ngModel)]="settings.smtpConfig.host" placeholder="SMTP Host" class="bg-white border-slate-200 p-4 rounded-2xl" />
                       <div class="grid grid-cols-2 gap-4">
@@ -164,7 +164,7 @@
                   </div>
                   <div class="space-y-6 max-h-[800px] overflow-y-auto pr-4 custom-scroll">
                     @for (director of directors; track director.id) {
-                      <div class="p-10 rounded-[40px] border border-blue-100 bg-blue-50/10 shadow-sm space-y-8 relative overflow-hidden group">
+                      <div class="p-10 rounded-[40px] border border-blue-200 bg-blue-50/20 shadow-xl space-y-8 relative overflow-hidden group">
                         <div class="flex items-center justify-between">
                           <div class="flex items-center gap-4">
                              <div class="flex items-center gap-2">

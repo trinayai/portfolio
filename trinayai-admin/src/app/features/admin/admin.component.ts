@@ -300,31 +300,33 @@ export class AdminComponent implements OnInit {
   async addAiMenuItem() {
     try {
       await this.contentService.addAiMenuItem({ title: 'New AI Item', description: 'Add your content.', icon: 'pi pi-android', isVisible: true, plans: [] });
-      this.showSuccess('AI item added');
+      this.showSuccess('AI item created successfully');
     } catch (e) {
       this.showError('Failed to add AI item');
     }
   }
 
   async saveAiMenuItem(item: ContentItem) {
-    if (item.id) {
-      try {
-        await this.contentService.updateAiMenuItem(item.id, item);
-        this.showSuccess('AI Item saved');
-      } catch (error) {
-        this.showError(`Save failed: ${this.getErrorMessage(error)}`);
-      }
+    if (!item.id) return;
+    if (!item.title?.trim()) {
+      this.messageService.add({ severity: 'warn', summary: 'Validation', detail: 'Service name is required' });
+      return;
+    }
+    try {
+      await this.contentService.updateAiMenuItem(item.id, item);
+      this.showSuccess(`Synced "${item.title}" and its plans`);
+    } catch (error) {
+      this.showError(`Save failed: ${this.getErrorMessage(error)}`);
     }
   }
 
   async deleteAiMenuItem(item: ContentItem) {
-    if (item.id) {
-      try {
-        await this.contentService.deleteAiMenuItem(item.id);
-        this.showSuccess('AI item deleted');
-      } catch (e) {
-        this.showError('Delete failed');
-      }
+    if (!item.id) return;
+    try {
+      await this.contentService.deleteAiMenuItem(item.id);
+      this.showSuccess('AI item deleted');
+    } catch (e) {
+      this.showError('Delete failed');
     }
   }
 

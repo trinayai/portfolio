@@ -35,9 +35,17 @@ export interface ServicePlan {
 export interface UserSubscription {
   serviceId: string;
   planId: string;
-  status: 'active' | 'expired' | 'pending';
+  status: 'active' | 'expired' | 'pending' | 'cancelled_pending';
   startDate: string;
   expiryDate?: string;
+}
+
+export interface PaymentRecord {
+  id: string;
+  amount: string;
+  date: string;
+  serviceName: string;
+  status: 'success' | 'failed' | 'refunded';
 }
 
 export interface UserProfile {
@@ -50,6 +58,7 @@ export interface UserProfile {
   billingAddress?: string;
   gender?: string;
   subscriptions: UserSubscription[];
+  paymentHistory: PaymentRecord[];
   createdAt: string;
 }
 

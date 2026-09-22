@@ -1,7 +1,7 @@
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable, of } from 'rxjs';
-import { catchError, map, shareReplay, startWith } from 'rxjs/operators';
+import { catchError, map, shareReplay, startWith, tap } from 'rxjs/operators';
 import { Firestore, addDoc, collection, collectionData, deleteDoc, doc, setDoc, updateDoc, docData, query } from '@angular/fire/firestore';
 import { Storage, deleteObject, getDownloadURL, ref, uploadBytes } from '@angular/fire/storage';
 import { AboutCard, AboutEvent, ClientItem, ContentItem, SectionItem, SiteSettings, Director } from '../models/site-content';
@@ -11,8 +11,9 @@ export class SiteContentService {
   private firestore = inject(Firestore);
   private storage = inject(Storage);
   private platformId = inject(PLATFORM_ID);
-  private settings$!: Observable<SiteSettings>;
-  private collectionStreams = new Map<string, Observable<unknown[]>>();
+
+  private settings$?: Observable<SiteSettings>;
+  private streams = new Map<string, Observable<any[]>>();
 
   private readonly defaultSettings: SiteSettings = {
     brandName: 'TRINAY AI',
@@ -41,11 +42,11 @@ export class SiteContentService {
   getSettings(): Observable<SiteSettings> {
     if (this.settings$) return this.settings$;
 
-    const settingsDocument$: Observable<Partial<SiteSettings> | null | undefined> = isPlatformBrowser(this.platformId)
-      ? docData(doc(this.firestore, 'siteSettings', 'main'), { idField: 'id' }) as Observable<Partial<SiteSettings> | undefined>
-      : of(null);
+    if (!isPlatformBrowser(this.platformId)) {
+      return of(this.defaultSettings);
+    }
 
-    this.settings$ = settingsDocument$.pipe(
+    this.settings$ = (docData(doc(this.firestore, 'siteSettings', 'main'), { idField: 'id' }) as Observable<Partial<SiteSettings> | undefined>).pipe(
       map(settings => ({
         ...this.defaultSettings,
         ...(settings || {}),
@@ -53,7 +54,7 @@ export class SiteContentService {
       }) as SiteSettings),
       startWith(this.defaultSettings),
       catchError(() => of(this.defaultSettings)),
-      shareReplay({ bufferSize: 1, refCount: true })
+      shareReplay(1)
     );
 
     return this.settings$;
@@ -63,114 +64,63 @@ export class SiteContentService {
     return setDoc(doc(this.firestore, 'siteSettings', 'main'), { ...settings, id: 'main' }, { merge: true });
   }
 
-  getHomeSections(): Observable<SectionItem[]> {
-    return this.listenToCollection<SectionItem>('homeSections');
-  }
+  getHomeSections(): Observable<SectionItem[]> { return this.getCachedCollection<SectionItem>('homeSections'); }
+  getAboutCards(): Observable<AboutCard[]> { return this.getCachedCollection<AboutCard>('aboutCards'); }
+  getAboutEvents(): Observable<AboutEvent[]> { return this.getCachedCollection<AboutEvent>('aboutEvents'); }
+  getServices(): Observable<ContentItem[]> { return this.getCachedCollection<ContentItem>('services'); }
+  getAiMenuItems(): Observable<ContentItem[]> { return this.getCachedCollection<ContentItem>('aiMenuItems'); }
+  getDirectors(): Observable<Director[]> { return this.getCachedCollection<Director>('directors'); }
+  getClients(): Observable<ClientItem[]> { return this.getCachedCollection<ClientItem>('clients'); }
 
-  async addHomeSection(payload: Omit<SectionItem, 'id'>) {
-    return addDoc(collection(this.firestore, 'homeSections'), payload);
-  }
+  private getCachedCollection<T>(collectionName: string): Observable<T[]> {
+    if (!isPlatformBrowser(this.platformId)) {
+      return of([]);
+    }
 
-  async updateHomeSection(id: string, payload: Partial<SectionItem>) {
-    return updateDoc(doc(this.firestore, 'homeSections', id), payload);
-  }
+    if (this.streams.has(collectionName)) {
+      return this.streams.get(collectionName)!;
+    }
 
-  async deleteHomeSection(id: string) {
-    return deleteDoc(doc(this.firestore, 'homeSections', id));
-  }
-
-  getAboutCards(): Observable<AboutCard[]> {
-    return this.listenToCollection<AboutCard>('aboutCards');
-  }
-
-  getAboutEvents(): Observable<AboutEvent[]> {
-    return this.listenToCollection<AboutEvent>('aboutEvents');
-  }
-
-  async addAboutCard(payload: Omit<AboutCard, 'id'>) {
-    return addDoc(collection(this.firestore, 'aboutCards'), payload);
-  }
-
-  async updateAboutCard(id: string, payload: Partial<AboutCard>) {
-    return updateDoc(doc(this.firestore, 'aboutCards', id), payload);
-  }
-
-  async deleteAboutCard(id: string) {
-    return deleteDoc(doc(this.firestore, 'aboutCards', id));
-  }
-
-  getServices(): Observable<ContentItem[]> {
-    return this.listenToCollection<ContentItem>('services');
-  }
-
-  async addService(payload: Omit<ContentItem, 'id'>) {
-    return addDoc(collection(this.firestore, 'services'), payload);
-  }
-
-  async updateService(id: string, payload: Partial<ContentItem>) {
-    return updateDoc(doc(this.firestore, 'services', id), payload);
-  }
-
-  async deleteService(id: string) {
-    return deleteDoc(doc(this.firestore, 'services', id));
-  }
-
-  getAiMenuItems(): Observable<ContentItem[]> {
-    return this.listenToCollection<ContentItem>('aiMenuItems');
-  }
-
-  async addAiMenuItem(payload: Omit<ContentItem, 'id'>) {
-    return addDoc(collection(this.firestore, 'aiMenuItems'), payload);
-  }
-
-  async updateAiMenuItem(id: string, payload: Partial<ContentItem>) {
-    return updateDoc(doc(this.firestore, 'aiMenuItems', id), payload);
-  }
-
-  async deleteAiMenuItem(id: string) {
-    return deleteDoc(doc(this.firestore, 'aiMenuItems', id));
-  }
-
-  getDirectors(): Observable<Director[]> {
-    return this.listenToCollection<Director>('directors');
-  }
-
-  async addDirector(payload: Omit<Director, 'id'>) {
-    return addDoc(collection(this.firestore, 'directors'), payload);
-  }
-
-  async updateDirector(id: string, payload: Partial<Director>) {
-    return updateDoc(doc(this.firestore, 'directors', id), payload);
-  }
-
-  async deleteDirector(id: string) {
-    return deleteDoc(doc(this.firestore, 'directors', id));
-  }
-
-  getClients(): Observable<ClientItem[]> {
-    return this.listenToCollection<ClientItem>('clients');
-  }
-
-  async addClient(payload: Omit<ClientItem, 'id'>) {
-    return addDoc(collection(this.firestore, 'clients'), payload);
-  }
-
-  async updateClient(id: string, payload: Partial<ClientItem>) {
-    return updateDoc(doc(this.firestore, 'clients', id), payload);
-  }
-
-  async deleteClient(id: string) {
-    return deleteDoc(doc(this.firestore, 'clients', id));
-  }
-
-  private listenToCollection<T>(collectionName: string): Observable<T[]> {
-    return collectionData(
+    const stream = collectionData(
       query(collection(this.firestore, collectionName)),
       { idField: 'id' }
     ).pipe(
       startWith([]),
-      catchError(() => of([])),
-      shareReplay({ bufferSize: 1, refCount: true })
+      tap(data => console.log(`[SiteContent] Fetched ${data.length} items from ${collectionName}`)),
+      catchError(err => {
+        console.error(`Error loading ${collectionName}:`, err);
+        return of([]);
+      }),
+      shareReplay(1)
     ) as Observable<T[]>;
+
+    this.streams.set(collectionName, stream);
+    return stream;
   }
+
+  refreshCollection(name: string) {
+    this.streams.delete(name);
+  }
+
+  async addHomeSection(payload: Omit<SectionItem, 'id'>) { return addDoc(collection(this.firestore, 'homeSections'), payload); }
+  async updateHomeSection(id: string, payload: Partial<SectionItem>) { return updateDoc(doc(this.firestore, 'homeSections', id), payload); }
+  async deleteHomeSection(id: string) { return deleteDoc(doc(this.firestore, 'homeSections', id)); }
+  async addAboutCard(payload: Omit<AboutCard, 'id'>) { return addDoc(collection(this.firestore, 'aboutCards'), payload); }
+  async updateAboutCard(id: string, payload: Partial<AboutCard>) { return updateDoc(doc(this.firestore, 'aboutCards', id), payload); }
+  async deleteAboutCard(id: string) { return deleteDoc(doc(this.firestore, 'aboutCards', id)); }
+  async addAboutEvent(payload: Omit<AboutEvent, 'id'>) { return addDoc(collection(this.firestore, 'aboutEvents'), payload); }
+  async updateAboutEvent(id: string, payload: Partial<AboutEvent>) { return updateDoc(doc(this.firestore, 'aboutEvents', id), payload); }
+  async deleteAboutEvent(id: string) { return deleteDoc(doc(this.firestore, 'aboutEvents', id)); }
+  async addService(payload: Omit<ContentItem, 'id'>) { return addDoc(collection(this.firestore, 'services'), payload); }
+  async updateService(id: string, payload: Partial<ContentItem>) { return updateDoc(doc(this.firestore, 'services', id), payload); }
+  async deleteService(id: string) { return deleteDoc(doc(this.firestore, 'services', id)); }
+  async addAiMenuItem(payload: Omit<ContentItem, 'id'>) { return addDoc(collection(this.firestore, 'aiMenuItems'), payload); }
+  async updateAiMenuItem(id: string, payload: Partial<ContentItem>) { return updateDoc(doc(this.firestore, 'aiMenuItems', id), payload); }
+  async deleteAiMenuItem(id: string) { return deleteDoc(doc(this.firestore, 'aiMenuItems', id)); }
+  async addDirector(payload: Omit<Director, 'id'>) { return addDoc(collection(this.firestore, 'directors'), payload); }
+  async updateDirector(id: string, payload: Partial<Director>) { return updateDoc(doc(this.firestore, 'directors', id), payload); }
+  async deleteDirector(id: string) { return deleteDoc(doc(this.firestore, 'directors', id)); }
+  async addClient(payload: Omit<ClientItem, 'id'>) { return addDoc(collection(this.firestore, 'clients'), payload); }
+  async updateClient(id: string, payload: Partial<ClientItem>) { return updateDoc(doc(this.firestore, 'clients', id), payload); }
+  async deleteClient(id: string) { return deleteDoc(doc(this.firestore, 'clients', id)); }
 }

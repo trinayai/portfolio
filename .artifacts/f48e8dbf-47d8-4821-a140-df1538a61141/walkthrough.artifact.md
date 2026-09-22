@@ -1,31 +1,35 @@
-# UI Refinement & Admin Expansion Walkthrough
+# Account Loading & Subscription Fix Walkthrough
 
-I have successfully refined the typography and responsiveness of the Web App while significantly expanding the Admin Portal with 16 new management pages and a nested menu structure.
+I have resolved the issue where the "My Account" page was stuck on the loader and implemented the full subscription lifecycle and database persistence.
 
-## Changes Made
+## Key Fixes Made
 
-### 1. Web App Enhancements
-- **Typography Overhaul**: Reduced aggressive font sizes (e.g., 9XL to 6XL) across all landing pages to align with modern US standard web design. This makes the text feel more balanced and professional.
-- **Responsive Navigation**: Fixed the `p-menubar` dropdown for mobile devices. It now spans the full screen width with correct padding and shadows, ensuring it works perfectly on low-resolution screens.
-- **Three.js Background**: Maintained the high-tech AI particle background for a premium user experience.
+### 1. Account Loading & Redirection
+- **Instant Guest Redirect**: Fixed the logic where guest users were stuck on "Verifying credentials". The app now immediately detects a logged-out state and redirects to the Login page.
+- **SSR Safety**: Updated the `ProfileService` to handle Server-Side Rendering gracefully, preventing the 503/Not Found errors during page pre-rendering.
+- **Redirection Continuity**: clicking "Subscribe" while logged out now takes you to Login, then correctly returns you to the plans page to complete your selection.
 
-### 2. Admin Portal Expansion
-- **Hierarchical Menu**: Restructured the navigation to support nested sub-menus. The new structure includes:
-    - **App Management**: Existing home and site configuration.
-    - **Documents**: Trinayai, Directors, Tenders.
-    - **Investors**: Non-Government, Government.
-    - **Manage**: Employee, Admin, Vendors, Assets, Clients, Subscribers.
-    - **Finance**: Investment, Funds, Expenses, Salaries, Report.
-- **16 New Components**: Created dedicated standalone components for every new management section, each with a professional header and description.
-- **Routing Integration**: Updated the app routes to seamlessly integrate all new sections with the existing authentication guards.
+### 2. Database Persistence (Firestore)
+- **Reverted to Default DB**: Identified that the app was trying to connect to a non-existent `appdata` instance. I have switched both apps to the **default Firestore database**, ensuring all registration data (DOB, Country, Subscriptions) is now successfully stored.
+- **Security Rules**: Deployed updated rules to allow users to securely manage their own profiles and logs while protecting other users' data.
 
-## Deployment Status
-- [x] **Main Website**: [https://trinay-ai.web.app](https://trinay-ai.web.app)
-- [x] **Admin Portal**: [https://trinay-ai-admin.web.app](https://trinay-ai-admin.web.app)
+### 3. Subscription Lifecycle & Profile UI
+- **Complete Profile Dashboard**: The "My Account" page now includes:
+    - **Active Subscriptions**: Shows current plans with "Upgrade" and "Cancel" buttons.
+    - **Billing History**: A professional table listing all previous transaction records.
+    - **Security & Profile**: Full form to update DOB, Gender, Country, and Billing Address.
+- **Lifecycle Logic**:
+    - **Immediate Upgrades**: Switching to a higher plan takes effect instantly.
+    - **Deferred Cancellation**: Unsubscribing marks the plan as "Ending Soon", keeping it active until the current billing cycle expires.
+
+### 4. Admin Portal Expansion
+- **User Management Hub**: A new section under **"Manage"** in the Admin app allows you to view all registered users, their profile details, and their subscription history logs.
+- **Dynamic Plan Builder**: Finalized the tier editor. You can now define **Name, Cost, and Features** for every service plan dynamically, and they will automatically appear on the public website.
 
 ---
 
-### Verification Results
-- **Mobile Check**: The menu dropdown now fills the screen width correctly on mobile devices.
-- **Font Check**: Headings are now appropriately sized for a professional, clean look.
-- **Admin Navigation**: Verified that clicking any sub-menu item (e.g., Finance -> Salaries) correctly loads the new management page.
+### Final Deployment Status
+- [x] **Main Website**: [https://trinay-ai.web.app](https://trinay-ai.web.app)
+- [x] **Admin Portal**: [https://trinay-ai-admin.web.app](https://trinay-ai-admin.web.app)
+
+Your account portal is now fully operational, and registration data is persisting correctly in the database.
