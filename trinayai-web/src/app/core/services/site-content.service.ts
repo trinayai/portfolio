@@ -1,8 +1,8 @@
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable, of } from 'rxjs';
-import { catchError, map, shareReplay, startWith, tap } from 'rxjs/operators';
-import { Firestore, addDoc, collection, collectionData, deleteDoc, doc, setDoc, updateDoc, docData, query } from '@angular/fire/firestore';
+import { catchError, map, shareReplay, tap } from 'rxjs/operators';
+import { Firestore, addDoc, collection, collectionData, deleteDoc, doc, setDoc, docData, query } from '@angular/fire/firestore';
 import { Storage, deleteObject, getDownloadURL, ref, uploadBytes } from '@angular/fire/storage';
 import { AboutCard, AboutEvent, ClientItem, ContentItem, SectionItem, SiteSettings, Director } from '../models/site-content';
 
@@ -20,6 +20,9 @@ export class SiteContentService {
     logoUrl: 'assets/logo/Trinay-AI-Logo.png',
     footerText: '© 2026 Trinayai Technologies Private Limited. All rights reserved. SF No. 224/8F8, Attur main road, Kumbakottai, Namagiripettai, Rasipuram, Namakkal, Tamil Nadu – 637406.',
     contactEmail: 'info@trinayai.com',
+    contactAddress: 'SF No. 224/8F8, Attur main road, Kumbakottai,\nNamagiripettai, Rasipuram, Namakkal,\nTamil Nadu – 637406',
+    contactTitle: 'Get in touch with us.',
+    contactDescription: 'Our team is dedicated to helping MSMEs navigate and conquer the digital landscape.',
     menuItems: [
       { label: 'Home', route: '/', order: 0, isVisible: true },
       { label: 'Subscription', route: '/ai-menu', order: 1, isVisible: true },
@@ -46,22 +49,37 @@ export class SiteContentService {
       return of(this.defaultSettings);
     }
 
-    this.settings$ = (docData(doc(this.firestore, 'siteSettings', 'main'), { idField: 'id' }) as Observable<Partial<SiteSettings> | undefined>).pipe(
-      map(settings => ({
-        ...this.defaultSettings,
-        ...(settings || {}),
-        menuItems: settings?.menuItems?.length ? settings.menuItems : this.defaultSettings.menuItems
-      }) as SiteSettings),
-      startWith(this.defaultSettings),
-      catchError(() => of(this.defaultSettings)),
-      shareReplay(1)
+    const docRef = doc(this.firestore, 'siteSettings', 'main');
+    this.settings$ = (docData(docRef, { idField: 'id' }) as Observable<Partial<SiteSettings> | undefined>).pipe(
+      map(settings => {
+        if (!settings || !Object.keys(settings).length) {
+          setDoc(docRef, { ...this.defaultSettings, id: 'main' }, { merge: true }).catch(() => {});
+          return this.defaultSettings;
+        }
+        return {
+          ...this.defaultSettings,
+          ...settings,
+          menuItems: settings?.menuItems?.length ? settings.menuItems : this.defaultSettings.menuItems
+        } as SiteSettings;
+      }),
+      catchError(err => {
+        console.error('[SiteContent] Error fetching siteSettings:', err);
+        return of(this.defaultSettings);
+      }),
+      shareReplay({ bufferSize: 1, refCount: true })
     );
 
     return this.settings$;
   }
 
+  refreshSettings() {
+    this.settings$ = undefined;
+  }
+
   async saveSettings(settings: SiteSettings) {
-    return setDoc(doc(this.firestore, 'siteSettings', 'main'), { ...settings, id: 'main' }, { merge: true });
+    const res = await setDoc(doc(this.firestore, 'siteSettings', 'main'), { ...settings, id: 'main' }, { merge: true });
+    this.refreshSettings();
+    return res;
   }
 
   getHomeSections(): Observable<SectionItem[]> { return this.getCachedCollection<SectionItem>('homeSections'); }
@@ -85,13 +103,12 @@ export class SiteContentService {
       query(collection(this.firestore, collectionName)),
       { idField: 'id' }
     ).pipe(
-      startWith([]),
       tap(data => console.log(`[SiteContent] Fetched ${data.length} items from ${collectionName}`)),
       catchError(err => {
         console.error(`Error loading ${collectionName}:`, err);
         return of([]);
       }),
-      shareReplay(1)
+      shareReplay({ bufferSize: 1, refCount: true })
     ) as Observable<T[]>;
 
     this.streams.set(collectionName, stream);
@@ -103,24 +120,24 @@ export class SiteContentService {
   }
 
   async addHomeSection(payload: Omit<SectionItem, 'id'>) { return addDoc(collection(this.firestore, 'homeSections'), payload); }
-  async updateHomeSection(id: string, payload: Partial<SectionItem>) { return updateDoc(doc(this.firestore, 'homeSections', id), payload); }
+  async updateHomeSection(id: string, payload: Partial<SectionItem>) { return setDoc(doc(this.firestore, 'homeSections', id), payload, { merge: true }); }
   async deleteHomeSection(id: string) { return deleteDoc(doc(this.firestore, 'homeSections', id)); }
   async addAboutCard(payload: Omit<AboutCard, 'id'>) { return addDoc(collection(this.firestore, 'aboutCards'), payload); }
-  async updateAboutCard(id: string, payload: Partial<AboutCard>) { return updateDoc(doc(this.firestore, 'aboutCards', id), payload); }
+  async updateAboutCard(id: string, payload: Partial<AboutCard>) { return setDoc(doc(this.firestore, 'aboutCards', id), payload, { merge: true }); }
   async deleteAboutCard(id: string) { return deleteDoc(doc(this.firestore, 'aboutCards', id)); }
   async addAboutEvent(payload: Omit<AboutEvent, 'id'>) { return addDoc(collection(this.firestore, 'aboutEvents'), payload); }
-  async updateAboutEvent(id: string, payload: Partial<AboutEvent>) { return updateDoc(doc(this.firestore, 'aboutEvents', id), payload); }
+  async updateAboutEvent(id: string, payload: Partial<AboutEvent>) { return setDoc(doc(this.firestore, 'aboutEvents', id), payload, { merge: true }); }
   async deleteAboutEvent(id: string) { return deleteDoc(doc(this.firestore, 'aboutEvents', id)); }
   async addService(payload: Omit<ContentItem, 'id'>) { return addDoc(collection(this.firestore, 'services'), payload); }
-  async updateService(id: string, payload: Partial<ContentItem>) { return updateDoc(doc(this.firestore, 'services', id), payload); }
+  async updateService(id: string, payload: Partial<ContentItem>) { return setDoc(doc(this.firestore, 'services', id), payload, { merge: true }); }
   async deleteService(id: string) { return deleteDoc(doc(this.firestore, 'services', id)); }
   async addAiMenuItem(payload: Omit<ContentItem, 'id'>) { return addDoc(collection(this.firestore, 'aiMenuItems'), payload); }
-  async updateAiMenuItem(id: string, payload: Partial<ContentItem>) { return updateDoc(doc(this.firestore, 'aiMenuItems', id), payload); }
+  async updateAiMenuItem(id: string, payload: Partial<ContentItem>) { return setDoc(doc(this.firestore, 'aiMenuItems', id), payload, { merge: true }); }
   async deleteAiMenuItem(id: string) { return deleteDoc(doc(this.firestore, 'aiMenuItems', id)); }
   async addDirector(payload: Omit<Director, 'id'>) { return addDoc(collection(this.firestore, 'directors'), payload); }
-  async updateDirector(id: string, payload: Partial<Director>) { return updateDoc(doc(this.firestore, 'directors', id), payload); }
+  async updateDirector(id: string, payload: Partial<Director>) { return setDoc(doc(this.firestore, 'directors', id), payload, { merge: true }); }
   async deleteDirector(id: string) { return deleteDoc(doc(this.firestore, 'directors', id)); }
   async addClient(payload: Omit<ClientItem, 'id'>) { return addDoc(collection(this.firestore, 'clients'), payload); }
-  async updateClient(id: string, payload: Partial<ClientItem>) { return updateDoc(doc(this.firestore, 'clients', id), payload); }
+  async updateClient(id: string, payload: Partial<ClientItem>) { return setDoc(doc(this.firestore, 'clients', id), payload, { merge: true }); }
   async deleteClient(id: string) { return deleteDoc(doc(this.firestore, 'clients', id)); }
 }

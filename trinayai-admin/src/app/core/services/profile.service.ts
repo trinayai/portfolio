@@ -47,4 +47,9 @@ export class ProfileService {
     if (!isPlatformBrowser(this.platformId)) return of([]);
     return collectionData(collection(this.firestore, 'auditLogs')) as Observable<AuditLog[]>;
   }
+
+  getSubscribers(): Observable<any[]> {
+    if (!isPlatformBrowser(this.platformId)) return of([]);
+    return collectionData(collection(this.firestore, 'subscribers'), { idField: 'id' });
+  }
 }

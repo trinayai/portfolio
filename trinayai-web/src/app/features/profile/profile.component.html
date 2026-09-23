@@ -1,11 +1,11 @@
 <p-toast></p-toast>
-<div class="min-h-screen bg-slate-50 px-6 py-12" *ngIf="profile">
-  <div class="mx-auto max-w-7xl space-y-12">
+<div class="min-h-screen bg-slate-50 px-6 py-12" *ngIf="!loadingState && profile">
+  <div class="mx-auto max-w-7xl space-y-12 animate-fadein">
 
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
       <div>
         <h1 class="text-3xl font-black tracking-tighter text-slate-900 mb-2">My Account</h1>
-        <p class="text-slate-500 font-medium italic">Comprehensive management of your AI workspace</p>
+        <p class="text-slate-500 font-medium italic">Manage your profile and AI subscriptions</p>
       </div>
       <div class="flex items-center gap-4">
         <p-button label="Sign Out" icon="pi pi-power-off" (onClick)="logout()" styleClass="p-button-outlined p-button-danger"></p-button>
@@ -33,15 +33,13 @@
           </div>
         </div>
 
-        <!-- Payment Summary -->
         <div class="card-white p-8 bg-blue-600 text-white shadow-2xl border-none">
-          <h4 class="text-[9px] font-black uppercase tracking-[0.25em] mb-6 opacity-80">Payment Method</h4>
-          <div class="flex items-center gap-4">
-            <i class="pi pi-credit-card text-2xl"></i>
-            <div>
-               <p class="text-sm font-black mb-0 tracking-tight">Standard Billing</p>
-               <p class="text-[10px] opacity-70 font-bold uppercase tracking-widest">Automatic Renewal</p>
-            </div>
+          <h4 class="text-[9px] font-black uppercase tracking-[0.25em] mb-6 opacity-80">Quick Settings</h4>
+          <div class="space-y-4">
+            <button class="w-full flex items-center justify-between bg-white/10 hover:bg-white/20 p-4 rounded-xl transition-all border-none text-white cursor-pointer">
+              <span class="text-xs font-bold">Billing Preferences</span>
+              <i class="pi pi-chevron-right text-[10px]"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -65,10 +63,10 @@
                 </div>
                 <div class="flex gap-3">
                    @if (sub.status !== 'cancelled_pending') {
-                     <p-button label="Upgrade" icon="pi pi-bolt" (onClick)="openUpgrade({id: sub.serviceId})" styleClass="p-button-sm"></p-button>
+                     <p-button label="Change Plan" icon="pi pi-bolt" (onClick)="openUpgrade(sub.serviceId)" styleClass="p-button-sm"></p-button>
                      <p-button label="Cancel" icon="pi pi-times" (onClick)="cancelSub(sub.serviceId)" styleClass="p-button-sm p-button-text p-button-danger"></p-button>
                    } @else {
-                     <p-button label="Renew Plan" icon="pi pi-refresh" styleClass="p-button-sm p-button-info p-button-text"></p-button>
+                     <p-button label="Renew Now" icon="pi pi-refresh" styleClass="p-button-sm p-button-info p-button-text"></p-button>
                    }
                 </div>
               </div>
@@ -76,20 +74,20 @@
             @if (!profile.subscriptions?.length) {
               <div class="card-white p-12 text-center border-dashed border-2 bg-slate-50/50">
                 <p class="text-slate-400 font-medium mb-6">No active AI workflows found.</p>
-                <a routerLink="/ai-menu" class="p-button no-underline">Browse Solutions</a>
+                <a routerLink="/ai-menu" class="p-button no-underline bg-blue-600 text-white px-8 py-3 rounded-xl font-bold uppercase text-xs tracking-widest">Browse Solutions</a>
               </div>
             }
           </div>
         </section>
 
-        <!-- Payment History -->
+        <!-- Billing History -->
         <section>
           <h3 class="text-xl font-black text-slate-900 mb-6 tracking-tight">Billing History</h3>
-          <div class="card-white p-0 overflow-hidden shadow-lg border-slate-100">
-             <p-table [value]="profile.paymentHistory || []" class="custom-table">
+          <div class="card-white p-0 overflow-hidden shadow-lg border-slate-100 bg-white">
+             <p-table [value]="profile.paymentHistory || []" styleClass="p-datatable-sm">
                 <ng-template pTemplate="header">
                    <tr>
-                      <th class="bg-slate-50 text-[9px] font-black uppercase tracking-widest text-slate-400 p-6 border-none">Description</th>
+                      <th class="bg-slate-50 text-[9px] font-black uppercase tracking-widest text-slate-400 p-6 border-none">Service</th>
                       <th class="bg-slate-50 text-[9px] font-black uppercase tracking-widest text-slate-400 p-6 border-none text-right">Amount</th>
                       <th class="bg-slate-50 text-[9px] font-black uppercase tracking-widest text-slate-400 p-6 border-none text-right">Date</th>
                    </tr>
@@ -102,7 +100,7 @@
                    </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
-                   <tr><td colspan="3" class="p-12 text-center text-slate-300 text-xs font-bold uppercase tracking-widest">No transactions yet</td></tr>
+                   <tr><td colspan="3" class="p-12 text-center text-slate-300 text-xs font-bold uppercase tracking-widest">No transaction history available.</td></tr>
                 </ng-template>
              </p-table>
           </div>
@@ -116,29 +114,30 @@
               <div class="grid md:grid-cols-2 gap-10">
                 <div class="flex flex-col gap-2">
                   <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Account Display Name</label>
-                  <input type="text" pInputText [(ngModel)]="profile.displayName" name="name" class="custom-input" />
+                  <input type="text" pInputText [(ngModel)]="profile.displayName" name="name" class="p-4 rounded-2xl border-slate-200" />
                 </div>
                 <div class="flex flex-col gap-2">
                   <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Contact Phone</label>
-                  <input type="tel" pInputText [(ngModel)]="profile.phoneNumber" name="phone" class="custom-input" />
+                  <input type="tel" pInputText [(ngModel)]="profile.phoneNumber" name="phone" class="p-4 rounded-2xl border-slate-200" />
                 </div>
                 <div class="flex flex-col gap-2">
                   <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Date of Birth</label>
                   <p-calendar [(ngModel)]="profile.dob" name="dob" appendTo="body" [showIcon]="true" styleClass="w-full"></p-calendar>
                 </div>
                 <div class="flex flex-col gap-2">
-                  <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Gender Identification</label>
+                  <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Gender</label>
                   <p-dropdown [options]="genders" [(ngModel)]="profile.gender" name="gender" styleClass="w-full"></p-dropdown>
-                </div>
-                <div class="flex flex-col gap-2">
-                  <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Operational Region</label>
-                  <p-dropdown [options]="countries" [(ngModel)]="profile.country" name="country" [filter]="true" styleClass="w-full"></p-dropdown>
                 </div>
               </div>
 
               <div class="flex flex-col gap-2">
+                <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Operational Region</label>
+                <p-dropdown [options]="countries" [(ngModel)]="profile.country" name="country" [filter]="true" styleClass="w-full"></p-dropdown>
+              </div>
+
+              <div class="flex flex-col gap-2">
                 <label class="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-1">Corporate / Billing Address</label>
-                <textarea pInputTextarea [(ngModel)]="profile.billingAddress" name="address" rows="3" class="custom-input"></textarea>
+                <textarea pInputTextarea [(ngModel)]="profile.billingAddress" name="address" rows="3" class="p-4 rounded-2xl border-slate-200"></textarea>
               </div>
 
               <div class="pt-6 flex justify-end border-t border-slate-50 mt-12">
@@ -163,8 +162,12 @@
           styleClass="custom-dialog">
   <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
     @for (plan of selectedServiceForUpgrade?.plans; track plan.id) {
-       <div class="card-white flex flex-col p-8 border-2 hover:border-blue-600 transition-all cursor-pointer group"
+       <div class="card-white flex flex-col p-8 border-2 transition-all cursor-pointer group hover:border-blue-600"
+            [ngClass]="{'border-blue-600 bg-blue-50 ring-2 ring-blue-500': targetPlanId === plan.id, 'border-slate-100': targetPlanId !== plan.id}"
             (click)="selectPlan(plan)">
+          @if (targetPlanId === plan.id) {
+            <span class="inline-block self-start px-3 py-1 mb-3 text-[9px] font-black uppercase tracking-widest text-blue-600 bg-blue-100 rounded-full">Selected Tier</span>
+          }
           <h4 class="text-lg font-black text-slate-900 mb-1 tracking-tight">{{ plan.name }}</h4>
           <div class="mb-6 flex items-baseline gap-1">
              <span class="text-3xl font-black text-blue-600">{{ plan.cost }}</span>
@@ -178,25 +181,17 @@
                </li>
              }
           </ul>
-          <p-button label="Confirm Upgrade" styleClass="w-full mt-auto p-button-sm"></p-button>
+          <p-button label="Confirm Plan" styleClass="w-full mt-auto p-button-sm"></p-button>
        </div>
     }
   </div>
 </p-dialog>
 
-<!-- Improved Loader with Fallback -->
-<div *ngIf="!profile" class="min-h-screen flex items-center justify-center bg-white">
-  <div class="text-center max-w-xs animate-fadein">
+<!-- Verifying Loader -->
+<div *ngIf="loadingState" class="min-h-screen flex items-center justify-center bg-white">
+  <div class="text-center max-w-xs">
     <i class="pi pi-spin pi-spinner text-4xl text-blue-600 mb-6"></i>
     <p class="text-slate-900 font-black uppercase tracking-widest text-xs mb-2">Verifying credentials...</p>
-    <p class="text-slate-400 text-[10px] font-medium leading-relaxed" *ngIf="!takingTooLong">Please wait while we establish a secure connection to your account.</p>
-
-    <div *ngIf="takingTooLong" class="mt-8 pt-8 border-t border-slate-50 space-y-4">
-       <p class="text-red-500 text-[10px] font-bold uppercase tracking-widest">Connection is taking longer than expected</p>
-       <div class="flex flex-col gap-2">
-          <p-button label="Refresh Session" icon="pi pi-refresh" (onClick)="logout()" styleClass="w-full p-button-sm"></p-button>
-          <a routerLink="/" class="text-[10px] font-bold uppercase text-slate-400 hover:text-slate-900 no-underline">Return Home</a>
-       </div>
-    </div>
+    <p class="text-slate-400 text-[10px] font-medium leading-relaxed">Please wait while we establish a secure connection to your account.</p>
   </div>
 </div>

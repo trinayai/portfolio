@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
-import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import { ProfileService } from '../../core/services/profile.service';
+import { SiteContentService } from '../../core/services/site-content.service';
+import { combineLatest } from 'rxjs';
 
 interface Subscriber {
   id?: string;
@@ -48,6 +50,13 @@ interface Subscriber {
               </td>
             </tr>
           </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="4" class="p-12 text-center text-slate-300 font-bold uppercase tracking-widest text-xs border-dashed border-2">
+                No subscriber records found.
+              </td>
+            </tr>
+          </ng-template>
         </p-table>
       </div>
     </div>
@@ -55,11 +64,53 @@ interface Subscriber {
 })
 export class SubscribersManageComponent implements OnInit {
   subscribers: Subscriber[] = [];
-  private firestore = inject(Firestore);
+  private profileService = inject(ProfileService);
+  private contentService = inject(SiteContentService);
 
   ngOnInit() {
-    collectionData(collection(this.firestore, 'subscribers'), { idField: 'id' }).subscribe(data => {
-      this.subscribers = data as Subscriber[];
+    combineLatest([
+      this.profileService.getSubscribers(),
+      this.profileService.getAllUsers(),
+      this.contentService.getAiMenuItems()
+    ]).subscribe(([subDocs, users, services]) => {
+      const mergedMap = new Map<string, Subscriber>();
+
+      // First add explicit subscribers collection docs
+      (subDocs || []).forEach((doc: any) => {
+        if (doc.email) {
+          const key = doc.id || `${doc.email}_${doc.plan}`;
+          mergedMap.set(key, {
+            id: doc.id,
+            email: doc.email,
+            plan: doc.plan || 'Standard Tier',
+            status: doc.status || 'active',
+            joinDate: doc.joinDate || new Date().toISOString()
+          });
+        }
+      });
+
+      // Second, iterate users and their subscriptions array as fallback
+      (users || []).forEach(user => {
+        if (user.subscriptions && user.subscriptions.length > 0) {
+          user.subscriptions.forEach(sub => {
+            const serviceName = services.find(s => s.id === sub.serviceId)?.title || sub.serviceId;
+            const planName = services.find(s => s.id === sub.serviceId)?.plans?.find(p => p.id === sub.planId)?.name || sub.planId;
+            const key = `${user.uid}_${sub.serviceId}`;
+
+            if (!mergedMap.has(key)) {
+              mergedMap.set(key, {
+                id: key,
+                email: user.email,
+                plan: `${serviceName} (${planName})`,
+                status: sub.status || 'active',
+                joinDate: sub.startDate || user.createdAt || new Date().toISOString()
+              });
+            }
+          });
+        }
+      });
+
+      this.subscribers = Array.from(mergedMap.values());
     });
   }
 }

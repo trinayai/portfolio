@@ -22,7 +22,6 @@ export class AiMenuComponent implements OnInit {
   items: ContentItem[] = [];
   settings: SiteSettings = { brandName: '', logoUrl: '', footerText: '', menuItems: [] };
   syncing = true;
-  takingTooLong = false;
 
   ngOnInit(): void {
     this.contentService.getSettings().subscribe(settings => this.settings = { ...this.settings, ...settings });
@@ -31,35 +30,61 @@ export class AiMenuComponent implements OnInit {
 
   loadPlans() {
     this.syncing = true;
-    this.takingTooLong = false;
-
-    // Safety timeout
-    const timeout = setTimeout(() => {
-      if (this.items.length === 0) this.takingTooLong = true;
-    }, 5000);
-
     this.contentService.getAiMenuItems().pipe(
-      map(items => items.filter(i => i.isVisible !== false))
+      map(items => {
+        const visible = (items || []).filter(i => i.isVisible !== false);
+        if (visible.length === 0) {
+          return [
+            {
+              id: 'ai_std_1',
+              title: 'General Reasoning & Workflow AI',
+              description: 'Flexible AI reasoning models tailored for MSMEs and global enterprise teams.',
+              icon: 'pi pi-android',
+              isVisible: true,
+              plans: [
+                {
+                  id: 'plan_std',
+                  name: 'Standard Tier',
+                  cost: '₹999',
+                  billingCycle: '/ mo',
+                  features: ['Full AI Features Access', 'Priority Response Time', '24/7 System Availability'],
+                  isVisible: true
+                },
+                {
+                  id: 'plan_pro',
+                  name: 'Professional Tier',
+                  cost: '₹2,499',
+                  billingCycle: '/ mo',
+                  features: ['Advanced Multi-modal AI', 'Dedicated Workflow Integration', 'Custom Analytics & SLA'],
+                  isVisible: true
+                }
+              ]
+            }
+          ];
+        }
+        return visible;
+      })
     ).subscribe(items => {
-      clearTimeout(timeout);
       this.items = items;
       this.syncing = false;
-      this.takingTooLong = false;
     });
   }
 
-  retrySync() {
-    this.contentService.refreshCollection('aiMenuItems');
-    this.loadPlans();
-  }
+  subscribeToPlan(service: ContentItem, planId?: string): void {
+    const queryParams: any = { upgrade: service.id };
+    if (planId) queryParams.plan = planId;
 
-  openWorkspace(item: ContentItem): void {
     this.authService.user$.pipe(take(1)).subscribe(user => {
       if (user) {
-        this.router.navigate(['/profile'], { queryParams: { upgrade: item.id } });
+        this.router.navigate(['/profile'], { queryParams });
       } else {
-        this.router.navigate(['/login'], { queryParams: { returnUrl: '/ai-menu' } });
+        const returnUrl = `/profile?upgrade=${service.id}${planId ? '&plan=' + planId : ''}`;
+        this.router.navigate(['/login'], { queryParams: { returnUrl } });
       }
     });
+  }
+
+  openWorkspace(service: ContentItem): void {
+    this.subscribeToPlan(service);
   }
 }

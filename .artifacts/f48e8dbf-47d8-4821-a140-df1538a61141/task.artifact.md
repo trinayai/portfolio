@@ -1,22 +1,13 @@
-# System Validation & UI Architecture Tasks
+# Subscription Flow & Profile Loading Fix Tasks
 
-- [ ] **Validation & Feedback (Both Apps)**
-    - [ ] Update `AdminComponent` (`trinayai-admin`) with data validation and success toasts.
-    - [ ] Update `ProfileComponent` (`trinayai-web`) with validation and success toasts.
-- [ ] **Admin Portal Page Construction (`trinayai-admin`)**
-    - [ ] Implement `AdminManageComponent`
-    - [ ] Implement `VendorsManageComponent`
-    - [ ] Implement `AssetsManageComponent`
-    - [ ] Implement `ClientsManageComponent`
-    - [ ] Implement `SubscribersManageComponent`
-    - [ ] Implement `InvestmentFinanceComponent`
-    - [ ] Implement `FundsFinanceComponent`
-    - [ ] Implement `ExpensesFinanceComponent`
-    - [ ] Implement `SalariesFinanceComponent`
-    - [ ] Implement `ReportFinanceComponent`
-    - [ ] Implement `TrinayaiDocsComponent`
-    - [ ] Implement `DirectorsDocsComponent`
-    - [ ] Implement `TendersDocsComponent`
-- [ ] **Verification & Final Deployment**
-    - [ ] Build both applications
-    - [ ] Deploy to Firebase Hosting
+- [ ] **Reactive Service Fixes (`trinayai-web`)**
+    - [ ] Refactor `ProfileService` (Auto-init missing profiles, secure merge logic)
+    - [ ] Update `addSubscription` to properly await and log audit events
+- [ ] **Public UI Enhancement (`trinayai-web`)**
+    - [ ] Update `ProfileComponent` (Async upgrade logic, redirect stability)
+    - [ ] Finalize `profile.component.html` (Billing history, lifecycle badges, toasts)
+- [ ] **Admin Oversight (`trinayai-admin`)**
+    - [ ] Ensure `UserManageComponent` displays accurate subscription history and logs
+- [ ] **Verification & Deployment**
+    - [ ] Clean build both apps
+    - [ ] Firebase deployment

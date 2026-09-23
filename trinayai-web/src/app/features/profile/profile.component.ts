@@ -15,7 +15,7 @@ import { ToastModule } from 'primeng/toast';
 import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { TableModule } from 'primeng/table';
-import { Subscription, timer } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -26,12 +26,13 @@ import { Subscription, timer } from 'rxjs';
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   profile: UserProfile | null = null;
+  loadingState = true;
   services: ContentItem[] = [];
   loading = false;
-  takingTooLong = false;
 
   showUpgradeDialog = false;
   selectedServiceForUpgrade: ContentItem | null = null;
+  targetPlanId: string | null = null;
 
   private profileService = inject(ProfileService);
   private contentService = inject(SiteContentService);
@@ -39,7 +40,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private subs = new Subscription();
+  private sub = new Subscription();
 
   countries = [
     { label: 'India', value: 'India' },
@@ -55,55 +56,72 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit() {
-    // Timeout check: If profile not loaded in 10s
-    this.subs.add(timer(10000).subscribe(() => {
-      if (!this.profile) this.takingTooLong = true;
-    }));
+    this.sub.add(this.profileService.userProfile$.subscribe(p => {
+      // undefined means still checking auth/profile
+      if (p === undefined) {
+        this.loadingState = true;
+        return;
+      }
 
-    this.subs.add(this.profileService.userProfile$.subscribe(p => {
-      if (p === undefined) return; // Still loading/checking auth
-
+      // null means definitively logged out
       if (p === null) {
-        // Not logged in or error
         this.router.navigate(['/login'], { queryParams: { returnUrl: '/profile' } });
         return;
       }
 
-      this.profile = p;
-      if (this.profile.dob) this.profile.dob = new Date(this.profile.dob) as any;
+      // We have a profile
+      this.profile = { ...p };
+      if (this.profile.dob) {
+        const parsedDate = new Date(this.profile.dob);
+        this.profile.dob = isNaN(parsedDate.getTime()) ? null as any : parsedDate;
+      }
+      this.loadingState = false;
       this.checkQueryParams();
     }));
 
-    this.subs.add(this.contentService.getAiMenuItems().subscribe(items => {
+    this.sub.add(this.contentService.getAiMenuItems().subscribe(items => {
       this.services = items;
+      this.checkQueryParams();
+    }));
+
+    this.sub.add(this.route.queryParams.subscribe(params => {
+      if (params['upgrade']) {
+        this.checkQueryParams();
+      }
     }));
   }
 
   private checkQueryParams() {
     const upgradeId = this.route.snapshot.queryParams['upgrade'];
+    const planId = this.route.snapshot.queryParams['plan'];
     if (upgradeId && this.services.length > 0) {
       const service = this.services.find(s => s.id === upgradeId);
-      if (service) this.openUpgrade(service);
+      if (service) {
+        this.targetPlanId = planId || null;
+        this.openUpgrade(service, planId);
+      }
     }
   }
 
   async onUpdateProfile() {
     if (!this.profile) return;
-
-    if (!this.profile.displayName?.trim()) {
-      this.messageService.add({ severity: 'warn', summary: 'Missing Info', detail: 'Display name is required.' });
-      return;
-    }
-
     this.loading = true;
     try {
+      let formattedDob: string | undefined = undefined;
+      if (this.profile.dob) {
+        const dobObj = new Date(this.profile.dob);
+        if (!isNaN(dobObj.getTime())) {
+          formattedDob = dobObj.toISOString();
+        }
+      }
+
       await this.profileService.updateProfile(this.profile.uid, {
         ...this.profile,
-        dob: (this.profile.dob as any)?.toISOString()
+        dob: formattedDob
       });
-      this.messageService.add({ severity: 'success', summary: 'Profile Synced', detail: 'Your changes have been saved securely.' });
+      this.messageService.add({ severity: 'success', summary: 'Updated', detail: 'Profile saved successfully.' });
     } catch (e: any) {
-      this.messageService.add({ severity: 'error', summary: 'Sync Error', detail: e.message });
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: e.message });
     } finally {
       this.loading = false;
     }
@@ -117,18 +135,20 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   getServiceName(id: string) {
-    return this.services.find(s => s.id === id)?.title || 'Service';
+    return this.services.find(s => s.id === id)?.title || id;
   }
 
   getPlanName(serviceId: string, planId: string) {
     const service = this.services.find(s => s.id === serviceId);
-    return service?.plans?.find(p => p.id === planId)?.name || 'Standard';
+    return service?.plans?.find(p => p.id === planId)?.name || planId;
   }
 
-  openUpgrade(service: {id?: string, title?: string}) {
-    if (!service.id) return;
-    const fullService = this.services.find(s => s.id === service.id);
+  openUpgrade(service: any, preferredPlanId?: string) {
+    const fullService = this.services.find(s => s.id === (service.id || service));
     this.selectedServiceForUpgrade = fullService || null;
+    if (preferredPlanId) {
+      this.targetPlanId = preferredPlanId;
+    }
     this.showUpgradeDialog = true;
   }
 
@@ -146,10 +166,29 @@ export class ProfileComponent implements OnInit, OnDestroy {
           startDate: new Date().toISOString()
         },
         plan.cost,
-        this.selectedServiceForUpgrade.title
+        this.selectedServiceForUpgrade.title,
+        plan.name
       );
+
+      // Optimistically update local profile subscriptions for instant feedback
+      const currentSubs = [...(this.profile.subscriptions || [])];
+      const existingIdx = currentSubs.findIndex(s => s.serviceId === this.selectedServiceForUpgrade!.id);
+      const newSub = {
+        serviceId: this.selectedServiceForUpgrade.id!,
+        planId: plan.id!,
+        status: 'active' as const,
+        startDate: new Date().toISOString()
+      };
+      if (existingIdx > -1) {
+        currentSubs[existingIdx] = newSub;
+      } else {
+        currentSubs.push(newSub);
+      }
+      this.profile.subscriptions = currentSubs;
+
       this.messageService.add({ severity: 'success', summary: 'Success', detail: `Subscribed to ${plan.name}!` });
       this.showUpgradeDialog = false;
+      this.targetPlanId = null;
     } catch (e: any) {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: e.message });
     } finally {
@@ -161,6 +200,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (!this.profile) return;
     try {
       await this.profileService.cancelSubscription(this.profile.uid, serviceId);
+
+      if (this.profile.subscriptions) {
+        this.profile.subscriptions = this.profile.subscriptions.map(s => {
+          if (s.serviceId === serviceId) {
+            return { ...s, status: 'cancelled_pending' as const };
+          }
+          return s;
+        });
+      }
+
       this.messageService.add({ severity: 'info', summary: 'Cancelled', detail: 'Plan will end at cycle completion.' });
     } catch (e: any) {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: e.message });
@@ -168,6 +217,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subs.unsubscribe();
+    this.sub.unsubscribe();
   }
 }

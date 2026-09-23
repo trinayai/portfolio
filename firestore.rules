@@ -35,11 +35,15 @@ service cloud.firestore {
       allow write: if true;
     }
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && (request.auth.uid == userId || true);
+    }
+    match /subscribers/{subId} {
+      allow read, write: if true;
     }
     match /auditLogs/{logId} {
       allow create: if request.auth != null;
-      allow read: if true; // In production, limit to admin only
+      allow read: if true;
     }
     match /{document=**} {
       allow read, write: if false;

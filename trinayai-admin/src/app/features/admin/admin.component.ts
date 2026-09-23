@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { User } from '@angular/fire/auth';
 import { AuthService } from '../../core/services/auth.service';
 import { SiteContentService } from '../../core/services/site-content.service';
+import { ProfileService } from '../../core/services/profile.service';
 import { AboutCard, AboutEvent, ClientItem, ContentItem, SectionItem, SiteSettings, Director, ServicePlan } from '../../core/models/site-content';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -15,12 +16,13 @@ import { ToastModule } from 'primeng/toast';
 import { MessageModule } from 'primeng/message';
 import { MessageService } from 'primeng/api';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { DropdownModule } from 'primeng/dropdown';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonModule, InputTextModule, InputTextareaModule, CardModule, TabViewModule, FileUploadModule, ToastModule, MessageModule, InputSwitchModule],
+  imports: [CommonModule, FormsModule, ButtonModule, InputTextModule, InputTextareaModule, CardModule, TabViewModule, FileUploadModule, ToastModule, MessageModule, InputSwitchModule, DropdownModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
@@ -28,6 +30,7 @@ export class AdminComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private contentService = inject(SiteContentService);
+  private profileService = inject(ProfileService);
   private messageService = inject(MessageService);
 
   authUser: User | null = null;
@@ -42,6 +45,23 @@ export class AdminComponent implements OnInit {
   aiMenuItems: ContentItem[] = [];
   clients: ClientItem[] = [];
 
+  // Studio Subscription Management State
+  searchQuery = '';
+  activeSubscribersCount = 0;
+  savingStates: { [key: string]: boolean } = {};
+
+  iconOptions = [
+    { label: 'Default Box (pi-box)', value: 'pi pi-box' },
+    { label: 'AI Android (pi-android)', value: 'pi pi-android' },
+    { label: 'Sparkles (pi-sparkles)', value: 'pi pi-sparkles' },
+    { label: 'Settings Gear (pi-cog)', value: 'pi pi-cog' },
+    { label: 'Lightning Bolt (pi-bolt)', value: 'pi pi-bolt' },
+    { label: 'Shield Security (pi-shield)', value: 'pi pi-shield' },
+    { label: 'Database (pi-database)', value: 'pi pi-database' },
+    { label: 'Cloud (pi-cloud)', value: 'pi pi-cloud' },
+    { label: 'Analytics Chart (pi-chart-line)', value: 'pi pi-chart-line' }
+  ];
+
   ngOnInit(): void {
     this.loadData();
     this.authService.user$.subscribe((user: User | null) => {
@@ -50,6 +70,26 @@ export class AdminComponent implements OnInit {
         this.router.navigate(['/login']);
       }
     });
+
+    // Load active subscriber metrics
+    this.profileService.getSubscribers().subscribe(subs => {
+      this.activeSubscribersCount = subs.filter(s => s.status === 'active').length;
+    });
+  }
+
+  get filteredAiMenuItems(): ContentItem[] {
+    if (!this.aiMenuItems || !Array.isArray(this.aiMenuItems)) return [];
+    if (!this.searchQuery?.trim()) return this.aiMenuItems;
+    const q = this.searchQuery.toLowerCase().trim();
+    return this.aiMenuItems.filter(item =>
+      (item.title && item.title.toLowerCase().includes(q)) ||
+      (item.description && item.description.toLowerCase().includes(q)) ||
+      (item.plans && item.plans.some(p => p.name && p.name.toLowerCase().includes(q)))
+    );
+  }
+
+  get totalActivePlansCount(): number {
+    return (this.aiMenuItems || []).reduce((acc, item) => acc + (item.plans?.length || 0), 0);
   }
 
   async logout() {
@@ -75,7 +115,9 @@ export class AdminComponent implements OnInit {
     this.contentService.getAboutCards().subscribe((cards: AboutCard[]) => this.aboutCards = cards);
     this.contentService.getAboutEvents().subscribe((events: AboutEvent[]) => this.aboutEvents = events);
     this.contentService.getServices().subscribe((services: ContentItem[]) => this.services = services);
-    this.contentService.getAiMenuItems().subscribe((items: ContentItem[]) => this.aiMenuItems = items);
+    this.contentService.getAiMenuItems().subscribe((items: ContentItem[]) => {
+      this.aiMenuItems = items || [];
+    });
     this.contentService.getClients().subscribe((clients: ClientItem[]) => this.clients = clients);
     this.contentService.getDirectors().subscribe((directors: Director[]) => this.directors = directors);
   }
@@ -99,17 +141,18 @@ export class AdminComponent implements OnInit {
   }
 
   updatePlanFeatures(plan: ServicePlan, text: string) {
-    plan.features = text.split('\n').map(f => f.trim()).filter(Boolean);
+    if (!plan) return;
+    plan.features = (text || '').split('\n').map(f => f.trim()).filter(Boolean);
   }
 
   addPlanToItem(item: ContentItem) {
     if (!item.plans) item.plans = [];
     item.plans.push({
       id: 'plan_' + Date.now(),
-      name: 'New Plan',
-      cost: '₹0',
+      name: 'New Tier',
+      cost: '₹999',
       billingCycle: '/ mo',
-      features: [],
+      features: ['24/7 Access', 'Priority Support'],
       isVisible: true
     });
   }
@@ -130,7 +173,8 @@ export class AdminComponent implements OnInit {
   async saveAboutEvent(event: AboutEvent) {
     if (!event.id) return;
     try {
-      await this.contentService.updateAboutEvent(event.id, event);
+      const { id, ...payload } = event;
+      await this.contentService.updateAboutEvent(id, payload);
       this.showSuccess('Event saved');
     } catch (error) {
       this.showError(`Save failed: ${this.getErrorMessage(error)}`);
@@ -159,7 +203,8 @@ export class AdminComponent implements OnInit {
   async saveDirector(director: Director) {
     if (director.id) {
       try {
-        await this.contentService.updateDirector(director.id, director);
+        const { id, ...payload } = director;
+        await this.contentService.updateDirector(id, payload);
         this.showSuccess('Director saved');
       } catch (e) {
         this.showError('Save failed');
@@ -216,7 +261,8 @@ export class AdminComponent implements OnInit {
   async saveHomeSection(item: SectionItem) {
     if (item.id) {
       try {
-        await this.contentService.updateHomeSection(item.id, item);
+        const { id, ...payload } = item;
+        await this.contentService.updateHomeSection(id, payload);
         this.showSuccess('Section saved');
       } catch (error) {
         this.showError(`Save failed: ${this.getErrorMessage(error)}`);
@@ -247,7 +293,8 @@ export class AdminComponent implements OnInit {
   async saveAboutCard(card: AboutCard) {
     if (card.id) {
       try {
-        await this.contentService.updateAboutCard(card.id, card);
+        const { id, ...payload } = card;
+        await this.contentService.updateAboutCard(id, payload);
         this.showSuccess('Card saved');
       } catch (error) {
         this.showError(`Save failed: ${this.getErrorMessage(error)}`);
@@ -278,7 +325,8 @@ export class AdminComponent implements OnInit {
   async saveService(item: ContentItem) {
     if (item.id) {
       try {
-        await this.contentService.updateService(item.id, item);
+        const { id, ...payload } = item;
+        await this.contentService.updateService(id, payload);
         this.showSuccess('Service saved');
       } catch (error) {
         this.showError(`Save failed: ${this.getErrorMessage(error)}`);
@@ -299,10 +347,25 @@ export class AdminComponent implements OnInit {
 
   async addAiMenuItem() {
     try {
-      await this.contentService.addAiMenuItem({ title: 'New AI Item', description: 'Add your content.', icon: 'pi pi-android', isVisible: true, plans: [] });
-      this.showSuccess('AI item created successfully');
+      await this.contentService.addAiMenuItem({
+        title: 'New AI Service',
+        description: 'Configure your service details and capabilities.',
+        icon: 'pi pi-android',
+        isVisible: true,
+        plans: [
+          {
+            id: 'plan_' + Date.now(),
+            name: 'Standard Tier',
+            cost: '₹999',
+            billingCycle: '/ mo',
+            features: ['Full AI Features', '24/7 Access'],
+            isVisible: true
+          }
+        ]
+      });
+      this.showSuccess('AI Service created successfully');
     } catch (e) {
-      this.showError('Failed to add AI item');
+      this.showError('Failed to add AI Service');
     }
   }
 
@@ -312,19 +375,49 @@ export class AdminComponent implements OnInit {
       this.messageService.add({ severity: 'warn', summary: 'Validation', detail: 'Service name is required' });
       return;
     }
+
+    this.savingStates[item.id] = true;
     try {
-      await this.contentService.updateAiMenuItem(item.id, item);
-      this.showSuccess(`Synced "${item.title}" and its plans`);
+      const cleanPlans = (item.plans || []).map(p => ({
+        id: p.id || 'plan_' + Date.now(),
+        name: p.name || 'Standard Tier',
+        cost: p.cost || '₹0',
+        billingCycle: p.billingCycle || '/ mo',
+        features: p.features || [],
+        isVisible: p.isVisible !== false
+      }));
+
+      const payload: Partial<ContentItem> = {
+        title: item.title.trim(),
+        description: item.description || '',
+        icon: item.icon || 'pi pi-box',
+        isVisible: item.isVisible !== false,
+        plans: cleanPlans
+      };
+
+      await this.contentService.updateAiMenuItem(item.id, payload);
+      this.showSuccess(`Synced "${item.title}" & plans to live database`);
     } catch (error) {
+      console.error('[Admin] Error saving AI item:', error);
       this.showError(`Save failed: ${this.getErrorMessage(error)}`);
+    } finally {
+      this.savingStates[item.id] = false;
     }
+  }
+
+  async syncAllAiMenuItems() {
+    if (!this.aiMenuItems.length) return;
+    for (const item of this.aiMenuItems) {
+      await this.saveAiMenuItem(item);
+    }
+    this.showSuccess('All AI Services & Plans synced to live DB!');
   }
 
   async deleteAiMenuItem(item: ContentItem) {
     if (!item.id) return;
     try {
       await this.contentService.deleteAiMenuItem(item.id);
-      this.showSuccess('AI item deleted');
+      this.showSuccess('AI Service deleted');
     } catch (e) {
       this.showError('Delete failed');
     }
@@ -342,7 +435,8 @@ export class AdminComponent implements OnInit {
   async saveClient(client: ClientItem) {
     if (client.id) {
       try {
-        await this.contentService.updateClient(client.id, client);
+        const { id, ...payload } = client;
+        await this.contentService.updateClient(id, payload);
         this.showSuccess('Client updated');
       } catch (error) {
         this.showError(`Update failed: ${this.getErrorMessage(error)}`);
