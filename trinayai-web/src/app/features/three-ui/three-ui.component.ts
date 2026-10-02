@@ -15,7 +15,11 @@ export class ThreeUiComponent implements AfterViewInit, OnDestroy {
   private threeService = inject(ThreeService);
 
   ngAfterViewInit(): void {
-    this.threeService.init(this.containerRef.nativeElement);
+    try {
+      this.threeService.init(this.containerRef.nativeElement);
+    } catch (e) {
+      console.warn('[ThreeUiComponent] Failed to initialize 3D canvas:', e);
+    }
   }
 
   ngOnDestroy(): void {

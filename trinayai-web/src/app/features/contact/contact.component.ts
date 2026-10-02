@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
@@ -8,6 +8,7 @@ import { CardModule } from 'primeng/card';
 import { SiteContentService } from '../../core/services/site-content.service';
 import { SiteSettings, Director } from '../../core/models/site-content';
 import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-contact',
@@ -16,15 +17,11 @@ import { map } from 'rxjs/operators';
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.scss']
 })
-export class ContactComponent implements OnInit {
+export class ContactComponent {
   private contentService = inject(SiteContentService);
-  settings: SiteSettings = { brandName: '', logoUrl: '', footerText: '', menuItems: [] };
-  directors: Director[] = [];
 
-  ngOnInit(): void {
-    this.contentService.getSettings().subscribe(settings => this.settings = { ...this.settings, ...settings });
-    this.contentService.getDirectors().pipe(
-      map(items => items.filter(d => d.isVisible !== false))
-    ).subscribe(directors => this.directors = directors);
-  }
+  settings$: Observable<SiteSettings> = this.contentService.getSettings();
+  directors$: Observable<Director[]> = this.contentService.getDirectors().pipe(
+    map(items => items.filter(d => d.isVisible !== false))
+  );
 }

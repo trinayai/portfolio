@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SiteContentService } from '../../core/services/site-content.service';
@@ -6,6 +6,7 @@ import { ClientItem, SiteSettings } from '../../core/models/site-content';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-clients',
@@ -14,17 +15,11 @@ import { map } from 'rxjs/operators';
   templateUrl: './clients.component.html',
   styleUrls: ['./clients.component.scss']
 })
-export class ClientsComponent implements OnInit {
+export class ClientsComponent {
   private contentService = inject(SiteContentService);
-  settings: SiteSettings = { brandName: '', logoUrl: '', footerText: '', menuItems: [] };
-  clients: ClientItem[] = [];
 
-  ngOnInit(): void {
-    this.contentService.getSettings().subscribe(settings => this.settings = { ...this.settings, ...settings });
-    this.contentService.getClients().pipe(
-      map(items => items.filter(c => c.isVisible !== false))
-    ).subscribe((clients: ClientItem[]) => {
-      this.clients = clients;
-    });
-  }
+  settings$: Observable<SiteSettings> = this.contentService.getSettings();
+  clients$: Observable<ClientItem[]> = this.contentService.getClients().pipe(
+    map(items => items.filter(c => c.isVisible !== false))
+  );
 }

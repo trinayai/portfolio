@@ -1,11 +1,11 @@
-- [ ] UI Refinement
-    - [ ] Update header to white with black text (`trinayai-web`)
-    - [ ] Update header to white with black text (`trinayai-admin`)
-    - [ ] Set logo to `assets/logo/Trinay-AI-Logo.jpeg`
-- [ ] Bug Fixes
-    - [ ] Resolve header duplication issue
-    - [ ] Fix Inter font decoding error
-- [ ] Build & Deployment
-    - [ ] Sync lock files
-    - [ ] Run local builds
-    - [ ] Deploy to Firebase
+- [x] UI Refinement
+    - [x] Update header to white with black text (`trinayai-web`)
+    - [x] Update header to white with black text (`trinayai-admin`)
+    - [x] Set logo to `assets/logo/Trinay-AI-Logo.jpeg`
+- [x] Bug Fixes
+    - [x] Resolve header duplication issue
+    - [x] Fix Inter font decoding error
+- [x] Build & Deployment
+    - [x] Sync lock files
+    - [x] Run local builds (`trinayai-web` & `trinayai-admin`)
+    - [x] Deploy to Firebase (`trinay-ai.web.app` & `trinay-ai-admin.web.app`)

@@ -53,7 +53,6 @@ export class SiteContentService {
     this.settings$ = (docData(docRef, { idField: 'id' }) as Observable<Partial<SiteSettings> | undefined>).pipe(
       map(settings => {
         if (!settings || !Object.keys(settings).length) {
-          setDoc(docRef, { ...this.defaultSettings, id: 'main' }, { merge: true }).catch(() => {});
           return this.defaultSettings;
         }
         return {

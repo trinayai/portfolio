@@ -26,9 +26,9 @@ export class HomeComponent implements OnInit {
       map(sections => sections.filter(s => s.isVisible !== false))
     ).subscribe(sections => {
       this.homeSections = sections.length ? sections : [
-        { title: 'AI Model Tuning', description: 'Optimizing foundational models for specialized enterprise workflows.', icon: 'pi pi-sliders-h' },
-        { title: 'Secure Compliance', description: 'Automated regulatory systems built for India\'s MSME sector.', icon: 'pi pi-shield' },
-        { title: 'Digital Scale', description: 'Accelerating transformation through robust software engineering.', icon: 'pi pi-chart-line' }
+        { id: 'sec_1', title: 'AI Model Tuning', description: 'Optimizing foundational models for specialized enterprise workflows.', icon: 'pi pi-sliders-h' },
+        { id: 'sec_2', title: 'Secure Compliance', description: 'Automated regulatory systems built for India\'s MSME sector.', icon: 'pi pi-shield' },
+        { id: 'sec_3', title: 'Digital Scale', description: 'Accelerating transformation through robust software engineering.', icon: 'pi pi-chart-line' }
       ];
     });
   }

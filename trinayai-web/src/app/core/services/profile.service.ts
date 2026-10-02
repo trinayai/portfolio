@@ -51,6 +51,8 @@ export class ProfileService {
   private auth = inject(Auth);
   private platformId = inject(PLATFORM_ID);
 
+  private initializedUids = new Set<string>();
+
   /**
    * userProfile$ states:
    * undefined: Initial state/still checking auth
@@ -91,9 +93,12 @@ export class ProfileService {
                   paymentHistory: []
                 };
 
-                setDoc(userDocRef, res, { merge: true })
-                  .then(() => this.logAction(u.uid, u.email || '', 'INITIALIZE', 'System auto-initialized profile'))
-                  .catch(err => console.error('[ProfileService] Auto-init failed:', err));
+                if (!this.initializedUids.has(u.uid)) {
+                  this.initializedUids.add(u.uid);
+                  setDoc(userDocRef, res, { merge: true })
+                    .then(() => this.logAction(u.uid, u.email || '', 'INITIALIZE', 'System auto-initialized profile'))
+                    .catch(err => console.error('[ProfileService] Auto-init failed:', err));
+                }
               }
 
               // Cache in localStorage for 0ms loads on next page navigation

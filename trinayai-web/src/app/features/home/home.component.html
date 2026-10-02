@@ -41,7 +41,7 @@
   <div *ngIf="homeSections.length > 0" class="relative py-16 border-t border-slate-100 bg-slate-50/30">
     <div class="container-max">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @for (item of homeSections; track item.id) {
+        @for (item of homeSections; track item.id || item.title || $index) {
           <div class="card-white flex flex-col items-start text-left p-6">
             <div class="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 ring-1 ring-blue-100">
               <i [class]="item.icon || 'pi pi-bolt'" class="text-lg font-bold"></i>

@@ -1,7 +1,7 @@
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable, of } from 'rxjs';
-import { catchError, map, shareReplay, tap } from 'rxjs/operators';
+import { catchError, map, shareReplay, tap, startWith } from 'rxjs/operators';
 import { Firestore, addDoc, collection, collectionData, deleteDoc, doc, setDoc, docData, query } from '@angular/fire/firestore';
 import { Storage, deleteObject, getDownloadURL, ref, uploadBytes } from '@angular/fire/storage';
 import { AboutCard, AboutEvent, ClientItem, ContentItem, SectionItem, SiteSettings, Director } from '../models/site-content';
@@ -53,7 +53,6 @@ export class SiteContentService {
     this.settings$ = (docData(docRef, { idField: 'id' }) as Observable<Partial<SiteSettings> | undefined>).pipe(
       map(settings => {
         if (!settings || !Object.keys(settings).length) {
-          setDoc(docRef, { ...this.defaultSettings, id: 'main' }, { merge: true }).catch(() => {});
           return this.defaultSettings;
         }
         return {
@@ -66,6 +65,7 @@ export class SiteContentService {
         console.error('[SiteContent] Error fetching siteSettings:', err);
         return of(this.defaultSettings);
       }),
+      startWith(this.defaultSettings),
       shareReplay({ bufferSize: 1, refCount: true })
     );
 
@@ -108,6 +108,7 @@ export class SiteContentService {
         console.error(`Error loading ${collectionName}:`, err);
         return of([]);
       }),
+      startWith([]),
       shareReplay({ bufferSize: 1, refCount: true })
     ) as Observable<T[]>;
 
